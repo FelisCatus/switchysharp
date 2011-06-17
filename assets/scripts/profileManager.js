@@ -158,17 +158,12 @@ ProfileManager.applyProfile = function applyProfile(profile) {
 
 	var proxyString = ProfileManager.buildProxyString(profile);
 	
-	var connection = "";
-	if (Settings.getValue("enableConnections", false))
-		connection = Settings.getValue("connectionName");
-	
 	try {
 		var result;
 		if (direct) {
-			result = plugin.setDirect(connection);
+			result = plugin.setDirect();
 		} else {
-			result = plugin.setProxy(profile.proxyMode, proxyString, profile.proxyExceptions, 
-									 profile.proxyConfigUrl, connection);
+			result = plugin.setProxy(profile.proxyMode, proxyString, profile.proxyExceptions, profile.proxyConfigUrl);
 		}
 		
 		if (result != 0 || result != "0")
@@ -190,21 +185,6 @@ ProfileManager.handleSocksProfile = function handleSocksProfile(profile) {
 	}
 	
 	return profile;
-};
-
-ProfileManager.getConnections = function getConnections() {
-	var plugin = new ProxyPlugin();
-	var connections;
-	
-	try {
-		connections = plugin.getConnections(0);
-	} catch(ex) {
-		Logger.log("Plugin Error @ProfileManager.getConnections() > " +
-			ex.toString(), Logger.Types.error);
-		
-		return [];
-	}
-	return connections.split("|");
 };
 
 ProfileManager.profileToString = function profileToString(profile, prettyPrint) {

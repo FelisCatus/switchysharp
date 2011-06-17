@@ -41,7 +41,7 @@ function ProxyPlugin() {
 				break;
 		}
 	});
-	this.setProxy = function(proxyMode, proxyString, proxyExceptions, proxyConfigUrl, connection) {
+	this.setProxy = function(proxyMode, proxyString, proxyExceptions, proxyConfigUrl) {
 		var config;
 		this.proxyMode = Settings.setValue('proxyMode', proxyMode);
 		this.proxyServer = proxyString;
@@ -95,7 +95,7 @@ function ProxyPlugin() {
 	};
 	this.readFile = function(backupFilePath) {
 	};
-	this.setDirect = function(connection) {
+	this.setDirect = function() {
 		var config = {mode: "direct"};
 		this._proxy.settings.set({'value': config}, function() {});
 		this.proxyMode = Settings.setValue('proxyMode', 'direct');
@@ -103,9 +103,6 @@ function ProxyPlugin() {
 		this.proxyExceptions = Settings.setValue('proxyExceptions', '');
 		this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
 		return 0;
-	};
-	this.getConnections = function(i) {
-		return '';
 	};
 	this.writeAutoPacFile = function(script) {
 		this.autoPacScriptPath = Settings.setValue('autoPacScriptPath', memoryPath);

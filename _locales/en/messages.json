@@ -101,9 +101,6 @@
    "options_confirmDeletion_help": {
       "message": "Show a confirmation dialog for deletion of proxy profiles or switch rules."
    },
-   "options_connection": {
-      "message": "Connection"
-   },
    "options_cycleAllProxies": {
       "message": "Cycle All Proxies"
    },
@@ -322,12 +319,6 @@
    },
    "options_vpnDialupProxy": {
       "message": "Proxy for VPN/Dial-up"
-   },
-   "options_vpnDialupProxy_help": {
-      "message": "Also set proxy for this VPN/Dial-up connection."
-   },
-   "options_windowsOnly": {
-      "message": "Windows only"
    },
    "popup_aboutSwitchy": {
       "message": "About Switchy!"

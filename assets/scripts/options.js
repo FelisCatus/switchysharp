@@ -154,17 +154,6 @@ function initUI() {
 	});
 	
 	// Network
-	$("#chkConnections").change(function() {
-		if ($(this).is(":checked")) {
-			$("#connectionsTable *").removeClass("disabled");
-			$("#connectionsTable select").removeAttr("disabled");
-		} else {
-			$("#connectionsTable *").addClass("disabled");
-			$("#connectionsTable select").attr("disabled", "disabled");
-		}
-		onFieldModified(false);
-	});
-
 	$("#chkMonitorProxyChanges").change(function() {
 		if ($(this).is(":checked"))
 			$("#chkPreventProxyChanges").removeAttr("disabled").parent().removeClass("disabled");
@@ -172,10 +161,10 @@ function initUI() {
 			$("#chkPreventProxyChanges").attr("disabled", "disabled").parent().addClass("disabled");
 	});
 
-	$("#cmbConnection, #chkMonitorProxyChanges, #chkPreventProxyChanges").change(function() {
+	$("#chkMonitorProxyChanges, #chkPreventProxyChanges").change(function() {
 		onFieldModified(false);
 	});
-	
+
 	// Import-Export
 	$("#txtBackupFilePath").bind("click keydown", function() {
 		if ($(this).hasClass("initial"))
@@ -296,26 +285,6 @@ function loadOptions() {
 		$("#chkAutoProxy").attr("checked", "checked");
 	
 	// Network
-	if (Settings.getValue("enableConnections", false))
-		$("#chkConnections").attr("checked", "checked");
-	
-	$("#chkConnections").change();
-	if (!Utils.OS.isWindows) {
-		$("#connectionsTable *, #connectionsTitle *").addClass("disabled");
-		$("#connectionsTable select, #connectionsTitle input").attr("disabled", "disabled");		
-	}
-	
-	$("#cmbConnection").empty();
-	var connections = ProfileManager.getConnections();	
-	var selectedConnection = Settings.getValue("connectionName");
-	$.each(connections, function(key, connection) {
-		var item = $("<option>").attr("value", connection).text(connection);
-		if (selectedConnection == connection)
-			item.attr("selected", "selected");
-		
-		$("#cmbConnection").append(item);
-	});	
-
 	if (Settings.getValue("monitorProxyChanges", true))
 		$("#chkMonitorProxyChanges").attr("checked", "checked");
 	if (Settings.getValue("preventProxyChanges", false))
@@ -323,7 +292,7 @@ function loadOptions() {
 
 	$("#chkMonitorProxyChanges").change();
 	$("#chkPreventProxyChanges").change();
-	
+
 	// General
 	if (Settings.getValue("quickSwitch", false))
 		$("#chkQuickSwitch").attr("checked", "checked");
@@ -467,9 +436,6 @@ function saveOptions() {
 		ProfileManager.applyProfile(RuleManager.getAutomaticModeProfile(false));
 	
 	// Network
-	Settings.setValue("enableConnections", ($("#chkConnections").is(":checked")));
-	Settings.setValue("connectionName", ($("#cmbConnection").val()));
-
 	Settings.setValue("monitorProxyChanges", ($("#chkMonitorProxyChanges").is(":checked")));
 	Settings.setValue("preventProxyChanges", ($("#chkPreventProxyChanges").is(":checked")));
 	
