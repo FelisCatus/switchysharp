@@ -14,6 +14,5 @@
    "name": "Proxy SwitchyPlus",
    "options_page": "options.html",
    "permissions": [ "proxy", "tabs", "bookmarks", "http://*/", "https://*/" ],
-   "update_url": "http://clients2.google.com/service/update2/crx",
    "version": "1.7.0"
 }

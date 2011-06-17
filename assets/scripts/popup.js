@@ -113,13 +113,6 @@ function openErrorLog() {
 	});
 }
 
-function openContactEmail() {
-	closePopup();
-	chrome.tabs.create({
-		url: 'mailto:Proxy SwitchyPlus <ayanamist+switchyplus@gmail.com>?subject=[SwitchyPlus] Contact'
-	});
-}
-
 function openMainWebsite() {
 	closePopup();
 	chrome.tabs.create({
@@ -130,14 +123,14 @@ function openMainWebsite() {
 function openSupportWebsite() {
 	closePopup();
 	chrome.tabs.create({
-		url: 'http://code.google.com/p/switchy/issues/list'
+		url: 'http://code.google.com/p/switchyplus/issues/list'
 	});
 }
 
 function openExtensionGalleryWebsite() {
 	closePopup();
 	chrome.tabs.create({
-		url: 'https://chrome.google.com/extensions/detail/caehdcpeofiiigpdhbabniblemipncjj'
+		url: 'https://chrome.google.com/extensions/'
 	});
 }
 

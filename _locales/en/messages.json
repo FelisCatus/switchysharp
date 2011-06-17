@@ -339,7 +339,7 @@
       "message": "Chrome Extension Gallery"
    },
    "popup_copyright": {
-      "message": "Copyright \u00A9 2009 Samabox. Some rights reserved."
+      "message": "Copyright \u00A9 2009 Samabox & 2011 ayanamist.<br />Some rights reserved."
    },
    "popup_developedBy": {
       "message": "Developed by"
@@ -363,7 +363,7 @@
       "message": "Support &amp; Bug reports"
    },
    "popup_switchyWebPage": {
-      "message": "SwitchyPlus web page"
+      "message": "Switchy! web page"
    },
    "popup_version": {
       "message": "version"
