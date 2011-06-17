@@ -18,7 +18,8 @@ Settings.setValue = function setValue(key, value) {
 		config = JSON.parse(localStorage.config);
 	
 	config[key] = value;
-	localStorage.config = JSON.stringify(config);	
+	localStorage.config = JSON.stringify(config);
+	return value;
 };
 
 Settings.getValue = function getValue(key, defaultValue) {
@@ -46,6 +47,7 @@ Settings.keyExists = function keyExists(key) {
 
 Settings.setObject = function setObject(key, object) {
 	localStorage[key] = JSON.stringify(object);
+	return object;
 };
 
 Settings.getObject = function getObject(key) {

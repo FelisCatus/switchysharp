@@ -309,7 +309,7 @@ function buildMenuAutomaticModeItem(currentProfile) {
 		$("#separatorRules").hide();
 		return;
 	}
-	var autoProfile = RuleManager.getAutomaticModeProfile(true);
+	var autoProfile = RuleManager.getAutomaticModeProfile(false);
 	item.click(onSelectProxyItem);
 	item[0].profile = autoProfile;
 	if (RuleManager.isAutomaticModeEnabled(currentProfile)) {

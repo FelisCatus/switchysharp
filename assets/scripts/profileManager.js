@@ -102,7 +102,7 @@ ProfileManager.getSelectedProfile = function getSelectedProfile() {
 };
 
 ProfileManager.getCurrentProfile = function getCurrentProfile() {
-	var plugin = chrome.extension.getBackgroundPage().plugin;
+	var plugin = new ProxyPlugin();
 	var proxyMode;
 	var proxyString;
 	var proxyExceptions;
@@ -143,16 +143,19 @@ ProfileManager.getCurrentProfile = function getCurrentProfile() {
 };
 
 ProfileManager.applyProfile = function applyProfile(profile) {
-	var plugin = chrome.extension.getBackgroundPage().plugin;
 	var direct = (profile.proxyMode == ProfileManager.ProxyModes.direct);
 	
 	Settings.setObject("selectedProfile", profile);
 	
 	if (profile.isAutomaticModeProfile)
+	{
 		RuleManager.saveAutoPacScript();
+		var plugin = new ProxyPlugin();
+		profile.proxyConfigUrl = plugin.autoPacScriptPath;
+	}
 	else
 		profile = ProfileManager.handleSocksProfile(profile);
-	
+
 	var proxyString = ProfileManager.buildProxyString(profile);
 	
 	var connection = "";
@@ -171,7 +174,6 @@ ProfileManager.applyProfile = function applyProfile(profile) {
 		if (result != 0 || result != "0")
 			throw "Error Code (" + result + ")";
 		
-		plugin.notifyChanges(0);
 	} catch(ex) {
 		Logger.log("Plugin Error @ProfileManager.applyProfile(" + ProfileManager.profileToString(profile, false) + ") > " +
 			ex.toString(), Logger.Types.error);
@@ -191,7 +193,7 @@ ProfileManager.handleSocksProfile = function handleSocksProfile(profile) {
 };
 
 ProfileManager.getConnections = function getConnections() {
-	var plugin = chrome.extension.getBackgroundPage().plugin;
+	var plugin = new ProxyPlugin();
 	var connections;
 	
 	try {

@@ -13,16 +13,7 @@
    "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrBRp20Di/h1YjrhEqZKoEb16xr4VT21Okg097rsKpMB0BqecdAGSrfPOyiqGpa6aWHesJJ+IDpQOE//03lm9C0rpFE7LTtAyTTuDJlleRoEPQhRGGkluQRwEPHWf5R90KOExXollvlqnQuvaerewVkYhg6DWsi4zO9ScbLtU8owIDAQAB",
    "name": "Proxy Switchy!",
    "options_page": "options.html",
-   "permissions": [ "tabs", "bookmarks", "http://*/", "https://*/" ],
-   "plugins": [ {
-      "path": "plugins/npSwitchy.dll"
-   }, {
-      "path": "plugins/npSwitchy.so"
-   }, {
-      "path": "plugins/npSwitchy64.so"
-   }, {
-      "path": "plugins/iSwitchy.bundle"
-   } ],
+   "permissions": [ "proxy", "tabs", "bookmarks", "http://*/", "https://*/" ],
    "update_url": "http://clients2.google.com/service/update2/crx",
-   "version": "1.6.3"
+   "version": "1.7.0"
 }

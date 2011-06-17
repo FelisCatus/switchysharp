@@ -20,7 +20,7 @@ var diagnosedError = false;
 var plugin;
 
 function init() {
-	plugin = document.getElementById("plugin");
+	plugin = new ProxyPlugin();
 	loadManifestInfo();
 	applySavedOptions();
 	checkFirstTime() || checkNewVersion();

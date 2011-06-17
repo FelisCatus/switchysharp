@@ -464,7 +464,7 @@ function saveOptions() {
 
 	RuleManager.save();
 	if (RuleManager.isAutomaticModeEnabled(currentProfile))
-		ProfileManager.applyProfile(RuleManager.getAutomaticModeProfile(true));
+		ProfileManager.applyProfile(RuleManager.getAutomaticModeProfile(false));
 	
 	// Network
 	Settings.setValue("enableConnections", ($("#chkConnections").is(":checked")));

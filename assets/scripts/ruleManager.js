@@ -113,7 +113,7 @@ RuleManager.addRule = function addRule(rule) {
 	RuleManager.save();
 	
 	if (RuleManager.isAutomaticModeEnabled(undefined))
-		ProfileManager.applyProfile(RuleManager.getAutomaticModeProfile(true));
+		ProfileManager.applyProfile(RuleManager.getAutomaticModeProfile(false));
 };
 
 RuleManager.getSortedRuleArray = function getSortedRuleArray() {
@@ -227,7 +227,7 @@ RuleManager.downloadProfilesPacScripts = function downloadProfilesPacScripts() {
 RuleManager.saveAutoPacScript = function saveAutoPacScript() {
 	RuleManager.profilesScripts = RuleManager.downloadProfilesPacScripts();
 
-	var plugin = chrome.extension.getBackgroundPage().plugin;
+	var plugin = new ProxyPlugin();
 	var script = RuleManager.generateAutoPacScript();
 	try {
 		var result = plugin.writeAutoPacFile(script);
@@ -241,7 +241,7 @@ RuleManager.saveAutoPacScript = function saveAutoPacScript() {
 };
 
 RuleManager.saveSocksPacScript = function saveSocksPacScript(profile) {
-	var plugin = chrome.extension.getBackgroundPage().plugin;
+	var plugin = new ProxyPlugin();
 	var script = RuleManager.generateSocksPacScript(profile);
 	try {
 		var result = plugin.writeSocksPacFile(script);
@@ -659,7 +659,7 @@ RuleManager.generateSocksPacScript = function generateSocksPacScript(profile) {
 
 RuleManager.getAutoPacScriptPath = function getAutoPacScriptPath(withSalt) {
 	if (RuleManager.autoPacScriptPath == undefined) {
-		var plugin = chrome.extension.getBackgroundPage().plugin;
+		var plugin = new ProxyPlugin();
 		try {
 			RuleManager.autoPacScriptPath = plugin.autoPacScriptPath;
 		} catch(ex) {
@@ -673,7 +673,7 @@ RuleManager.getAutoPacScriptPath = function getAutoPacScriptPath(withSalt) {
 
 RuleManager.getSocksPacScriptPath = function getSocksPacScriptPath(withSalt) {
 	if (RuleManager.socksPacScriptPath == undefined) {
-		var plugin = chrome.extension.getBackgroundPage().plugin;
+		var plugin = new ProxyPlugin();
 		try {
 			RuleManager.socksPacScriptPath = plugin.socksPacScriptPath;
 		} catch(ex) {
@@ -695,7 +695,7 @@ RuleManager.getAutomaticModeProfile = function getAutomaticModeProfile(withSalt)
 	profile.proxyMode = ProfileManager.ProxyModes.auto;
 	profile.proxyConfigUrl = RuleManager.getAutoPacScriptPath(withSalt);
 	profile.color = "auto-blue";
-	profile.name = "Auto Swtich Mode";
+	profile.name = "Auto Switch Mode";
 	profile.isAutomaticModeProfile = true;
 	return profile;
 };
@@ -809,7 +809,7 @@ RuleManager.parseSwitchyRuleList = function parseSwitchyRuleList(data) {
 	Settings.setObject("ruleListRules", rules);
 	
 	if (RuleManager.isAutomaticModeEnabled(undefined)) {
-		var profile = RuleManager.getAutomaticModeProfile(true);
+		var profile = RuleManager.getAutomaticModeProfile(false);
 		ProfileManager.applyProfile(profile);
 	}
 //	console.log(rules);
@@ -878,7 +878,7 @@ RuleManager.parseAutoProxyRuleList = function parseAutoProxyRuleList(data) {
 	Settings.setObject("ruleListRules", rules);
 	
 	if (RuleManager.isAutomaticModeEnabled(undefined)) {
-		var profile = RuleManager.getAutomaticModeProfile(true);
+		var profile = RuleManager.getAutomaticModeProfile(false);
 		ProfileManager.applyProfile(profile);
 	}
 //	console.log(rules);
