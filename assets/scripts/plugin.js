@@ -12,7 +12,6 @@ function ProxyPlugin() {
 	this.proxyExceptions = Settings.getValue('proxyExceptions', '');
 	this.proxyConfigUrl = Settings.getValue('proxyConfigUrl', '');
 	this.autoPacScriptPath = Settings.getValue('autoPacScriptPath', '');
-	this.socksPacScriptPath = Settings.getValue('socksPacScriptPath', '');
 	var memoryPath = ':memory:';
 	this._proxy = chrome.proxy;
 	chrome.proxy.settings.get({}, function(config) {
@@ -31,21 +30,36 @@ function ProxyPlugin() {
 				if (config.pacScript.url !== undefined) {
 					Settings.setValue('proxyConfigUrl', config.pacScript.url);
 					Settings.setValue('autoPacScriptPath', config.pacScript.url);
-					Settings.setValue('socksPacScriptPath', config.pacScript.url);
 				}
 				else {
 					Settings.setValue('proxyConfigUrl', memoryPath);
 					Settings.setValue('autoPacScriptPath', memoryPath);
-					Settings.setValue('socksPacScriptPath', memoryPath);
 				}
 				break;
 		}
 	});
+	this._parseProxy = function(str) {
+		if (str) {
+			var proxy = {scheme: 'http', host: '', port: 80};
+			var t1 = str.split(':');
+			proxy.host = t1[0];
+			var t2 = proxy.host.split('=');
+			if (t2.length > 1) {
+				proxy.scheme = t2[0] == 'socks' ? 'socks4' : t2[0];
+				proxy.host = t2[1];
+			}
+			if (t1.length > 1)
+				proxy.port = parseInt(t1[1]);
+			return proxy;
+		}
+		else
+			return {}
+	};
 	this.setProxy = function(proxyMode, proxyString, proxyExceptions, proxyConfigUrl) {
 		var config;
 		this.proxyMode = Settings.setValue('proxyMode', proxyMode);
-		this.proxyServer = proxyString;
-		this.proxyExceptions = proxyExceptions;
+		this.proxyServer = Settings.setValue('proxyServer', proxyString);
+		this.proxyExceptions = Settings.setValue('proxyExceptions', proxyExceptions);
 		this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', proxyConfigUrl);
 		switch (proxyMode) {
 			case 'direct':
@@ -56,12 +70,35 @@ function ProxyPlugin() {
 				for (el in this.proxyExceptions.split(';')) {
 					tmpbypassList.push(el.trim())
 				}
-				config = {
-					mode: "fixed_servers",
-					rules : {
-						bypassList: tmpbypassList
+				var profile = ProfileManager.parseProxyString(proxyString);
+				if (profile.useSameProxy) {
+					config = {
+						mode: "fixed_servers",
+						rules : {
+							singleProxy: this._parseProxy(profile.proxyHttp),
+							bypassList: tmpbypassList
+						}
+					};
+				}
+				else {
+					if (profile.proxySocks) {
+						if ( ! profile.proxyHttp)
+							profile.proxyHttp = profile.proxySocks;
+						if ( ! profile.proxyFtp)
+							profile.proxyFtp = profile.proxySocks;
+						if ( ! profile.proxyHttps)
+							profile.proxyHttps = profile.proxySocks;
 					}
-				};
+					config = {
+						mode: "fixed_servers",
+						rules : {
+							proxyForHttp: this._parseProxy(profile.proxyHttp),
+							proxyForHttps: this._parseProxy(profile.proxyHttps),
+							proxyForFtp: this._parseProxy(profile.proxyFtp),
+							bypassList: tmpbypassList
+						}
+					};
+				}
 				break;
 			case 'auto':
 				if (this.proxyConfigUrl == memoryPath) {
@@ -100,11 +137,6 @@ function ProxyPlugin() {
 	};
 	this.writeAutoPacFile = function(script) {
 		this.autoPacScriptPath = Settings.setValue('autoPacScriptPath', memoryPath);
-		Settings.setValue('pacScriptData', script);
-		return 0;
-	};
-	this.writeSocksPacFile = function(script) {
-		this.socksPacScriptPath = Settings.setValue('socksPacScriptPath', memoryPath);
 		Settings.setValue('pacScriptData', script);
 		return 0;
 	};

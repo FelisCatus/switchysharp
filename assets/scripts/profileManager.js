@@ -128,10 +128,6 @@ ProfileManager.getCurrentProfile = function getCurrentProfile() {
 	profile.proxyConfigUrl = proxyConfigUrl;
 	profile = ProfileManager.normalizeProfile(profile);
 	
-	if (RuleManager.isModifiedSocksProfile(profile)) {
-		profile.proxyMode = ProfileManager.ProxyModes.manual;
-	}
-	
 	var foundProfile = ProfileManager.contains(profile);
 	if (foundProfile)
 		return foundProfile;
@@ -153,8 +149,6 @@ ProfileManager.applyProfile = function applyProfile(profile) {
 		RuleManager.saveAutoPacScript();
 		profile.proxyConfigUrl = plugin.autoPacScriptPath;
 	}
-	else
-		profile = ProfileManager.handleSocksProfile(profile);
 
 	var proxyString = ProfileManager.buildProxyString(profile);
 	
@@ -173,18 +167,6 @@ ProfileManager.applyProfile = function applyProfile(profile) {
 		Logger.log("Plugin Error @ProfileManager.applyProfile(" + ProfileManager.profileToString(profile, false) + ") > " +
 			ex.toString(), Logger.Types.error);
 	}
-};
-
-ProfileManager.handleSocksProfile = function handleSocksProfile(profile) {
-	// TODO if (windows || gnome) only handle SOCKS5
-	if (profile.proxyMode == ProfileManager.ProxyModes.manual && profile.proxySocks.trim().length > 0) {
-		RuleManager.saveSocksPacScript(profile);
-		profile = $.extend(true, {}, profile);
-		profile.proxyMode = ProfileManager.ProxyModes.auto;
-		profile.proxyConfigUrl = RuleManager.getSocksPacScriptPath(true);
-	}
-	
-	return profile;
 };
 
 ProfileManager.profileToString = function profileToString(profile, prettyPrint) {
@@ -239,7 +221,7 @@ ProfileManager.parseProxyString = function parseProxyString(proxyString) {
 				profile.proxySocks = part.substring(6);
 				profile.socksVersion = 4;
 			} else if (part.indexOf("socks5=") == 0) {
-				profile.proxySocks = part.substring(6);
+				profile.proxySocks = part.substring(7);
 				profile.socksVersion = 5;
 			}
 		}
@@ -267,9 +249,13 @@ ProfileManager.buildProxyString = function buildProxyString(profile) {
 	if (profile.proxyFtp)
 		proxy.push("ftp=" + profile.proxyFtp);
 	
-	if (profile.proxySocks)
-		proxy.push("socks=" + profile.proxySocks); // TODO: handle Socks v5
-	
+	if (profile.proxySocks) {
+		if (profile.socksVersion == 5)
+			proxy.push("socks5=" + profile.proxySocks);
+		else
+			proxy.push("socks=" + profile.proxySocks);
+	}
+
 	proxy = proxy.join(";");
 	return proxy;
 };

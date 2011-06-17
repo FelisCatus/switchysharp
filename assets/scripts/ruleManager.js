@@ -24,8 +24,6 @@ RuleManager.ruleListEnabled = false;
 
 RuleManager.autoPacScriptPath = undefined;
 
-RuleManager.socksPacScriptPath = undefined;
-
 RuleManager.profilesScripts = {};
 
 RuleManager.defaultRule = {
@@ -236,20 +234,6 @@ RuleManager.saveAutoPacScript = function saveAutoPacScript() {
 		
 	} catch(ex) {
 		Logger.log("Plugin Error @RuleManager.saveAutoPacScript() > " + ex.toString(), Logger.Types.error);		
-		return false;
-	}
-};
-
-RuleManager.saveSocksPacScript = function saveSocksPacScript(profile) {
-	var plugin = new ProxyPlugin();
-	var script = RuleManager.generateSocksPacScript(profile);
-	try {
-		var result = plugin.writeSocksPacFile(script);
-		if (result != 0 || result != "0")
-			throw "Error Code (" + result + ")";
-		
-	} catch(ex) {
-		Logger.log("Plugin Error @RuleManager.saveSocksPacScript() > " + ex.toString(), Logger.Types.error);		
 		return false;
 	}
 };
@@ -653,10 +637,6 @@ RuleManager.generateAutoPacScript = function generateAutoPacScript() {
 	return RuleManager.generatePacScript(rules, defaultProfile);
 };
 
-RuleManager.generateSocksPacScript = function generateSocksPacScript(profile) {
-	return RuleManager.generatePacScript([], profile);
-};
-
 RuleManager.getAutoPacScriptPath = function getAutoPacScriptPath(withSalt) {
 	if (RuleManager.autoPacScriptPath == undefined) {
 		var plugin = new ProxyPlugin();
@@ -669,20 +649,6 @@ RuleManager.getAutoPacScriptPath = function getAutoPacScriptPath(withSalt) {
 	}
 	
 	return RuleManager.autoPacScriptPath + (withSalt ? "?" + new Date().getTime() : "");
-};
-
-RuleManager.getSocksPacScriptPath = function getSocksPacScriptPath(withSalt) {
-	if (RuleManager.socksPacScriptPath == undefined) {
-		var plugin = new ProxyPlugin();
-		try {
-			RuleManager.socksPacScriptPath = plugin.socksPacScriptPath;
-		} catch(ex) {
-			Logger.log("Plugin Error @RuleManager.getSocksPacScriptPath() > " + ex.toString(), Logger.Types.error);
-			return undefined;
-		}
-	}
-	
-	return RuleManager.socksPacScriptPath + (withSalt ? "?" + new Date().getTime() : "");
 };
 
 RuleManager.getAutomaticModeProfile = function getAutomaticModeProfile(withSalt) {
@@ -713,18 +679,6 @@ RuleManager.isAutomaticModeEnabled = function isAutomaticModeEnabled(currentProf
 		return false;
 	
 	return (currentProfile.proxyConfigUrl.substr(0, length) == autoProfile.proxyConfigUrl);
-};
-
-RuleManager.isModifiedSocksProfile = function isModifiedSocksProfile(profile) {
-	if (profile.proxyMode != ProfileManager.ProxyModes.auto)
-		return false;
-	
-	var scriptPath = RuleManager.getSocksPacScriptPath(false);
-	var length = scriptPath.length;
-	if (profile.proxyConfigUrl.length > length && profile.proxyConfigUrl.charAt(length) != '?')
-		return false;
-	
-	return (profile.proxyConfigUrl.substr(0, length) == scriptPath);
 };
 
 RuleManager.loadRuleList = function loadRuleList(scheduleNextReload) {
