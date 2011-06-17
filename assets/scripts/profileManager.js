@@ -144,13 +144,13 @@ ProfileManager.getCurrentProfile = function getCurrentProfile() {
 
 ProfileManager.applyProfile = function applyProfile(profile) {
 	var direct = (profile.proxyMode == ProfileManager.ProxyModes.direct);
-	
+	var plugin = new ProxyPlugin();
+
 	Settings.setObject("selectedProfile", profile);
 	
 	if (profile.isAutomaticModeProfile)
 	{
 		RuleManager.saveAutoPacScript();
-		var plugin = new ProxyPlugin();
 		profile.proxyConfigUrl = plugin.autoPacScriptPath;
 	}
 	else
