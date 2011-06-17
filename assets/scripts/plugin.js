@@ -43,15 +43,15 @@ function ProxyPlugin() {
 	});
 	this.setProxy = function(proxyMode, proxyString, proxyExceptions, proxyConfigUrl, connection) {
 		var config;
+		this.proxyMode = Settings.setValue('proxyMode', proxyMode);
 		this.proxyServer = proxyString;
 		this.proxyExceptions = proxyExceptions;
-		this.proxyConfigUrl = proxyConfigUrl;
+		this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', proxyConfigUrl);
 		switch (proxyMode) {
 			case 'direct':
 				this.setDirect();
 				break;
 			case 'manual':
-				this.proxyMode = 'manual';
 				var tmpbypassList = [];
 				for (el in this.proxyExceptions.split(';')) {
 					tmpbypassList.push(el.trim())
@@ -64,7 +64,6 @@ function ProxyPlugin() {
 				};
 				break;
 			case 'auto':
-				this.proxyMode = 'auto';
 				if (this.proxyConfigUrl == memoryPath) {
 					config = {
 						mode: "pac_script",
