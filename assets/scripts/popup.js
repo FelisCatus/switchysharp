@@ -116,7 +116,7 @@ function openErrorLog() {
 function openContactEmail() {
 	closePopup();
 	chrome.tabs.create({
-		url: 'mailto:Proxy Switchy! <chromeswitchy@gmail.com>?subject=[Switchy!] Contact'
+		url: 'mailto:Proxy SwitchyPlus <ayanamist+switchyplus@gmail.com>?subject=[SwitchyPlus] Contact'
 	});
 }
 
@@ -324,8 +324,6 @@ function buildMenuItems() {
 	buildMenuDirectConnectionItem(currentProfile);
 	buildMenuAutomaticModeItem(currentProfile);
 	buildMenuProxyItems(currentProfile);
-	if (extension.diagnosedError)
-		$("#menuError, #separatorError").show();
 }
 
 function onSelectProxyItem() {

@@ -6,44 +6,25 @@
 //                                                                       //
 /////////////////////////////////////////////////////////////////////////*/
 
-var appName;
-var appVersion;
+var appName = 'Proxy SwitchyPlus';
+var appVersion = '1.7.0';
 var iconDir = "assets/images/";
 var iconInactivePath = "assets/images/inactive.png";
-var iconErrorPath = "assets/images/icon-error.png";
 var refreshInterval = 10000;
 var refreshTimer;
 var currentProfile;
 var newVersion = false;
 var notifyOnNewVersion = false;
-var diagnosedError = false;
-var plugin;
 
 function init() {
-	plugin = new ProxyPlugin();
-	loadManifestInfo();
+	new ProxyPlugin();
 	applySavedOptions();
 	checkFirstTime() || checkNewVersion();
-	
-	diagnosedError = !diagnose();
+	Logger.log("Extension Info: v" + appVersion, Logger.Types.info);
+	Logger.log("Browser Info: " + navigator.appVersion, Logger.Types.info);
 	setIconInfo(undefined);
 	monitorProxyChanges(false);
 	monitorTabChanges();
-}
-
-function loadManifestInfo() {
-	var manifest = null;
-	var request = new XMLHttpRequest();
-	request.open("GET", chrome.extension.getURL("manifest.json"), false);
-	request.onreadystatechange = function() {
-		if (this.readyState == XMLHttpRequest.DONE) {
-			manifest = JSON.parse(this.responseText);
-		}
-	};
-	request.send();	
-	
-	appName = manifest.name;
-	appVersion = manifest.version;
 }
 
 function checkFirstTime() {
@@ -60,8 +41,6 @@ function checkFirstTime() {
 
 function checkNewVersion() {
 	if (notifyOnNewVersion && Settings.getValue("version") != appVersion) {
-		
-//		if (Settings.getValue("version") == "1.4.1" || Settings.getValue("version") == "1.4.2") return;
 		
 		setIconTitle("You've been updated to a new version (" + appVersion + ")");
 		setIconBadge(appVersion);
@@ -152,9 +131,6 @@ function setIconInfo(profile, preventProxyChanges) {
 		title += ProfileManager.profileToString(profile, true);
 	}
 
-//	if (diagnosedError)
-//		chrome.browserAction.setIcon({ path: iconErrorPath });
-	
 	setIconTitle(title);
 }
 
@@ -170,7 +146,6 @@ function setAutoSwitchIcon(url) {
 	}
 	
 	var color = undefined;
-//	if (!RuleManager.isRuleListEnabled()) {
 		var rule = RuleManager.getAssociatedRule(url) || RuleManager.getDefaultRule();
 		var profileName = ProfileManager.directConnectionProfile.name;
 		if (rule != undefined) {
@@ -178,16 +153,12 @@ function setAutoSwitchIcon(url) {
 			color = profile.color;
 			profileName = profile.name;
 		}
-//	}
 	var iconPath = iconDir + "icon-auto-" + (color || "blue") + ".png";
-//	if (diagnosedError)
-//		iconPath = iconErrorPath;
 
 	chrome.browserAction.setIcon({ path: iconPath });
 
 	var title = appName + "\nAuto Switch Mode";
-//	if (!RuleManager.isRuleListEnabled())
-		title += "\nActive Page Proxy: " + profileName;	
+		title += "\nActive Page Proxy: " + profileName;
 	
 	setIconTitle(title);
 	
@@ -220,29 +191,4 @@ function monitorTabChanges() {
 			});
 		}
 	});
-}
-
-function diagnose() {
-	var result = false;
-	
-	Logger.log("Extension Info: v" + appVersion, Logger.Types.info);
-	Logger.log("Browser Info: " + navigator.appVersion, Logger.Types.info);
-	
-	if (typeof plugin.setProxy == "function") {
-		try {
-			var pluginDiagnoseResult = plugin.diagnose(0);
-			if (pluginDiagnoseResult == "OK") {
-				try {
-					var pluginCheckResult = plugin.checkEnvironment(0);
-					if (pluginCheckResult == "OK") {
-						result = true;
-					}
-				} catch (e) {
-				}			
-			}
-		} catch (e) {
-		}
-	}
-
-	return result;
 }

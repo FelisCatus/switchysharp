@@ -19,7 +19,6 @@ function init() {
 	Utils = extension.Utils;
 	
 	initLog();
-	initDiagnose();
 	loadLog();
 }
 
@@ -39,77 +38,6 @@ function loadLog() {
 
 function clearLog() {
 	Logger.clear();
-	loadLog();
-}
-
-function initDiagnose() {
-	var plugin = extension.plugin;
-	var success = false;
-	
-	// Test #1
-	$("#test1 .title").removeClass("inactive");
-	if (typeof plugin.setProxy == "function") {
-		$("#test1 .icon").addClass("success");
-		
-		// Test #2
-		$("#test2 .title").removeClass("inactive");
-		try {
-			var pluginDiagnoseResult = plugin.diagnose(0);
-			if (pluginDiagnoseResult == "OK") {
-				$("#test2 .icon").addClass("success");
-				
-				// Test #3
-				$("#test3 .title").removeClass("inactive");
-				try {
-					var pluginCheckResult = plugin.checkEnvironment(0);
-					if (pluginCheckResult == "OK") {
-						Logger.log("Everything is OK", Logger.Types.success);
-						$("#test3 .icon").addClass("success");
-						success = true;
-					}
-					else {
-						Logger.log("Plugin error: " + pluginCheckResult, Logger.Types.error);
-						$("#test3 .icon").addClass("error");
-						$("#test3 .description").text("(Plugin error: " + pluginCheckResult + ")");
-					}
-				} catch (e) {
-					Logger.log("Error checking the environment!", Logger.Types.error);
-					$("#test3 .icon").addClass("error");
-					$("#test3 .description").text("(Error checking the environment!)");
-				}			
-			}
-			else {
-				Logger.log("Plugin error: " + pluginDiagnoseResult, Logger.Types.error);
-				$("#test2 .icon").addClass("error");
-				$("#test2 .description").text("(Plugin error: " + pluginDiagnoseResult + ")");
-			}
-		} catch (e) {
-			Logger.log("Error diagnosing the plugin!", Logger.Types.error);
-			$("#test2 .icon").addClass("error");
-			$("#test2 .description").text("(Error diagnosing the plugin!)");
-		}
-	}
-	else {
-		Logger.log("Plugin not loaded!", Logger.Types.error);
-		$("#test1 .icon").addClass("error");
-//		if (Utils.OS.isMac)
-//			$("#test1 .description").html("(Sorry, Mac OS X isn't supported yet, you can star this " +
-//					"<a href='http://code.google.com/p/switchy/issues/detail?id=4'>issue</a> " +
-//					"to keep track of changes)");
-//		else
-			$("#test1 .description").html(
-					"(Can't load the plugin, please " +
-					"<a href='http://code.google.com/p/switchy/issues/list'>" +
-					"file an issue</a> about this problem)");
-	}
-	
-	if (!success)
-		$("#logger .note").show();
-}
-
-function diagnose() {
-	extension.diagnose();
-	initDiagnose();
 	loadLog();
 }
 

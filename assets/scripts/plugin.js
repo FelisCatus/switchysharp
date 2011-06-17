@@ -85,12 +85,6 @@ function ProxyPlugin() {
 		this._proxy.settings.set({'value': config}, function() {});
 		return 0;
 	};
-	this.diagnose = function(i) {
-		return 'OK';
-	};
-	this.checkEnvironment = function(i) {
-		return 'OK';
-	};
 	this.writeTempFile = function(fileData, fileName) {
 	};
 	this.readFile = function(backupFilePath) {

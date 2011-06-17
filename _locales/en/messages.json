@@ -27,7 +27,7 @@
       "message": "Are you sure you want to delete selected rule?\n\nSelected Rule: ($1)"
    },
    "message_firstTimeWelcome": {
-      "message": "Welcome first time user!\u003Cbr\u003E\r\nTo start using Switchy set up some proxy profiles below and then press 'Save'."
+      "message": "Welcome first time user!\u003Cbr\u003E\r\nTo start using SwitchyPlus set up some proxy profiles below and then press 'Save'."
    },
    "message_optionsSaved": {
       "message": "Options Saved.."
@@ -36,7 +36,7 @@
       "message": "Profile Deleted.."
    },
    "message_restoreOptionsBackup": {
-      "message": "Are you sure you want to restore Switchy options from this backup?\n\nCurrent Switchy! options will be overwritten."
+      "message": "Are you sure you want to restore SwitchyPlus options from this backup?\n\nCurrent SwitchyPlus options will be overwritten."
    },
    "message_ruleDeleted": {
       "message": "Rule Deleted.."
@@ -51,7 +51,7 @@
       "message": "You should set the backup file path first.."
    },
    "message_successRestoreOptionsBackup": {
-      "message": "Switchy! options restored successfully..\n\nYou should restart Chrome for the new options to take effect."
+      "message": "SwitchyPlus options restored successfully..\n\nYou should restart Chrome for the new options to take effect."
    },
    "options_12Hours": {
       "message": "12 Hours"
@@ -135,13 +135,13 @@
       "message": "Export Rule List"
    },
    "options_exportRuleList_help": {
-      "message": " Export Switch Rules as a Switchy! Rule List file, so you can share it with friends. "
+      "message": " Export Switch Rules as a SwitchyPlus Rule List file, so you can share it with friends. "
    },
    "options_ftpProxy": {
       "message": "FTP Proxy"
    },
    "options_headerTitle": {
-      "message": "Switchy! Options"
+      "message": "SwitchyPlus Options"
    },
    "options_httpProxy": {
       "message": "HTTP Proxy"
@@ -153,7 +153,7 @@
       "message": "Make Backup"
    },
    "options_makeBackup_help": {
-      "message": " Make a full backup of your Switchy! options (including proxies, rules and all other options). "
+      "message": " Make a full backup of your SwitchyPlus options (including proxies, rules and all other options). "
    },
    "options_manualConfig": {
       "message": "Manual Configuration"
@@ -165,7 +165,7 @@
       "message": "Monitor Proxy Changes"
    },
    "options_monitorProxyChanges_help": {
-      "message": "Repeatedly check for changes in proxy settings done by other applications, and update Switchy icon to reflect those changes."
+      "message": "Repeatedly check for changes in proxy settings done by other applications, and update SwitchyPlus icon to reflect those changes."
    },
    "options_moreInfo": {
       "message": "More Info"
@@ -225,13 +225,13 @@
       "message": "Quick Switch"
    },
    "options_quickSwitch_help": {
-      "message": "\u003Cp\u003EAllows you to switch between two proxy profiles in one click (by clicking on Switchy icon).\u003C/p\u003E\u003Chr /\u003E\r\n\u003Cp\u003E\u003Cb\u003ENote:\u003C/b\u003E After enabling this feature you won't be able to see Switchy\r\n  main menu when clicking on Switchy icon, and so to open this Options page again \r\n  you should go to Chrome Extensions page (Chrome Menu \u003E Extensions).\r\n\u003C/p\u003E"
+      "message": "\u003Cp\u003EAllows you to switch between two proxy profiles in one click (by clicking on SwitchyPlus icon).\u003C/p\u003E\u003Chr /\u003E\r\n\u003Cp\u003E\u003Cb\u003ENote:\u003C/b\u003E After enabling this feature you won't be able to see Switchy\r\n  main menu when clicking on SwitchyPlus icon, and so to open this Options page again \r\n  you should go to Chrome Extensions page (Chrome Menu \u003E Extensions).\r\n\u003C/p\u003E"
    },
    "options_reapplyLastProfile": {
       "message": "Auto apply last selected proxy profile on startup."
    },
    "options_reapplyLastProfile_help": {
-      "message": "If this option is checked Switchy will apply last user-selected proxy profile on Chrome startup."
+      "message": "If this option is checked SwitchyPlus will apply last user-selected proxy profile on Chrome startup."
    },
    "options_reloadEvery": {
       "message": "Reload Every"
@@ -321,7 +321,7 @@
       "message": "Proxy for VPN/Dial-up"
    },
    "popup_aboutSwitchy": {
-      "message": "About Switchy!"
+      "message": "About SwitchyPlus"
    },
    "popup_add": {
       "message": "Add"
@@ -344,12 +344,6 @@
    "popup_developedBy": {
       "message": "Developed by"
    },
-   "popup_diagnoseError": {
-      "message": "Not Working Properly"
-   },
-   "popup_diagnoseError_help": {
-      "message": "Switchy! isn't working properly. \nClick to open the error log."
-   },
    "popup_duplicateRules": {
       "message": "* There is already a rule for this URL Pattern."
    },
@@ -369,7 +363,7 @@
       "message": "Support &amp; Bug reports"
    },
    "popup_switchyWebPage": {
-      "message": "Switchy! web page"
+      "message": "SwitchyPlus web page"
    },
    "popup_version": {
       "message": "version"
