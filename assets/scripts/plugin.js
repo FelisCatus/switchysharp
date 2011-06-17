@@ -13,8 +13,14 @@ function ProxyPlugin() {
 	this.proxyConfigUrl = Settings.getValue('proxyConfigUrl', '');
 	this.autoPacScriptPath = Settings.getValue('autoPacScriptPath', '');
 	var memoryPath = ':memory:';
-	this._proxy = chrome.proxy;
-	chrome.proxy.settings.get({}, function(config) {
+	if (chrome.experimental !== undefined && chrome.experimental.proxy !== undefined)
+		this._proxy = chrome.experimental.proxy;
+	else
+		if (chrome.proxy !== undefined)
+			this._proxy = chrome.proxy;
+		else
+			alert('Need proxy api support, please update your Chrome');
+	this._proxy.settings.get({}, function(config) {
 		switch (config.mode) {
 			case 'direct':
 				Settings.setValue('proxyMode', 'direct');

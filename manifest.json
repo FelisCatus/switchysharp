@@ -13,6 +13,6 @@
    "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCzhvldAq1rduDXs2APrqk1jgIX0AGX5QQMFZVq4ePzrNgyOxdDsyUMsDU8+WBcOBq7xv26eJviaQ8Gq2HlXrcYfogs/zvNQCpuNZ+6Kj3UeBzg5w8+al9ZxaXzhZjwuzOgSF/BhoPQ4LHjbz4FkTuwiDK7MvkD9VMq6YpBsH5nqQIDAQAB",
    "name": "Proxy SwitchyPlus",
    "options_page": "options.html",
-   "permissions": [ "proxy", "tabs", "bookmarks", "http://*/", "https://*/" ],
+   "permissions": [ "experimental", "proxy", "tabs", "bookmarks", "http://*/", "https://*/" ],
    "version": "1.7.0"
 }
