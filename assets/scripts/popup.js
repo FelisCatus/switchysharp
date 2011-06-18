@@ -27,16 +27,11 @@ function init() {
 	
 	buildMenuItems();
 	initUI();
-	
-	checkNewVersionBadge();
-	
-//	showAbout();
 }
 
 function initUI() {
 	$("#about, #addRule .close").click(closePopup);
-	$("#about .versionNumber").text(extension.appVersion);
-	
+
 	// Reverse buttons order on Linux and Mac OS X
 	if (!Utils.OS.isWindows) {
 		var btnSaveContainer = $("#btnSave").parent();
@@ -50,9 +45,6 @@ function quickSwitchProxy() {
 	ProfileManager = extension.ProfileManager;
 	Settings = extension.Settings;
 
-	if (extension.newVersion) // allow new version menu to appear.
-		return;
-	
 	if (!Settings.getValue("quickSwitch", false))
 		return;
 	
@@ -104,13 +96,6 @@ function closePopup() {
 function openOptions() {
 	closePopup();
 	extension.openOptions();
-}
-
-function openErrorLog() {
-	closePopup();
-	chrome.tabs.create({
-		url: 'console.html'
-	});
 }
 
 function openMainWebsite() {
@@ -345,20 +330,5 @@ function checkRulesFirstTimeUse() {
 			var url = "options.html?rulesFirstTime=true&tab=rules";
 			chrome.tabs.create({ url: url });
 		}
-	}
-}
-
-function checkNewVersionBadge() {
-	if (extension.newVersion) {
-		extension.newVersion = false;
-		extension.Settings.setValue("version", extension.appVersion);
-		extension.setIconBadge("");
-		extension.setIconInfo();
-		
-		$("#developer").addClass("important");
-		$("#developer").text("You've been updated to a new version.");
-		$("#changeLog").show();
-		$("#menu").hide();
-		$("#about").show();
 	}
 }

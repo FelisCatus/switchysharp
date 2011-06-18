@@ -6,22 +6,17 @@
 //                                                                       //
 /////////////////////////////////////////////////////////////////////////*/
 
-var appName = 'Proxy SwitchyPlus';
-var appVersion = '1.7.0';
 var iconDir = "assets/images/";
 var iconInactivePath = "assets/images/inactive.png";
 var refreshInterval = 10000;
 var refreshTimer;
 var currentProfile;
-var newVersion = false;
 var notifyOnNewVersion = false;
 
 function init() {
 	new ProxyPlugin();
 	applySavedOptions();
-	checkFirstTime() || checkNewVersion();
-	Logger.log("Extension Info: v" + appVersion, Logger.Types.info);
-	Logger.log("Browser Info: " + navigator.appVersion, Logger.Types.info);
+	checkFirstTime();
 	setIconInfo(undefined);
 	monitorProxyChanges(false);
 	monitorTabChanges();
@@ -37,15 +32,6 @@ function checkFirstTime() {
 		}
 	}
 	return false;
-}
-
-function checkNewVersion() {
-	if (notifyOnNewVersion && Settings.getValue("version") != appVersion) {
-		
-		setIconTitle("You've been updated to a new version (" + appVersion + ")");
-		setIconBadge(appVersion);
-		newVersion = true;
-	}
 }
 
 function openOptions(firstTime) {
@@ -97,9 +83,7 @@ function setIconTitle(title) {
 }
 
 function setIconInfo(profile, preventProxyChanges) {
-	if (newVersion)
-		return;
-	
+
 	if (!profile) {
 		profile = ProfileManager.getCurrentProfile();
 		if (preventProxyChanges) {
@@ -121,7 +105,7 @@ function setIconInfo(profile, preventProxyChanges) {
 			return;
 	}
 	
-	var title = appName + "\n";	
+	var title = "";
 	if (profile.proxyMode == ProfileManager.ProxyModes.direct) {
 		chrome.browserAction.setIcon({ path: iconInactivePath });
 		title += profile.name;
@@ -157,7 +141,7 @@ function setAutoSwitchIcon(url) {
 
 	chrome.browserAction.setIcon({ path: iconPath });
 
-	var title = appName + "\nAuto Switch Mode";
+	var title = "Auto Switch Mode";
 		title += "\nActive Page Proxy: " + profileName;
 	
 	setIconTitle(title);
