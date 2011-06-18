@@ -73,9 +73,13 @@ function ProxyPlugin() {
 				break;
 			case 'manual':
 				var tmpbypassList = [];
-				for (el in this.proxyExceptions.split(';')) {
-					tmpbypassList.push(el.trim())
+				var proxyExceptionsList = this.proxyExceptions.split(';')
+				var proxyExceptionListLength = proxyExceptionsList.length;
+				for (var i = 0; i < proxyExceptionListLength; i++) {
+					tmpbypassList.push(proxyExceptionsList[i].trim())
 				}
+				proxyExceptionsList = null;
+				proxyExceptionListLength = null;
 				var profile = ProfileManager.parseProxyString(proxyString);
 				if (profile.useSameProxy) {
 					config = {
@@ -88,12 +92,14 @@ function ProxyPlugin() {
 				}
 				else {
 					if (profile.proxySocks) {
+						var socksProxyString = profile.socksVersion == 4 ? 'socks=' + profile.proxySocks : 'socks5=' + profile.proxySocks;
 						if ( ! profile.proxyHttp)
-							profile.proxyHttp = profile.proxySocks;
+							profile.proxyHttp = socksProxyString;
 						if ( ! profile.proxyFtp)
-							profile.proxyFtp = profile.proxySocks;
+							profile.proxyFtp = socksProxyString;
 						if ( ! profile.proxyHttps)
-							profile.proxyHttps = profile.proxySocks;
+							profile.proxyHttps = socksProxyString;
+						socksProxyString = null;
 					}
 					config = {
 						mode: "fixed_servers",
@@ -105,6 +111,7 @@ function ProxyPlugin() {
 						}
 					};
 				}
+				tmpbypassList = null;
 				break;
 			case 'auto':
 				if (this.proxyConfigUrl == memoryPath) {
@@ -126,6 +133,8 @@ function ProxyPlugin() {
 				break;
 		}
 		this._proxy.settings.set({'value': config}, function() {});
+		profile = null;
+		config = null;
 		return 0;
 	};
 	this.setDirect = function() {

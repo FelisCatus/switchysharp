@@ -118,6 +118,9 @@ ProfileManager.getCurrentProfile = function getCurrentProfile() {
 		
 		return {};
 	}
+	finally {
+		plugin = null;
+	}
 	
 	if (proxyMode == ProfileManager.ProxyModes.direct)
 		return ProfileManager.directConnectionProfile;
@@ -166,6 +169,9 @@ ProfileManager.applyProfile = function applyProfile(profile) {
 	} catch(ex) {
 		Logger.log("Plugin Error @ProfileManager.applyProfile(" + ProfileManager.profileToString(profile, false) + ") > " +
 			ex.toString(), Logger.Types.error);
+	}
+	finally {
+		plugin = null;
 	}
 };
 

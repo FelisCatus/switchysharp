@@ -14,5 +14,5 @@
    "name": "Proxy SwitchyPlus",
    "options_page": "options.html",
    "permissions": [ "experimental", "proxy", "tabs", "bookmarks", "http://*/", "https://*/" ],
-   "version": "1.7.0"
+   "version": "1.7.1"
 }

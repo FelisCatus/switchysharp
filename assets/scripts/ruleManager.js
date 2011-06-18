@@ -223,6 +223,9 @@ RuleManager.saveAutoPacScript = function saveAutoPacScript() {
 		Logger.log("Plugin Error @RuleManager.saveAutoPacScript() > " + ex.toString(), Logger.Types.error);		
 		return false;
 	}
+	finally {
+		plugin = null;
+	}
 };
 
 RuleManager.wildcardToRegexp = function wildcardToRegexp(pattern) {
@@ -632,6 +635,9 @@ RuleManager.getAutoPacScriptPath = function getAutoPacScriptPath(withSalt) {
 		} catch(ex) {
 			Logger.log("Plugin Error @RuleManager.getAutoPacScriptPath() > " + ex.toString(), Logger.Types.error);
 			return undefined;
+		}
+		finally {
+			plugin = null;
 		}
 	}
 	
