@@ -646,43 +646,6 @@ small {
 	?margin-top: 10px;
 }
 
-#logSummary {
-	border-spacing: 6px;
-}
-
-#logSummary td {
-	vertical-align: top;
-	-webkit-user-select: text;
-	cursor: text;
-}
-
-#logSummary .icon {
-	width: 16px;
-	height: 16px;
-}
-
-#logSummary .icon.success {
-	background: url(/assets/images/accept.png) center top no-repeat;
-}
-
-#logSummary .icon.error {
-	background: url(/assets/images/error.png) center top no-repeat;
-}
-
-#logSummary .title {
-	white-space: nowrap;
-}
-
-#logSummary .description {
-	color: #888;
-	padding: 0px 10px;
-	font-size: 9pt;
-}
-
-#logSummary .inactive {
-	opacity: 0.4;
-}
-
 #logger .note {
 	border: solid 1px #eec;
 	border-left: none;

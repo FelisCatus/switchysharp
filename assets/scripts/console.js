@@ -11,13 +11,10 @@ var Logger;
 var Utils;
 
 function init() {
-//	i18nTemplate.process(document);
 	document.body.style.visibility = "visible";
 
 	extension = chrome.extension.getBackgroundPage();
-	Logger = extension.Logger;
-	Utils = extension.Utils;
-	
+
 	initLog();
 	loadLog();
 }
@@ -27,27 +24,13 @@ function closeWindow() {
 }
 
 function initLog() {
-	Logger.addEventListener(Logger.events.onLog, function(e) {
-		loadLog();
-	});
 }
 
-function loadLog() {
-	$("#console").text(Logger.toString());
+function loadLog(content) {
+	$("#console").text(content);
 }
 
-function clearLog() {
-	Logger.clear();
-	loadLog();
+function clearContent() {
+	$("#console").text('');
 }
 
-function resetOptions() {
-	if (!confirm("\nThis will delete all your options permanently, continue?"))
-		return;
-	
-	if (!confirm("\nAre you sure you want to delete all your options permanently?"))
-		return;
-	
-	extension.localStorage.clear();
-	alert("\nOptions reset successfully..");
-}

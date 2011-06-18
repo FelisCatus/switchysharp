@@ -128,10 +128,6 @@ function ProxyPlugin() {
 		this._proxy.settings.set({'value': config}, function() {});
 		return 0;
 	};
-	this.writeTempFile = function(fileData, fileName) {
-	};
-	this.readFile = function(backupFilePath) {
-	};
 	this.setDirect = function() {
 		var config = {mode: "direct"};
 		this._proxy.settings.set({'value': config}, function() {});

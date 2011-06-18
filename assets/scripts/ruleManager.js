@@ -162,21 +162,8 @@ RuleManager.ruleExistsForUrl = function ruleExistsForUrl(url) {
 };
 
 RuleManager.downloadPacScript = function downloadPacScript(url) {
-	console.log(url);
 	var result = "";
-//	var request = new XMLHttpRequest();
-//	request.open("GET", url, false);
-//	request.onreadystatechange = function() {
-//		if (this.readyState == XMLHttpRequest.DONE) {
-//			result = this.responseText;
-//		}
-//	};
-//	try {
-//		request.send();
-//	} catch (e) {
-//		Logger.log("Error downloading PAC file! Exception: " + e.message, Logger.Types.warning);;
-//	}
-	
+
 	$.ajax({
 		url: url,
 		success: function(data, textStatus){
@@ -766,7 +753,6 @@ RuleManager.parseSwitchyRuleList = function parseSwitchyRuleList(data) {
 		var profile = RuleManager.getAutomaticModeProfile(false);
 		ProfileManager.applyProfile(profile);
 	}
-//	console.log(rules);
 };
 
 RuleManager.parseAutoProxyRuleList = function parseAutoProxyRuleList(data) {
@@ -835,7 +821,6 @@ RuleManager.parseAutoProxyRuleList = function parseAutoProxyRuleList(data) {
 		var profile = RuleManager.getAutomaticModeProfile(false);
 		ProfileManager.applyProfile(profile);
 	}
-//	console.log(rules);
 };
 
 RuleManager.normalizeRule = function normalizeRule(rule) {

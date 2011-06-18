@@ -119,8 +119,8 @@
    "options_deleteRule": {
       "message": "Delete Rule"
    },
-   "options_errorLog": {
-      "message": "Error Log"
+   "options_resetOptions": {
+      "message": "Reset Options"
    },
    "options_everyday": {
       "message": "Everyday"
