@@ -631,27 +631,3 @@ small {
 #txtProxyListURL {
 	width: 100%;
 }
-
-#logger {
-	padding: 15px 15px;
-	margin-top: 8px;
-	border: solid 1px #d1dbdf;
-	border-radius: 6px;
-	background-color: #f8fafd;
-}
-
-#console {
-	width: 100%;
-	height: 250px;
-	?margin-top: 10px;
-}
-
-#logger .note {
-	border: solid 1px #eec;
-	border-left: none;
-	border-right: none;
-	background-color: #ffd;
-	padding: 6px;
-	margin-bottom: 10px;
-	display: none;
-}

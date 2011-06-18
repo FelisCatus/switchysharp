@@ -494,17 +494,6 @@ function switchTab(tab) {
 	$("#" + tabId).click();
 }
 
-function showLog() {
-	var url = "console.html";
-//	window.location = url;
-	chrome.tabs.getSelected(null, function(tab) {
-		chrome.tabs.create({
-			url: url,
-			index: tab.index + 1
-		});
-	});
-}
-
 function resetOptions() {
 	if (!confirm("\nThis will delete all your options permanently, continue?"))
 		return;
@@ -929,14 +918,8 @@ function restoreBackup() {
 	if (!InfoTip.confirmI18n("message_restoreOptionsBackup"))
 		return;
 	
-//	for (var optionName in options)
-//		localStorage[optionName] = options[optionName];
-//	
-//	Settings.setValue("ruleListEnabled", false); // for security concerns
-
 	InfoTip.alertI18n("message_successRestoreOptionsBackup");
 
-//	window.location.reload();
 }
 
 function getQueryParams() {
