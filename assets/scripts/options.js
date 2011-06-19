@@ -27,6 +27,7 @@ function init() {
 	Logger = extension.Logger;
 	Utils = extension.Utils;
 	I18n = extension.I18n;
+	ProxyPlugin = extension.ProxyPlugin;
 	
 	I18n.process(document);
 	document.body.style.visibility = "visible";
@@ -821,7 +822,7 @@ function deleteRuleRow() {
 function saveFileAs(fileName, fileData) {
 	var filePath;
 	try {
-		filePath = extension.plugin.writeTempFile(fileData, fileName);
+		filePath = ProxyPlugin.writeTempFile(fileData, fileName);
 		if (!filePath || filePath.trim().length == 0)
 			throw "Error";
 	} catch (e) {
@@ -892,7 +893,7 @@ function restoreBackup() {
 	}
 	else {
 		try {
-			backupData = extension.plugin.readFile(backupFilePath);
+			backupData = ProxyPlugin.readFile(backupFilePath);
 		} catch (e) {
 			Logger.log("Oops! Can't read the backup file, " + e.toString(), Logger.Types.error);
 			InfoTip.alertI18n("message_cannotReadOptionsBackup");

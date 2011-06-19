@@ -102,26 +102,22 @@ ProfileManager.getSelectedProfile = function getSelectedProfile() {
 };
 
 ProfileManager.getCurrentProfile = function getCurrentProfile() {
-	var plugin = new ProxyPlugin();
 	var proxyMode;
 	var proxyString;
 	var proxyExceptions;
 	var proxyConfigUrl;
 	try {
-		proxyMode = plugin.proxyMode;
-		proxyString = plugin.proxyServer;
-		proxyExceptions = plugin.proxyExceptions;
-		proxyConfigUrl = plugin.proxyConfigUrl;
+		proxyMode = ProxyPlugin.proxyMode;
+		proxyString = ProxyPlugin.proxyServer;
+		proxyExceptions = ProxyPlugin.proxyExceptions;
+		proxyConfigUrl = ProxyPlugin.proxyConfigUrl;
 	} catch(ex) {
 		Logger.log("Plugin Error @ProfileManager.getCurrentProfile() > " +
 			ex.toString(), Logger.Types.error);
 		
 		return {};
 	}
-	finally {
-		plugin = null;
-	}
-	
+
 	if (proxyMode == ProfileManager.ProxyModes.direct)
 		return ProfileManager.directConnectionProfile;
 	
@@ -142,36 +138,25 @@ ProfileManager.getCurrentProfile = function getCurrentProfile() {
 };
 
 ProfileManager.applyProfile = function applyProfile(profile) {
-	var direct = (profile.proxyMode == ProfileManager.ProxyModes.direct);
-	var plugin = new ProxyPlugin();
-
 	Settings.setObject("selectedProfile", profile);
 	
 	if (profile.isAutomaticModeProfile)
 	{
 		RuleManager.saveAutoPacScript();
-		profile.proxyConfigUrl = plugin.autoPacScriptPath;
+		profile.proxyConfigUrl = ProxyPlugin.autoPacScriptPath;
 	}
 
 	var proxyString = ProfileManager.buildProxyString(profile);
 	
 	try {
-		var result;
-		if (direct) {
-			result = plugin.setDirect();
-		} else {
-			result = plugin.setProxy(profile.proxyMode, proxyString, profile.proxyExceptions, profile.proxyConfigUrl);
-		}
-		
+		var	result = ProxyPlugin.setProxy(profile.proxyMode, proxyString, profile.proxyExceptions, profile.proxyConfigUrl);
+
 		if (result != 0 || result != "0")
 			throw "Error Code (" + result + ")";
 		
 	} catch(ex) {
 		Logger.log("Plugin Error @ProfileManager.applyProfile(" + ProfileManager.profileToString(profile, false) + ") > " +
 			ex.toString(), Logger.Types.error);
-	}
-	finally {
-		plugin = null;
 	}
 };
 

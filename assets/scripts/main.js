@@ -11,10 +11,9 @@ var iconInactivePath = "assets/images/inactive.png";
 var refreshInterval = 10000;
 var refreshTimer;
 var currentProfile;
-var notifyOnNewVersion = false;
 
 function init() {
-	new ProxyPlugin();
+	ProxyPlugin.init();
 	applySavedOptions();
 	checkFirstTime();
 	setIconInfo(undefined);
