@@ -5,150 +5,216 @@
  //   Dual licensed under the MIT and GPL licenses.                              //
  //                                                                              //
  ////////////////////////////////////////////////////////////////////////////////*/
-
-function ProxyPlugin() {
-	this.proxyMode = Settings.getValue('proxyMode', 'direct');
-	this.proxyServer = Settings.getValue('proxyServer', '');
-	this.proxyExceptions = Settings.getValue('proxyExceptions', '');
-	this.proxyConfigUrl = Settings.getValue('proxyConfigUrl', '');
-	this.autoPacScriptPath = Settings.getValue('autoPacScriptPath', '');
-	var memoryPath = ':memory:';
+var memoryPath = ':memory:';
+var ProxyPlugin = {};
+ProxyPlugin.proxyMode = Settings.getValue('proxyMode', 'direct');
+ProxyPlugin.proxyServer = Settings.getValue('proxyServer', '');
+ProxyPlugin.proxyExceptions = Settings.getValue('proxyExceptions', '');
+ProxyPlugin.proxyConfigUrl = Settings.getValue('proxyConfigUrl', '');
+ProxyPlugin.autoPacScriptPath = Settings.getValue('autoPacScriptPath', '');
+ProxyPlugin.init = function() {
 	if (chrome.experimental !== undefined && chrome.experimental.proxy !== undefined)
-		this._proxy = chrome.experimental.proxy;
+		ProxyPlugin._proxy = chrome.experimental.proxy;
 	else
 		if (chrome.proxy !== undefined)
-			this._proxy = chrome.proxy;
+			ProxyPlugin._proxy = chrome.proxy;
 		else
-			throw 'Need proxy api support, please update your Chrome';
-	this._proxy.settings.get({}, function(config) {
-		config = config.value;
+			alert('Need proxy api support, please update your Chrome');
+	ProxyPlugin._proxy.settings.get({}, function(config) {
+		if (config.value) {
+			config = config.value;
+		}
 		switch (config.mode) {
 			case 'system':
-				this.proxyMode = Settings.setValue('proxyMode', 'system');
-				this.proxyServer = Settings.setValue('proxyServer', '');
-				this.proxyExceptions = Settings.setValue('proxyExceptions', '');
-				this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
+				ProxyPlugin.proxyMode = Settings.setValue('proxyMode', 'system');
+				ProxyPlugin.proxyServer = Settings.setValue('proxyServer', '');
+				ProxyPlugin.proxyExceptions = Settings.setValue('proxyExceptions', '');
+				ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
 				break;
 			case 'direct':
-				this.proxyMode = Settings.setValue('proxyMode', 'direct');
-				this.proxyServer = Settings.setValue('proxyServer', '');
-				this.proxyExceptions = Settings.setValue('proxyExceptions', '');
-				this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
+				ProxyPlugin.proxyMode = Settings.setValue('proxyMode', 'direct');
+				ProxyPlugin.proxyServer = Settings.setValue('proxyServer', '');
+				ProxyPlugin.proxyExceptions = Settings.setValue('proxyExceptions', '');
+				ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
 				break;
 			case 'fixed_servers':
-				this.proxyMode = Settings.setValue('proxyMode', 'manual');
-				break;
-			case 'pac_script':
-				this.proxyMode = Settings.setValue('proxyMode', 'auto');
-				if (config.pacScript.url !== undefined) {
-					this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', config.pacScript.url);
-					this.autoPacScriptPath = Settings.setValue('autoPacScriptPath', config.pacScript.url);
+				ProxyPlugin.proxyMode = Settings.setValue('proxyMode', 'manual');
+				var profile = {
+					useSameProxy: false,
+					proxyHttp: '',
+					proxyHttps: '',
+					proxyFtp: '',
+					proxySocks: '',
+					socksVersion: 4
+				};
+				if (config.rules.singleProxy) {
+					var proxyString = config.rules.singleProxy.host + ':' + config.rules.singleProxy.port;
+					if (config.rules.singleProxy.scheme == 'http') {
+						profile.useSameProxy = true;
+						profile.proxyHttp = proxyString;
+					}
+					else {
+						switch(config.rules.singleProxy.scheme) {
+							case 'socks4':
+								profile.socksVersion = 4;
+								profile.proxySocks = proxyString;
+								break;
+							case 'socks5':
+								profile.socksVersion = 5;
+								profile.proxySocks = proxyString;
+								break;
+							case 'https':
+								profile.proxyHttps = proxyString;
+								break;
+						}
+					}
 				}
 				else {
-					this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', memoryPath);
-					this.autoPacScriptPath = Settings.setValue('autoPacScriptPath', memoryPath);
+					if (config.rules.proxyForHttp) {
+						profile.proxyHttp = config.rules.proxyForHttp.host + ':' + config.rules.proxyForHttp.port;
+					}
+					if (config.rules.proxyForHttps) {
+						profile.proxyHttps = config.rules.proxyForHttps.host + ':' + config.rules.proxyForHttps.port;
+					}
+					if (config.rules.proxyForFtp) {
+						profile.proxyFtp = config.rules.proxyForFtp.host + ':' + config.rules.proxyForFtp.port;
+					}
+					if (config.rules.fallbackProxy) {
+						if (config.rules.fallbackProxy.scheme == 'socks4')
+							profile.socksVersion = 4;
+						else
+							profile.socksVersion = 5;
+						profile.proxySocks = config.rules.fallbackProxy.host + ':' + config.rules.fallbackProxy.port;
+					}
+				}
+				ProxyPlugin.proxyServer = Settings.setValue('proxyServer', ProfileManager.buildProxyString(profile));
+				profile = null;
+				ProxyPlugin.proxyExceptions = Settings.setValue('proxyExceptions', config.rules.bypassList.join(';'));
+				ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
+				break;
+			case 'pac_script':
+				ProxyPlugin.proxyMode = Settings.setValue('proxyMode', 'auto');
+				if (config.pacScript.url !== undefined) {
+					ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', config.pacScript.url);
+					ProxyPlugin.autoPacScriptPath = Settings.setValue('autoPacScriptPath', config.pacScript.url);
+				}
+				else {
+					ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', memoryPath);
+					ProxyPlugin.autoPacScriptPath = Settings.setValue('autoPacScriptPath', memoryPath);
 				}
 				break;
 		}
 	});
-	this._parseProxy = function(str) {
-		if (str) {
-			var proxy = {scheme: 'http', host: '', port: 80};
-			var t1 = str.split(':');
-			proxy.host = t1[0];
-			var t2 = proxy.host.split('=');
-			if (t2.length > 1) {
-				proxy.scheme = t2[0] == 'socks' ? 'socks4' : t2[0];
-				proxy.host = t2[1];
+};
+ProxyPlugin._parseProxy = function(str) {
+	if (str) {
+		var proxy = {scheme: 'http', host: '', port: 80};
+		var t1 = str.split(':');
+		proxy.host = t1[0];
+		var t2 = proxy.host.split('=');
+		if (t2.length > 1) {
+			proxy.scheme = t2[0] == 'socks' ? 'socks4' : t2[0];
+			proxy.host = t2[1];
+		}
+		if (t1.length > 1)
+			proxy.port = parseInt(t1[1]);
+		return proxy;
+	}
+	else
+		return {}
+};
+ProxyPlugin.setProxy = function(proxyMode, proxyString, proxyExceptions, proxyConfigUrl) {
+	var config;
+	ProxyPlugin.proxyMode = Settings.setValue('proxyMode', proxyMode);
+	ProxyPlugin.proxyServer = Settings.setValue('proxyServer', proxyString);
+	ProxyPlugin.proxyExceptions = Settings.setValue('proxyExceptions', proxyExceptions);
+	ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', proxyConfigUrl);
+	switch (proxyMode) {
+		case 'system':
+			config = {mode: "system"};
+			break;
+		case 'direct':
+			config = {mode: "direct"};
+			break;
+		case 'manual':
+			var tmpbypassList = [];
+			var proxyExceptionsList = ProxyPlugin.proxyExceptions.split(';');
+			var proxyExceptionListLength = proxyExceptionsList.length;
+			for (var i = 0; i < proxyExceptionListLength; i++) {
+				tmpbypassList.push(proxyExceptionsList[i].trim())
 			}
-			if (t1.length > 1)
-				proxy.port = parseInt(t1[1]);
-			return proxy;
-		}
-		else
-			return {}
-	};
-	this.setProxy = function(proxyMode, proxyString, proxyExceptions, proxyConfigUrl) {
-		var config;
-		this.proxyMode = Settings.setValue('proxyMode', proxyMode);
-		this.proxyServer = Settings.setValue('proxyServer', proxyString);
-		this.proxyExceptions = Settings.setValue('proxyExceptions', proxyExceptions);
-		this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', proxyConfigUrl);
-		switch (proxyMode) {
-			case 'system':
-				config = {mode: "system"};
-				break;
-			case 'direct':
-				config = {mode: "direct"};
-				break;
-			case 'manual':
-				var tmpbypassList = [];
-				var proxyExceptionsList = this.proxyExceptions.split(';')
-				var proxyExceptionListLength = proxyExceptionsList.length;
-				for (var i = 0; i < proxyExceptionListLength; i++) {
-					tmpbypassList.push(proxyExceptionsList[i].trim())
+			proxyExceptionsList = null;
+			var profile = ProfileManager.parseProxyString(proxyString);
+			if (profile.useSameProxy) {
+				config = {
+					mode: "fixed_servers",
+					rules : {
+						singleProxy: ProxyPlugin._parseProxy(profile.proxyHttp),
+						bypassList: tmpbypassList
+					}
+				};
+			}
+			else {
+				var socksProxyString;
+				if ( profile.proxySocks && ! profile.proxyHttp && ! profile.proxyFtp && ! profile.proxyHttps) {
+					socksProxyString = profile.socksVersion == 4 ? 'socks=' + profile.proxySocks : 'socks5=' + profile.proxySocks;
+					config = {
+						mode: "fixed_servers",
+						rules: {
+							singleProxy: ProxyPlugin._parseProxy(socksProxyString),
+							bypassList: tmpbypassList
+						}
+					}
+					
 				}
-				proxyExceptionsList = null;
-				var profile = ProfileManager.parseProxyString(proxyString);
-				if (profile.useSameProxy) {
+				else {
 					config = {
 						mode: "fixed_servers",
 						rules : {
-							singleProxy: this._parseProxy(profile.proxyHttp),
 							bypassList: tmpbypassList
 						}
 					};
-				}
-				else {
 					if (profile.proxySocks) {
-						var socksProxyString = profile.socksVersion == 4 ? 'socks=' + profile.proxySocks : 'socks5=' + profile.proxySocks;
-						if ( ! profile.proxyHttp)
-							profile.proxyHttp = socksProxyString;
-						if ( ! profile.proxyFtp)
-							profile.proxyFtp = socksProxyString;
-						if ( ! profile.proxyHttps)
-							profile.proxyHttps = socksProxyString;
-						socksProxyString = null;
+						socksProxyString = profile.socksVersion == 4 ? 'socks=' + profile.proxySocks : 'socks5=' + profile.proxySocks;
+						config.rules.fallbackProxy = ProxyPlugin._parseProxy(socksProxyString);
 					}
-					config = {
-						mode: "fixed_servers",
-						rules : {
-							proxyForHttp: this._parseProxy(profile.proxyHttp),
-							proxyForHttps: this._parseProxy(profile.proxyHttps),
-							proxyForFtp: this._parseProxy(profile.proxyFtp),
-							bypassList: tmpbypassList
-						}
-					};
+					if (profile.proxyHttp)
+						config.rules.proxyForHttp = ProxyPlugin._parseProxy(profile.proxyHttp);
+					if (profile.proxyFtp)
+						config.rules.proxyForHttps = ProxyPlugin._parseProxy(profile.proxyFtp);
+					if (profile.proxyHttps)
+						config.rules.proxyForFtp = ProxyPlugin._parseProxy(profile.proxyHttps);
 				}
-				tmpbypassList = null;
-				break;
-			case 'auto':
-				if (this.proxyConfigUrl == memoryPath) {
-					config = {
-						mode: "pac_script",
-						pacScript: {
-							data: Settings.getValue('pacScriptData', '')
-						}
+			}
+			tmpbypassList = null;
+			break;
+		case 'auto':
+			if (ProxyPlugin.proxyConfigUrl == memoryPath) {
+				config = {
+					mode: "pac_script",
+					pacScript: {
+						data: Settings.getValue('pacScriptData', '')
 					}
-				}
-				else {
-					config = {
-						mode: "pac_script",
-						pacScript: {
-							url: this.proxyConfigUrl
-						}
+				};
+				Settings.setValue('pacScriptData', '');
+			}
+			else {
+				config = {
+					mode: "pac_script",
+					pacScript: {
+						url: ProxyPlugin.proxyConfigUrl
 					}
 				}
-				break;
-		}
-		this._proxy.settings.set({'value': config}, function() {});
-		profile = null;
-		config = null;
-		return 0;
-	};
-	this.writeAutoPacFile = function(script) {
-		this.autoPacScriptPath = Settings.setValue('autoPacScriptPath', memoryPath);
-		Settings.setValue('pacScriptData', script);
-		return 0;
-	};
-}
+			}
+			break;
+	}
+	ProxyPlugin._proxy.settings.set({'value': config}, function() {});
+	profile = null;
+	config = null;
+	return 0;
+};
+ProxyPlugin.writeAutoPacFile = function(script) {
+	ProxyPlugin.autoPacScriptPath = Settings.setValue('autoPacScriptPath', memoryPath);
+	Settings.setValue('pacScriptData', script);
+	return 0;
+};

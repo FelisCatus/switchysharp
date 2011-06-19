@@ -13,7 +13,7 @@ var refreshTimer;
 var currentProfile;
 
 function init() {
-	new ProxyPlugin();
+	ProxyPlugin.init();
 	applySavedOptions();
 	checkFirstTime();
 	setIconInfo(undefined);

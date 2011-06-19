@@ -212,19 +212,15 @@ RuleManager.downloadProfilesPacScripts = function downloadProfilesPacScripts() {
 RuleManager.saveAutoPacScript = function saveAutoPacScript() {
 	RuleManager.profilesScripts = RuleManager.downloadProfilesPacScripts();
 
-	var plugin = new ProxyPlugin();
 	var script = RuleManager.generateAutoPacScript();
 	try {
-		var result = plugin.writeAutoPacFile(script);
+		var result = ProxyPlugin.writeAutoPacFile(script);
 		if (result != 0 || result != "0")
 			throw "Error Code (" + result + ")";
 		
 	} catch(ex) {
 		Logger.log("Plugin Error @RuleManager.saveAutoPacScript() > " + ex.toString(), Logger.Types.error);		
 		return false;
-	}
-	finally {
-		plugin = null;
 	}
 };
 
@@ -629,15 +625,11 @@ RuleManager.generateAutoPacScript = function generateAutoPacScript() {
 
 RuleManager.getAutoPacScriptPath = function getAutoPacScriptPath(withSalt) {
 	if (RuleManager.autoPacScriptPath == undefined) {
-		var plugin = new ProxyPlugin();
 		try {
-			RuleManager.autoPacScriptPath = plugin.autoPacScriptPath;
+			RuleManager.autoPacScriptPath = ProxyPlugin.autoPacScriptPath;
 		} catch(ex) {
 			Logger.log("Plugin Error @RuleManager.getAutoPacScriptPath() > " + ex.toString(), Logger.Types.error);
 			return undefined;
-		}
-		finally {
-			plugin = null;
 		}
 	}
 	
