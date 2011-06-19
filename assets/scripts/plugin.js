@@ -19,27 +19,34 @@ function ProxyPlugin() {
 		if (chrome.proxy !== undefined)
 			this._proxy = chrome.proxy;
 		else
-			alert('Need proxy api support, please update your Chrome');
+			throw 'Need proxy api support, please update your Chrome';
 	this._proxy.settings.get({}, function(config) {
+		config = config.value;
 		switch (config.mode) {
+			case 'system':
+				this.proxyMode = Settings.setValue('proxyMode', 'system');
+				this.proxyServer = Settings.setValue('proxyServer', '');
+				this.proxyExceptions = Settings.setValue('proxyExceptions', '');
+				this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
+				break;
 			case 'direct':
-				Settings.setValue('proxyMode', 'direct');
-				Settings.setValue('proxyServer', '');
-				Settings.setValue('proxyExceptions', '');
-				Settings.setValue('proxyConfigUrl', '');
+				this.proxyMode = Settings.setValue('proxyMode', 'direct');
+				this.proxyServer = Settings.setValue('proxyServer', '');
+				this.proxyExceptions = Settings.setValue('proxyExceptions', '');
+				this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
 				break;
 			case 'fixed_servers':
-				Settings.setValue('proxyMode', 'manual');
+				this.proxyMode = Settings.setValue('proxyMode', 'manual');
 				break;
 			case 'pac_script':
-				Settings.setValue('proxyMode', 'auto');
+				this.proxyMode = Settings.setValue('proxyMode', 'auto');
 				if (config.pacScript.url !== undefined) {
-					Settings.setValue('proxyConfigUrl', config.pacScript.url);
-					Settings.setValue('autoPacScriptPath', config.pacScript.url);
+					this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', config.pacScript.url);
+					this.autoPacScriptPath = Settings.setValue('autoPacScriptPath', config.pacScript.url);
 				}
 				else {
-					Settings.setValue('proxyConfigUrl', memoryPath);
-					Settings.setValue('autoPacScriptPath', memoryPath);
+					this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', memoryPath);
+					this.autoPacScriptPath = Settings.setValue('autoPacScriptPath', memoryPath);
 				}
 				break;
 		}
@@ -68,8 +75,11 @@ function ProxyPlugin() {
 		this.proxyExceptions = Settings.setValue('proxyExceptions', proxyExceptions);
 		this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', proxyConfigUrl);
 		switch (proxyMode) {
+			case 'system':
+				config = {mode: "system"};
+				break;
 			case 'direct':
-				this.setDirect();
+				config = {mode: "direct"};
 				break;
 			case 'manual':
 				var tmpbypassList = [];
@@ -79,7 +89,6 @@ function ProxyPlugin() {
 					tmpbypassList.push(proxyExceptionsList[i].trim())
 				}
 				proxyExceptionsList = null;
-				proxyExceptionListLength = null;
 				var profile = ProfileManager.parseProxyString(proxyString);
 				if (profile.useSameProxy) {
 					config = {
@@ -135,15 +144,6 @@ function ProxyPlugin() {
 		this._proxy.settings.set({'value': config}, function() {});
 		profile = null;
 		config = null;
-		return 0;
-	};
-	this.setDirect = function() {
-		var config = {mode: "direct"};
-		this._proxy.settings.set({'value': config}, function() {});
-		this.proxyMode = Settings.setValue('proxyMode', 'direct');
-		this.proxyServer = Settings.setValue('proxyServer', '');
-		this.proxyExceptions = Settings.setValue('proxyExceptions', '');
-		this.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
 		return 0;
 	};
 	this.writeAutoPacFile = function(script) {

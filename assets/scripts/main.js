@@ -11,14 +11,13 @@ var iconInactivePath = "assets/images/inactive.png";
 var refreshInterval = 10000;
 var refreshTimer;
 var currentProfile;
-var notifyOnNewVersion = false;
 
 function init() {
 	new ProxyPlugin();
 	applySavedOptions();
 	checkFirstTime();
 	setIconInfo(undefined);
-	monitorProxyChanges(false);
+	//monitorProxyChanges(false);
 	monitorTabChanges();
 }
 
@@ -26,7 +25,6 @@ function checkFirstTime() {
 	if (!Settings.keyExists("firstTime")) {
 		Settings.setValue("firstTime", ":]");
 		if (!ProfileManager.hasProfiles()) {
-			Settings.setValue("version", appVersion);
 			openOptions(true);
 			return true;
 		}
@@ -97,16 +95,12 @@ function setIconInfo(profile, preventProxyChanges) {
 	
 	currentProfile = profile;
 	if (RuleManager.isAutomaticModeEnabled(profile)) {
-//		var autoProfile = RuleManager.getAutomaticModeProfile();
-//		profile = autoProfile;
-//		profile.proxyConfigUrl = "";
-//		profile.color = "auto-blue";
 		if (setAutoSwitchIcon())
 			return;
 	}
 	
 	var title = "";
-	if (profile.proxyMode == ProfileManager.ProxyModes.direct) {
+	if (profile.proxyMode == ProfileManager.ProxyModes.direct || profile.proxyMode == ProfileManager.ProxyModes.system) {
 		chrome.browserAction.setIcon({ path: iconInactivePath });
 		title += profile.name;
 	} else {

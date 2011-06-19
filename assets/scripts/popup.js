@@ -65,9 +65,13 @@ function quickSwitchProxy() {
 
 		if (profileId == ProfileManager.directConnectionProfile.id)
 			profile = ProfileManager.directConnectionProfile;
-		else
-			profile = ProfileManager.getProfile(profileId);
-		
+		else {
+			if (profileId == ProfileManager.systemProxyProfile.id)
+				profile = ProfileManager.systemProxyProfile;
+			else
+				profile = ProfileManager.getProfile(profileId);
+		}
+
 	} else {
 		var index = profiles.indexOf(currentProfile.id);
 		if (index == -1)
@@ -279,12 +283,19 @@ function buildMenuDirectConnectionItem(currentProfile) {
 		item.addClass("checked");
 }
 
+function buildMenuSystemProxyItem(currentProfile) {
+	var item = $("#systemProxy");
+	item.click(onSelectProxyItem);
+	item[0].profile = ProfileManager.systemProxyProfile;
+	if (currentProfile.proxyMode == ProfileManager.ProxyModes.system)
+		item.addClass("checked");
+}
+
 function buildMenuAutomaticModeItem(currentProfile) {
 	var item = $("#automaticMode");
 	if (!RuleManager.isEnabled()) {
 		item.hide();
 		$("#menuAddRule").hide();
-		$("#separatorRules").hide();
 		return;
 	}
 	var autoProfile = RuleManager.getAutomaticModeProfile(false);
@@ -300,6 +311,7 @@ function buildMenuItems() {
 	var currentProfile = ProfileManager.getCurrentProfile();
 	clearMenuProxyItems();
 	buildMenuDirectConnectionItem(currentProfile);
+	buildMenuSystemProxyItem(currentProfile);
 	buildMenuAutomaticModeItem(currentProfile);
 	buildMenuProxyItems(currentProfile);
 }

@@ -11,7 +11,8 @@ var ProfileManager = {};
 ProfileManager.ProxyModes = {
 	direct: "direct",
 	manual: "manual",
-	auto: "auto"
+	auto: "auto",
+	system: "system"
 };
 
 ProfileManager.profiles = {};
@@ -20,6 +21,13 @@ ProfileManager.directConnectionProfile = {
 	id: "direct",
 	name: "[" + I18n.getMessage("proxy_directConnection") + "]",
 	proxyMode: ProfileManager.ProxyModes.direct,
+	color: "inactive"
+};
+
+ProfileManager.systemProxyProfile = {
+	id: "system",
+	name: "[" + I18n.getMessage("proxy_systemProxy") + "]",
+	proxyMode: ProfileManager.ProxyModes.system,
 	color: "inactive"
 };
 
@@ -84,9 +92,13 @@ ProfileManager.getProfile = function getProfile(profileId) {
 	var profile;
 	if (profileId == ProfileManager.directConnectionProfile.id)
 		profile = ProfileManager.directConnectionProfile;
-	else
-		profile = ProfileManager.profiles[profileId];
-	
+	else {
+		if (profileId == ProfileManager.systemProxyProfile)
+			profile = ProfileManager.systemProxyProfile;
+		else
+			profile = ProfileManager.profiles[profileId];
+	}
+
 	profile = ProfileManager.normalizeProfile(profile);
 	return profile;
 };
@@ -124,6 +136,8 @@ ProfileManager.getCurrentProfile = function getCurrentProfile() {
 	
 	if (proxyMode == ProfileManager.ProxyModes.direct)
 		return ProfileManager.directConnectionProfile;
+	if (proxyMode == ProfileManager.ProxyModes.system)
+		return ProfileManager.systemProxyProfile;
 	
 	var profile = ProfileManager.parseProxyString(proxyString);
 	profile.proxyMode = proxyMode;
@@ -142,7 +156,6 @@ ProfileManager.getCurrentProfile = function getCurrentProfile() {
 };
 
 ProfileManager.applyProfile = function applyProfile(profile) {
-	var direct = (profile.proxyMode == ProfileManager.ProxyModes.direct);
 	var plugin = new ProxyPlugin();
 
 	Settings.setObject("selectedProfile", profile);
@@ -156,13 +169,7 @@ ProfileManager.applyProfile = function applyProfile(profile) {
 	var proxyString = ProfileManager.buildProxyString(profile);
 	
 	try {
-		var result;
-		if (direct) {
-			result = plugin.setDirect();
-		} else {
-			result = plugin.setProxy(profile.proxyMode, proxyString, profile.proxyExceptions, profile.proxyConfigUrl);
-		}
-		
+		var result = plugin.setProxy(profile.proxyMode, proxyString, profile.proxyExceptions, profile.proxyConfigUrl);
 		if (result != 0 || result != "0")
 			throw "Error Code (" + result + ")";
 		
