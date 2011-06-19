@@ -247,8 +247,7 @@ ProfileManager.buildProxyString = function buildProxyString(profile) {
 			proxy.push("socks=" + profile.proxySocks);
 	}
 
-	proxy = proxy.join(";");
-	return proxy;
+	return proxy.join(";");
 };
 
 ProfileManager.normalizeProfile = function normalizeProfile(profile) {
