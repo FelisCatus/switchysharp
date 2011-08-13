@@ -1,11 +1,23 @@
-/*/////////////////////////////////////////////////////////////////////////
-//                                                                       //
-//   Switchy! Chrome Proxy Manager and Switcher                          //
-//   Copyright (c) 2009 Mohammad Hejazi (mohammadhi at gmail d0t com)    //
-//   Dual licensed under the MIT and GPL licenses.                       //
-//                                                                       //
-/////////////////////////////////////////////////////////////////////////*/
+/*
+Copyright (c) 2011 Shyc2001 (http://twitter.com/shyc2001)
+This work is based on:
+*"Switchy! Chrome Proxy Manager and Switcher" (by Mohammad Hejazi (mohammadhi at gmail d0t com))
+*"SwitchyPlus" by @gh05tw01f (http://twitter.com/gh05tw01f)
 
+    This file is part of SwitchySharp.
+    SwitchySharp is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SwitchySharp is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SwitchySharp.  If not, see <http://www.gnu.org/licenses/>.
+*/
 var ProfileManager = {};
 
 ProfileManager.ProxyModes = {

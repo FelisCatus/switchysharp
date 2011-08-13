@@ -1,8 +1,9 @@
 {
+"update_url":"http://clients2.google.com/service/update2/crx",
    "background_page": "main.html",
    "browser_action": {
       "default_icon": "assets/images/icon-blue.png",
-      "default_title": "Proxy SwitchyPlus",
+      "default_title": "SwitchySharp",
       "popup": "popup.html"
    },
    "default_locale": "en",
@@ -10,9 +11,8 @@
    "icons": {
       "128": "assets/images/icon-128.png"
    },
-   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCzhvldAq1rduDXs2APrqk1jgIX0AGX5QQMFZVq4ePzrNgyOxdDsyUMsDU8+WBcOBq7xv26eJviaQ8Gq2HlXrcYfogs/zvNQCpuNZ+6Kj3UeBzg5w8+al9ZxaXzhZjwuzOgSF/BhoPQ4LHjbz4FkTuwiDK7MvkD9VMq6YpBsH5nqQIDAQAB",
-   "name": "Proxy SwitchyPlus",
+   "name": "SwitchySharp",
    "options_page": "options.html",
-   "permissions": [ "proxy", "tabs", "bookmarks", "http://*/", "https://*/" ],
+   "permissions": [ "proxy", "tabs" ],
    "version": "1.7.2"
 }
