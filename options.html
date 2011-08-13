@@ -1,14 +1,26 @@
-<!--///////////////////////////////////////////////////////////////////////
-//                                                                       //
-//   Switchy! Chrome Proxy Manager and Switcher                          //
-//   Copyright (c) 2009 Mohammad Hejazi (mohammadhi at gmail d0t com)    //
-//   Dual licensed under the MIT and GPL licenses.                       //
-//                                                                       //
-////////////////////////////////////////////////////////////////////////-->
+<!--
+Copyright (c) 2011 Shyc2001 (http://twitter.com/shyc2001)
+This work is based on:
+*"Switchy! Chrome Proxy Manager and Switcher" (by Mohammad Hejazi (mohammadhi at gmail d0t com))
+*"SwitchyPlus" by @gh05tw01f (http://twitter.com/gh05tw01f)
 
+    This file is part of SwitchySharp.
+    SwitchySharp is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SwitchySharp is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SwitchySharp.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>SwitchyPlus Options</title>
+	<title>SwitchySharp Options</title>
 	<link rel="stylesheet" href="assets/styles/options.css" type="text/css">
 	<link rel="stylesheet" href="assets/styles/infoTip.css" type="text/css">
 	<link rel="stylesheet" href="assets/styles/helpToolTip.css" type="text/css">
@@ -27,7 +39,7 @@
 						<tr>
 							<td width="100%">
 								<img src="assets/images/icon-128.png" width="50" height="50" class="title" />
-								<span class="title" i18n-content="options_headerTitle">SwitchyPlus Options</span>
+								<span class="title" i18n-content="options_headerTitle">SwitchySharp Options</span>
 							</td>
 							<td width="100">
 								<!--img src="assets/images/close.png" class="close" title="Close" onclick="closeWindow();" /-->
@@ -47,10 +59,6 @@
 					<div id="tabRules" class="normal">
 						<img src="assets/images/filter.png" valign="bottom" width="16" height="16"> 
 						<span i18n-content="options_tabSwitchRules">Switch Rules</span> 
-					</div>
-					<div id="tabNetwork" class="normal">
-						<img src="assets/images/network.png" valign="bottom" width="16" height="16"> 
-						<span i18n-content="options_tabNetwork">Network</span> 
 					</div>
 					<div id="tabGeneral" class="normal">
 						<img src="assets/images/options.png" valign="bottom" width="16" height="16"> 
@@ -380,26 +388,6 @@
 						</div>
 					</div>
 
-					<div id="tabNetworkBody" class="tab">
-						<label>
-							<div class="title"><input id="chkMonitorProxyChanges" type="checkbox"> 
-								<span i18n-content="options_monitorProxyChanges">Monitor Proxy Changes</span>
-								<span class="help">
-									<p i18n-content="options_monitorProxyChanges_help">Repeatedly check for changes in proxy settings done by other applications, 
-									and update SwitchyPlus icon to reflect those changes.</p>
-								</span>														
-							</div>
-						</label>
-						<label>
-							<div class="indent"><input id="chkPreventProxyChanges" type="checkbox"> 
-								<span i18n-content="options_revertProxyChanges">Revert proxy changes done by other apps.</span>
-								<span class="help">
-									<p i18n-content="options_revertProxyChanges_help">Revert any change in proxy settings done by other applications.</p>
-								</span>														
-							</div>
-						</label>
-					</div>
-
 					<div id="tabImportExportBody" class="tab">
 						<div class="title" i18n-content="options_switchRules">Switch Rules</div>
 						<table id="" class="optionGroup">
@@ -416,19 +404,19 @@
 									<button class="button" onclick="exportRuleList();" i18n-content="options_exportRuleList">Export Rule List</button>
 								</td>
 								<td i18n-content="options_exportRuleList_help">
-									Export Switch Rules as a SwitchyPlus Rule List file, so you can share it with friends.
+									Export Switch Rules as a SwitchySharp Rule List file, so you can share it with friends.
 								</td>
 							</tr>
 						</table>
 						<hr />
-						<div class="title" i18n-content="options_headerTitle">SwitchyPlus Options</div>
+						<div class="title" i18n-content="options_headerTitle">SwitchySharp Options</div>
 						<table id="exportRulesTable" class="optionGroup">
 							<tr class="section">
 								<td>
-									<button class="button" onclick="makeBackup();" i18n-content="options_makeBackup">Make Backup</button>
+									<button class="button" onclick="makeBackup();" i18n-content="options_makeBackup">Make Backup</button><div style="display:none;"><iframe id="exportframe" src="about:blank"></iframe></div>
 								</td>
 								<td i18n-content="options_makeBackup_help">
-									Make a full backup of your SwitchyPlus options (including proxies, rules and all other options).
+									Make a full backup of your SwitchySharp options (including proxies, rules and all other options).
 								</td>
 							</tr>
 							<tr class="section">
@@ -437,7 +425,17 @@
 								</td>
 								<td>
 									<input type="text" id="txtBackupFilePath" class="initial ltr" 
-										value="Backup file full path (e.g. 'c:\switchy.bak', 'http://example.com/switchy.bak')" i18n-values="value:options_restoreBackup_help">
+										value="Backup file full path (e.g. 'c:\\switchy.bak', 'http://example.com/switchy.bak')" i18n-values="value:options_restoreBackup_help">
+									<p>ATTENTION: Importing settings from local files is currently not supported!<br/> Use "Restore from Raw" below instead!</p>
+								</td>
+							</tr>
+							<tr class="section">
+								<td>
+									<button class="button" onclick="restoreRaw();">Restore from Raw</button>
+								</td>
+								<td>
+									<p>Paste the content of the setting file above:</p>
+									<textarea id="rawBackup" rows="12" cols="80"></textarea>
 								</td>
 							</tr>
 						</table>
@@ -449,9 +447,9 @@
 								<span i18n-content="options_quickSwitch">Quick Switch</span>
 								<span class="help" i18n-content="options_quickSwitch_help">
 									<p>Allows you to switch between two proxy profiles in one click 
-									(by clicking on SwitchyPlus icon).</p><hr />
-									<p><b>Note:</b> After enabling this feature you won't be able to see SwitchyPlus
-									main menu when clicking on SwitchyPlus icon, and so to open this Options page again
+									(by clicking on SwitchySharp icon).</p><hr />
+									<p><b>Note:</b> After enabling this feature you won't be able to see SwitchySharp
+									main menu when clicking on SwitchySharp icon, and so to open this Options page again
 									you should go to Chrome Extensions page (Chrome Menu > Extensions).</p>
 								</span>
 							</div>
@@ -496,7 +494,7 @@
 							<div class="indent"><input id="chkReapplySelectedProfile" type="checkbox"> 
 								<span i18n-content="options_reapplyLastProfile">Auto apply last selected proxy profile on startup.</span>
 								<span class="help">
-									<p i18n-content="options_reapplyLastProfile_help">If this option is checked SwitchyPlus will apply last user-selected
+									<p i18n-content="options_reapplyLastProfile_help">If this option is checked SwitchySharp will apply last user-selected
 									proxy profile on Chrome startup.</p>
 								</span>														
 							</div>

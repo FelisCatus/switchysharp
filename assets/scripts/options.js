@@ -1,11 +1,23 @@
-/*/////////////////////////////////////////////////////////////////////////
-//                                                                       //
-//   Switchy! Chrome Proxy Manager and Switcher                          //
-//   Copyright (c) 2009 Mohammad Hejazi (mohammadhi at gmail d0t com)    //
-//   Dual licensed under the MIT and GPL licenses.                       //
-//                                                                       //
-/////////////////////////////////////////////////////////////////////////*/
+/*
+Copyright (c) 2011 Shyc2001 (http://twitter.com/shyc2001)
+This work is based on:
+*"Switchy! Chrome Proxy Manager and Switcher" (by Mohammad Hejazi (mohammadhi at gmail d0t com))
+*"SwitchyPlus" by @gh05tw01f (http://twitter.com/gh05tw01f)
 
+    This file is part of SwitchySharp.
+    SwitchySharp is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SwitchySharp is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SwitchySharp.  If not, see <http://www.gnu.org/licenses/>.
+*/
 var extension;
 //var ProfileManager;
 //var RuleManager;
@@ -154,17 +166,6 @@ function initUI() {
 		onFieldModified(false);
 	});
 	
-	// Network
-	$("#chkMonitorProxyChanges").change(function() {
-		if ($(this).is(":checked"))
-			$("#chkPreventProxyChanges").removeAttr("disabled").parent().removeClass("disabled");
-		else
-			$("#chkPreventProxyChanges").attr("disabled", "disabled").parent().addClass("disabled");
-	});
-
-	$("#chkMonitorProxyChanges, #chkPreventProxyChanges").change(function() {
-		onFieldModified(false);
-	});
 
 	// Import-Export
 	$("#txtBackupFilePath").bind("click keydown", function() {
@@ -285,14 +286,6 @@ function loadOptions() {
 	if (Settings.getValue("ruleListAutoProxy", false))
 		$("#chkAutoProxy").attr("checked", "checked");
 	
-	// Network
-	if (Settings.getValue("monitorProxyChanges", true))
-		$("#chkMonitorProxyChanges").attr("checked", "checked");
-	if (Settings.getValue("preventProxyChanges", false))
-		$("#chkPreventProxyChanges").attr("checked", "checked");
-
-	$("#chkMonitorProxyChanges").change();
-	$("#chkPreventProxyChanges").change();
 
 	// General
 	if (Settings.getValue("quickSwitch", false))
@@ -436,10 +429,7 @@ function saveOptions() {
 	if (RuleManager.isAutomaticModeEnabled(currentProfile))
 		ProfileManager.applyProfile(RuleManager.getAutomaticModeProfile(false));
 	
-	// Network
-	Settings.setValue("monitorProxyChanges", ($("#chkMonitorProxyChanges").is(":checked")));
-	Settings.setValue("preventProxyChanges", ($("#chkPreventProxyChanges").is(":checked")));
-	
+
 	// General
 	Settings.setValue("quickSwitch", ($("#chkQuickSwitch").is(":checked")));
 	Settings.setValue("quickSwitchType", ($("#rdoBinarySwitch").is(":checked") ? "binary" : "cycle"));
@@ -452,9 +442,6 @@ function saveOptions() {
 	Settings.setValue("reapplySelectedProfile", ($("#chkReapplySelectedProfile").is(":checked")));
 	Settings.setValue("confirmDeletion", ($("#chkConfirmDeletion").is(":checked")));
 	
-	// Done
-	if (Settings.getValue("monitorProxyChanges", true))
-		extension.monitorProxyChanges(true);
 	
 	extension.setIconInfo();
 	InfoTip.showMessageI18n("message_optionsSaved", InfoTip.types.success);
@@ -474,10 +461,6 @@ function switchTab(tab) {
 	switch (tab) {
 	case "rules":
 		tabId = "tabRules";
-		break;
-
-	case "network":
-		tabId = "tabNetwork";
 		break;
 
 	case "importexport":
@@ -818,7 +801,9 @@ function deleteRuleRow() {
 		InfoTip.showMessageI18n("message_ruleDeleted", InfoTip.types.info);
 	}
 }
-
+function saveFileRaw(fileName, fileData) {
+	document.getElementById("exportframe").contentWindow.location.href='data:application/text+switchysharpconfig,' + fileData;
+}
 function saveFileAs(fileName, fileData) {
 	var filePath;
 	try {
@@ -842,13 +827,13 @@ function saveFileAs(fileName, fileData) {
 function exportPacFile() {
 	var script = RuleManager.generateAutoPacScript();
 
-	saveFileAs("SwitchyPac.pac", script);
+	saveFileRaw("SwitchyPac.pac", script);
 }
 
 function exportRuleList() {
 	var ruleListData = RuleManager.generateRuleList();
 	
-	saveFileAs("SwitchyRules.txt", ruleListData);
+	saveFileRaw("SwitchyRules.txt", ruleListData);
 }
 
 function makeBackup() {
@@ -857,10 +842,9 @@ function makeBackup() {
 		if (optionName != "ruleListRules")
 			options[optionName] = localStorage[optionName];
 	
-	var backupData = JSON.stringify(options);
-	var backupData = $.base64Encode(backupData);
+	var backupData = $.base64Encode(JSON.stringify(options));
 	
-	saveFileAs("SwitchyOptions.bak", backupData);
+	saveFileRaw("SwitchyOptions.bak", backupData);
 }
 
 function restoreBackup() {
@@ -875,52 +859,58 @@ function restoreBackup() {
 	
 	if (backupFilePath.substr(0, 7) == "http://" || backupFilePath.substr(0, 8) == "https://") {
 		$.ajax({
-			async: false,
-			url: backupFilePath,
-			success: function(data, textStatus){
-				if (data.length <= 1024 * 50) // bigger than 50 KB
-					backupData = data;
-				else
-					Logger.log("Too big backup file!", Logger.Types.error);
-			},
-			error: function(request, textStatus, thrownError){
-				Logger.log("Error downloading the backup file!", Logger.Types.warning);
-			},
-			dataType: "text",
-			cache: false,
-			timeout: 10000
-		});	
-	}
-	else {
-		try {
-			backupData = ProxyPlugin.readFile(backupFilePath);
-		} catch (e) {
-			Logger.log("Oops! Can't read the backup file, " + e.toString(), Logger.Types.error);
-			InfoTip.alertI18n("message_cannotReadOptionsBackup");
-			return;
-		}
-	}
+							async: false,
+							url: backupFilePath,
+							success: function(data, textStatus){
+											if (data.length <= 1024 * 50) // bigger than 50 KB
+															backupData = data;
+											else
+															Logger.log("Too big backup file!", Logger.Types.error);
+							},
+							error: function(request, textStatus, thrownError){
+											Logger.log("Error downloading the backup file!", Logger.Types.warning);
+							},
+							dataType: "text",
+							cache: false,
+							timeout: 10000
+		});
 	
-	if (!backupData || backupData.trim().length == 0) {
-		InfoTip.alertI18n("message_cannotRestoreOptionsBackup");
+	}
+	else
+	{
+		backupFilePath= "file://" + (backupFilePath.substr(0,1) == "/" ? "" : "/") + backupFilePath.replace("\\","/");
+		alert('Importing settings from local files is currently not supported!')
 		return;
 	}
-	
-	var options;
-	try {
-		backupData = $.base64Decode(backupData);
-		options = JSON.parse(backupData);
-	} catch (e) {
+restoreBase64Json(backupData);
+}
+function restoreRaw()
+{
+	restoreBase64Json($("#rawBackup").val());
+}
+function restoreBase64Json(j) {
+		var o;
+	try 
+	{
+		j = $.base64Decode(j);
+		o = JSON.parse(j);
+	}
+	catch (e) 
+	{
 		Logger.log("Oops! Can't restore from this backup file. The backup file is corrupted or invalid, " + e.toString(), Logger.Types.error);
 		InfoTip.alertI18n("message_cannotRestoreOptionsBackup");
 		return;
 	}
-	
+	SwitchySharpBackup(o);
+}
+function SwitchySharpBackup(o){
 	if (!InfoTip.confirmI18n("message_restoreOptionsBackup"))
 		return;
-	
+	for (var optionName in o)
+		localStorage[optionName] = o[optionName];
+	Settings.setValue("ruleListEnabled", false); // for security concerns
 	InfoTip.alertI18n("message_successRestoreOptionsBackup");
-
+	window.location.reload();
 }
 
 function getQueryParams() {
