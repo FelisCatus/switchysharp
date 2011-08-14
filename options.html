@@ -24,8 +24,9 @@ This work is based on:
 	<link rel="stylesheet" href="assets/styles/options.css" type="text/css">
 	<link rel="stylesheet" href="assets/styles/infoTip.css" type="text/css">
 	<link rel="stylesheet" href="assets/styles/helpToolTip.css" type="text/css">
-	<script src="assets/libs/jquery-1.4.min.js" type="text/javascript"></script>
+	<script src="assets/libs/jquery-1.6.2.min.js" type="text/javascript"></script>
 	<script src="assets/libs/jquery.base64.js" type="text/javascript"></script>
+	<script src="assets/libs/FileSaver.js" type="text/javascript"></script>
 	<script src="assets/scripts/options.js" type="text/javascript"></script>
 	<script src="assets/scripts/infoTip.js" type="text/javascript"></script>
 	<script src="assets/scripts/helpToolTip.js" type="text/javascript"></script>
@@ -413,7 +414,7 @@ This work is based on:
 						<table id="exportRulesTable" class="optionGroup">
 							<tr class="section">
 								<td>
-									<button class="button" onclick="makeBackup();" i18n-content="options_makeBackup">Make Backup</button><div style="display:none;"><iframe id="exportframe" src="about:blank"></iframe></div>
+									<button class="button" onclick="makeBackup();" i18n-content="options_makeBackup">Make Backup</button>
 								</td>
 								<td i18n-content="options_makeBackup_help">
 									Make a full backup of your SwitchySharp options (including proxies, rules and all other options).
@@ -421,21 +422,20 @@ This work is based on:
 							</tr>
 							<tr class="section">
 								<td>
-									<button class="button" onclick="restoreBackup();" i18n-content="options_restoreBackup">Restore Backup</button>
+								<input type="file" id="rfile" name="rfile" style="visibility:hidden;position:absolute;" onchange="restoreLocal();" />
+								<button class="button" onclick="javascript:rfile.click();" i18n-content="options_restoreLocal">Restore from File</button>
 								</td>
-								<td>
-									<input type="text" id="txtBackupFilePath" class="initial ltr" 
-										value="Backup file full path (e.g. 'c:\\switchy.bak', 'http://example.com/switchy.bak')" i18n-values="value:options_restoreBackup_help">
-									<p>ATTENTION: Importing settings from local files is currently not supported!<br/> Use "Restore from Raw" below instead!</p>
+								<td i18n-values="value:options_restoreLocal_help">
+									Restore your SwitchySharp options from a local file.
 								</td>
 							</tr>
 							<tr class="section">
 								<td>
-									<button class="button" onclick="restoreRaw();">Restore from Raw</button>
+									<button class="button" onclick="restoreBackup();" i18n-content="options_restoreBackup">Restore from Online</button>
 								</td>
 								<td>
-									<p>Paste the content of the setting file above:</p>
-									<textarea id="rawBackup" rows="12" cols="80"></textarea>
+									<input type="text" id="txtBackupFilePath" class="initial ltr" 
+										value="Backup file URL (e.g. 'http://example.com/switchy.bak')" i18n-values="value:options_restoreBackup_help">
 								</td>
 							</tr>
 						</table>
