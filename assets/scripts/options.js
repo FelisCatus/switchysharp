@@ -801,39 +801,33 @@ function deleteRuleRow() {
 		InfoTip.showMessageI18n("message_ruleDeleted", InfoTip.types.info);
 	}
 }
-function saveFileRaw(fileName, fileData) {
-	document.getElementById("exportframe").contentWindow.location.href='data:application/text+switchysharpconfig,' + fileData;
-}
+
 function saveFileAs(fileName, fileData) {
-	var filePath;
 	try {
-		filePath = ProxyPlugin.writeTempFile(fileData, fileName);
-		if (!filePath || filePath.trim().length == 0)
-			throw "Error";
+		var bb = null;
+		if(typeof(BlobBuilder) == 'undefined')
+			bb = new window.WebKitBlobBuilder();
+		else
+			bb = new BlobBuilder();
+		bb.append(fileData);
+		saveAs(bb.getBlob('text/plain'), fileName);
 	} catch (e) {
 		Logger.log("Oops! Can't save generated file, " + e.toString(), Logger.Types.error);
 		InfoTip.alertI18n("message_cannotSaveFile");
 		return;
 	}
-	
-	if (filePath.substr(0, 7) != "file://")
-		filePath = "file://" + filePath;
-	
-	chrome.tabs.create({
-		url: filePath
-	});
 }
 
 function exportPacFile() {
 	var script = RuleManager.generateAutoPacScript();
 
-	saveFileRaw("SwitchyPac.pac", script);
+	saveFileAs("SwitchyPac.pac", script);
 }
 
 function exportRuleList() {
 	var ruleListData = RuleManager.generateRuleList();
 	
-	saveFileRaw("SwitchyRules.txt", ruleListData);
+	saveFileAs("SwitchyRules.ssrl", ruleListData);
 }
 
 function makeBackup() {
@@ -844,7 +838,7 @@ function makeBackup() {
 	
 	var backupData = $.base64Encode(JSON.stringify(options));
 	
-	saveFileRaw("SwitchyOptions.bak", backupData);
+	saveFileAs("SwitchyOptions.bak", backupData);
 }
 
 function restoreBackup() {
@@ -857,37 +851,40 @@ function restoreBackup() {
 	var backupFilePath = txtBackupFilePath.val();
 	var backupData = undefined;
 	
-	if (backupFilePath.substr(0, 7) == "http://" || backupFilePath.substr(0, 8) == "https://") {
-		$.ajax({
-							async: false,
-							url: backupFilePath,
-							success: function(data, textStatus){
-											if (data.length <= 1024 * 50) // bigger than 50 KB
-															backupData = data;
-											else
-															Logger.log("Too big backup file!", Logger.Types.error);
-							},
-							error: function(request, textStatus, thrownError){
-											Logger.log("Error downloading the backup file!", Logger.Types.warning);
-							},
-							dataType: "text",
-							cache: false,
-							timeout: 10000
-		});
+	$.ajax({
+						async: false,
+						url: backupFilePath,
+						success: function(data, textStatus){
+										if (data.length <= 1024 * 50) // bigger than 50 KB
+														backupData = data;
+										else
+														Logger.log("Too big backup file!", Logger.Types.error);
+						},
+						error: function(request, textStatus, thrownError){
+										Logger.log("Error downloading the backup file!", Logger.Types.warning);
+						},
+						dataType: "text",
+						cache: false,
+						timeout: 10000
+	});
 	
-	}
-	else
-	{
-		backupFilePath= "file://" + (backupFilePath.substr(0,1) == "/" ? "" : "/") + backupFilePath.replace("\\","/");
-		alert('Importing settings from local files is currently not supported!')
-		return;
-	}
-restoreBase64Json(backupData);
+	restoreBase64Json(backupData);
 }
-function restoreRaw()
+function restoreLocal()
 {
-	restoreBase64Json($("#rawBackup").val());
+	if(rfile.files.length>0 && rfile.files[0].name.length>0){
+		var r = new FileReader();
+		r.onload = function(e){
+			restoreBase64Json(e.target.result);
+		};
+		r.onerror = function(e){
+			InfoTip.alertI18n("message_cannotReadOptionsBackup");
+		}
+		r.readAsText(rfile.files[0]);
+		rfile.value = "";
+	}
 }
+
 function restoreBase64Json(j) {
 		var o;
 	try 

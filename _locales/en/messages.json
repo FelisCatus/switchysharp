@@ -240,10 +240,16 @@
       "message": "Auto reload the Rule List every..."
    },
    "options_restoreBackup": {
-      "message": "Restore Backup"
+      "message": "Restore from Online"
    },
    "options_restoreBackup_help": {
-      "message": "Backup file full path (e.g. 'c:\\switchy.bak', 'http://example.com/switchy.bak')"
+      "message": "Options file URL (e.g. 'http://example.com/switchy.bak')"
+   },
+   "options_restoreLocal": {
+      "message": "Restore from File"
+   },
+   "options_restoreLocal_help": {
+      "message": "Restore your SwitchySharp options from a local file."
    },
    "options_revertProxyChanges": {
       "message": "Revert proxy changes done by other apps."
