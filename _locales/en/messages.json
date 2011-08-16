@@ -345,10 +345,13 @@
       "message": "Chrome Extension Gallery"
    },
    "popup_copyright": {
-      "message": "Copyright \u00A9 2009 Samabox & 2011 ayanamist.<br />Some rights reserved."
+      "message": "Copyright &copy; 2011 @Shyc2001.<br />Some rights reserved."
    },
    "popup_developedBy": {
       "message": "Developed by"
+   },
+   "popup_basedOn": {
+      "message": "Based on the work of"
    },
    "popup_duplicateRules": {
       "message": "* There is already a rule for this URL Pattern."
@@ -370,6 +373,9 @@
    },
    "popup_switchyWebPage": {
       "message": "Switchy! web page"
+   },
+   "popup_switchyPlusWebPage": {
+      "message": "SwitchyPlus web page"
    },
    "popup_version": {
       "message": "version"

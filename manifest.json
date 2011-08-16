@@ -13,6 +13,6 @@
    },
    "name": "SwitchySharp",
    "options_page": "options.html",
-   "permissions": [ "proxy", "tabs" ],
+   "permissions": [ "proxy", "tabs", "http://*/", "https://*/" ],
    "version": "1.7.2"
 }

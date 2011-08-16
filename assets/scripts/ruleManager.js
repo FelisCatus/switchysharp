@@ -47,6 +47,12 @@ RuleManager.defaultRule = {
 
 RuleManager.init = function init() {
 	RuleManager.loadRules();
+	if(ProfileManager)
+	{
+		var selectedProfile = ProfileManager.getSelectedProfile();
+		if (selectedProfile != undefined)
+			ProfileManager.applyProfile(selectedProfile);
+	}
 	RuleManager.loadRuleList(true);
 };
 

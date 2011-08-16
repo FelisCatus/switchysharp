@@ -121,6 +121,13 @@ function openMainWebsite() {
 	});
 }
 
+function openPlusWebsite() {
+	closePopup();
+	chrome.tabs.create({
+		url: 'http://code.google.com/p/switchyplus'
+	});
+}
+
 function openSupportWebsite() {
 	closePopup();
 	chrome.tabs.create({

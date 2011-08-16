@@ -32,12 +32,12 @@ I18n.init = function init() {
 I18n.buildMessages = function buildMessages() {
 	var result = "\n";
 	
-	$("*[i18n-content]").each(function(i, item) {
+	$("*[data-i18n-content]").each(function(i, item) {
 		result += '"' + item.getAttribute("i18n-content") + '"' +
 				  ': { "message": "' + item.innerHTML.replace(/[ \r\n\t]+/g, " ") + '" },\n';
 	});
 	
-	$("*[i18n-values]").each(function(i, item) {
+	$("*[data-i18n-values]").each(function(i, item) {
 		$(item.getAttribute("i18n-values").split(";")).each(function(i, subItem) {
 			var subItemParts = subItem.split(":");
 			if (subItemParts.length == 2 && subItemParts[0].charAt(0) != ".") {	
@@ -97,7 +97,7 @@ var I18nTemplate = (function() {
 		/**
 		 * This handler sets the textContent of the element.
 		 */
-		'i18n-content' : function(element, attributeValue) {
+		'data-i18n-content' : function(element, attributeValue) {
 			element.innerHTML/*textContent*/ = I18n.getMessage(attributeValue);
 		},
 
@@ -105,7 +105,7 @@ var I18nTemplate = (function() {
 		 * This is used to set HTML attributes and DOM properties,. The syntax
 		 * is: attributename:key; .domProperty:key; .nested.dom.property:key
 		 */
-		'i18n-values' : function(element, attributeValue) {
+		'data-i18n-values' : function(element, attributeValue) {
 			var parts = attributeValue.replace(/\s/g, '').split(/;/);
 			for (var j = 0; j < parts.length; j++) {
 				var a = parts[j].match(/^([^:]+):(.+)$/);
