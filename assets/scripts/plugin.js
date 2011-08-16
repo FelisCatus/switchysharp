@@ -20,6 +20,7 @@ This work is based on:
 */
 var memoryPath = ':memory:';
 var ProxyPlugin = {};
+ProxyPlugin.memoryPath = memoryPath;
 ProxyPlugin.proxyMode = Settings.getValue('proxyMode', 'direct');
 ProxyPlugin.proxyServer = Settings.getValue('proxyServer', '');
 ProxyPlugin.proxyExceptions = Settings.getValue('proxyExceptions', '');

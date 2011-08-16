@@ -298,6 +298,7 @@ function loadOptions() {
 	
 	$("#cmbProfile1, #cmbProfile2, #cmbDefaultRuleProfile, #cmbRuleListProfile").empty();
 	var directProfile = ProfileManager.directConnectionProfile;
+	var autoProfile = ProfileManager.autoSwitchProfile;
 	var quickSwitchProfiles = Settings.getObject("quickSwitchProfiles") || {};
 	var item = $("<option>").attr("value", directProfile.id).text(directProfile.name);
 	item[0].profile = directProfile;
@@ -311,6 +312,19 @@ function loadOptions() {
 	item = item.clone();
 	item[0].profile = directProfile;
 	$("#cmbRuleListProfile").append(item);
+	
+	var ii = $("<option>").attr("value", autoProfile.id).text(autoProfile.name);
+	item = ii.clone();
+	item[0].profile = autoProfile;
+	if (quickSwitchProfiles.profile1 == autoProfile.id)
+		item.attr("selected", "selected");
+	$("#cmbProfile1").append(item);
+	item = ii.clone();
+	item[0].profile = autoProfile;
+	if (quickSwitchProfiles.profile2 == autoProfile.id)
+		item.attr("selected", "selected");
+	$("#cmbProfile2").append(item);
+	
 	$.each(profiles, function(key, profile) {
 		var ii = $("<option>").attr("value", profile.id).text(profile.name);
 		var item = ii.clone();

@@ -383,6 +383,9 @@
   "proxy_systemProxy": {
      "message": "System Proxy"
   },
+  "proxy_autoSwitch": {
+     "message": "Auto Switch"
+  },
   "proxy_systemProxy_help": {
      "message": "Use System Proxy (need restart)"
   },

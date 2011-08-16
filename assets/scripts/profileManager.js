@@ -43,6 +43,15 @@ ProfileManager.systemProxyProfile = {
 	color: "inactive"
 };
 
+ProfileManager.autoSwitchProfile = {
+	id: "auto",
+	name: "[" + I18n.getMessage("proxy_autoSwitch") + "]",
+	proxyMode: ProfileManager.ProxyModes.auto,
+	color: "auto",
+	isAutomaticModeProfile : true,
+	proxyConfigUrl : ":memory:"
+};
+
 ProfileManager.currentProfileName = "<Current Profile>";
 
 ProfileManager.init = function init() {
@@ -146,7 +155,9 @@ ProfileManager.getCurrentProfile = function getCurrentProfile() {
 		return ProfileManager.directConnectionProfile;
 	if (proxyMode == ProfileManager.ProxyModes.system)
 		return ProfileManager.systemProxyProfile;
-	
+	if (proxyMode == ProfileManager.ProxyModes.auto && ProxyPlugin.proxyConfigUrl == ProxyPlugin.memoryPath)
+		return ProfileManager.autoSwitchProfile;
+		
 	var profile = ProfileManager.parseProxyString(proxyString);
 	profile.proxyMode = proxyMode;
 	profile.proxyExceptions = proxyExceptions;
@@ -166,6 +177,10 @@ ProfileManager.getCurrentProfile = function getCurrentProfile() {
 ProfileManager.applyProfile = function applyProfile(profile) {
 	Settings.setObject("selectedProfile", profile);
 	
+	if(profile.id == "auto")
+	{
+		profile = RuleManager.getAutomaticModeProfile();
+	}
 	if (profile.isAutomaticModeProfile)
 	{
 		RuleManager.saveAutoPacScript();

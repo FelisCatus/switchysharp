@@ -57,7 +57,7 @@ function quickSwitchProxy() {
 	ProfileManager = extension.ProfileManager;
 	Settings = extension.Settings;
 
-	if (!Settings.getValue("quickSwitch", false))
+	if (!Settings.getValue("quickSwitch", false) && typeof(chrome.flag)=='undefined')
 		return;
 	
 	var profile = undefined;
@@ -77,12 +77,12 @@ function quickSwitchProxy() {
 
 		if (profileId == ProfileManager.directConnectionProfile.id)
 			profile = ProfileManager.directConnectionProfile;
-		else {
-			if (profileId == ProfileManager.systemProxyProfile.id)
-				profile = ProfileManager.systemProxyProfile;
-			else
-				profile = ProfileManager.getProfile(profileId);
-		}
+		else if (profileId == ProfileManager.systemProxyProfile.id)
+			profile = ProfileManager.systemProxyProfile;
+		else if (profileId == ProfileManager.autoSwitchProfile.id)
+			profile = ProfileManager.autoSwitchProfile;
+		else
+			profile = ProfileManager.getProfile(profileId);
 
 	} else {
 		var index = profiles.indexOf(currentProfile.id);
