@@ -249,11 +249,12 @@ small {
 	border-collapse: collapse;
 }
 
-#proxyTable th, #proxyTable td {
+
+#proxyTable td {
 	padding: 0px;
 }
 
-#proxyTable th div, .tab .title {
+#proxyTable th, .tab .title {
 	text-align: start;
 	padding: 5px 0px 8px 0px;
 	margin-bottom: 0px;
@@ -264,7 +265,10 @@ small {
 #proxyTable td {
 	vertical-align: top;
 }
-
+#profileDetails tr td label
+{
+	padding: 0 0 0 10px;
+}
 #proxyProfiles, .rulesTable {
 	width: 100%;
 	height: 100%;
