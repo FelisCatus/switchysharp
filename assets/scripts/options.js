@@ -312,28 +312,29 @@ function loadOptions() {
 	item[0].profile = directProfile;
 	$("#cmbRuleListProfile").append(item);
 	$.each(profiles, function(key, profile) {
-		var item = $("<option>").attr("value", profile.id).text(profile.name);
+		var ii = $("<option>").attr("value", profile.id).text(profile.name);
+		var item = ii.clone();
 		item[0].profile = profile;
 		if (quickSwitchProfiles.profile1 == profile.id)
 			item.attr("selected", "selected");
 		
 		$("#cmbProfile1").append(item);
 		
-		item = item.clone();
+		item = ii.clone();
 		item[0].profile = profile;
 		if (quickSwitchProfiles.profile2 == profile.id)
 			item.attr("selected", "selected");
 
 		$("#cmbProfile2").append(item);
 		
-		item = item.clone();
+		item = ii.clone();
 		item[0].profile = profile;
 		if (defaultRule.profileId == profile.id)
 			item.attr("selected", "selected");
 
 		$("#cmbDefaultRuleProfile").append(item);
 		
-		item = item.clone();
+		item = ii.clone();
 		item[0].profile = profile;
 		if (ruleListProfileId == profile.id)
 			item.attr("selected", "selected");
