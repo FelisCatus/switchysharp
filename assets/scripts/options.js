@@ -166,7 +166,18 @@ function initUI() {
 		onFieldModified(false);
 	});
 	
+	// Network
+	$("#chkMonitorProxyChanges").change(function() {
+		if ($(this).is(":checked"))
+			$("#chkPreventProxyChanges").removeAttr("disabled").parent().removeClass("disabled");
+		else
+			$("#chkPreventProxyChanges").attr("disabled", "disabled").parent().addClass("disabled");
+	});
 
+	$("#chkMonitorProxyChanges, #chkPreventProxyChanges").change(function() {
+		onFieldModified(false);
+	});
+	
 	// Import-Export
 	$("#txtBackupFilePath").bind("click keydown", function() {
 		if ($(this).hasClass("initial"))
@@ -286,6 +297,14 @@ function loadOptions() {
 	if (Settings.getValue("ruleListAutoProxy", false))
 		$("#chkAutoProxy").attr("checked", "checked");
 	
+	// Network
+	if (Settings.getValue("monitorProxyChanges", true))
+		$("#chkMonitorProxyChanges").attr("checked", "checked");
+	if (Settings.getValue("preventProxyChanges", false))
+		$("#chkPreventProxyChanges").attr("checked", "checked");
+
+	$("#chkMonitorProxyChanges").change();
+	$("#chkPreventProxyChanges").change();
 
 	// General
 	if (Settings.getValue("quickSwitch", false))
@@ -444,7 +463,10 @@ function saveOptions() {
 	if (RuleManager.isAutomaticModeEnabled(currentProfile))
 		ProfileManager.applyProfile(RuleManager.getAutomaticModeProfile(false));
 	
-
+	// Network
+	Settings.setValue("monitorProxyChanges", ($("#chkMonitorProxyChanges").is(":checked")));
+	Settings.setValue("preventProxyChanges", ($("#chkPreventProxyChanges").is(":checked")));
+	
 	// General
 	Settings.setValue("quickSwitch", ($("#chkQuickSwitch").is(":checked")));
 	Settings.setValue("quickSwitchType", ($("#rdoBinarySwitch").is(":checked") ? "binary" : "cycle"));
@@ -477,7 +499,11 @@ function switchTab(tab) {
 	case "rules":
 		tabId = "tabRules";
 		break;
-
+		
+	case "network":
+		tabId = "tabNetwork";
+		break;
+		
 	case "importexport":
 		tabId = "tabImportExport";
 		break;
