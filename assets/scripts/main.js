@@ -101,6 +101,7 @@ function setIconInfo(profile, preventProxyChanges) {
 				profile = selectedProfile;
 				ProfileManager.applyProfile(profile);
 			}
+			return;
 		}
 	}
 	

@@ -26,6 +26,7 @@ ProxyPlugin.proxyServer = Settings.getValue('proxyServer', '');
 ProxyPlugin.proxyExceptions = Settings.getValue('proxyExceptions', '');
 ProxyPlugin.proxyConfigUrl = Settings.getValue('proxyConfigUrl', '');
 ProxyPlugin.autoPacScriptPath = Settings.getValue('autoPacScriptPath', '');
+ProxyPlugin.mute = false;
 ProxyPlugin.init = function() {
 	if (chrome.experimental !== undefined && chrome.experimental.proxy !== undefined)
 		ProxyPlugin._proxy = chrome.experimental.proxy;
@@ -34,92 +35,102 @@ ProxyPlugin.init = function() {
 			ProxyPlugin._proxy = chrome.proxy;
 		else
 			alert('Need proxy api support, please update your Chrome');
-	ProxyPlugin._proxy.settings.get({}, function(config) {
-		if (config.value) {
-			config = config.value;
-		}
-		switch (config.mode) {
-			case 'system':
-				ProxyPlugin.proxyMode = Settings.setValue('proxyMode', 'system');
-				ProxyPlugin.proxyServer = Settings.setValue('proxyServer', '');
-				ProxyPlugin.proxyExceptions = Settings.setValue('proxyExceptions', '');
-				ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
-				break;
-			case 'direct':
-				ProxyPlugin.proxyMode = Settings.setValue('proxyMode', 'direct');
-				ProxyPlugin.proxyServer = Settings.setValue('proxyServer', '');
-				ProxyPlugin.proxyExceptions = Settings.setValue('proxyExceptions', '');
-				ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
-				break;
-			case 'fixed_servers':
-				ProxyPlugin.proxyMode = Settings.setValue('proxyMode', 'manual');
-				var profile = {
-					useSameProxy: false,
-					proxyHttp: '',
-					proxyHttps: '',
-					proxyFtp: '',
-					proxySocks: '',
-					socksVersion: 4
-				};
-				if (config.rules.singleProxy) {
-					var proxyString = config.rules.singleProxy.host + ':' + config.rules.singleProxy.port;
-					if (config.rules.singleProxy.scheme == 'http') {
-						profile.useSameProxy = true;
-						profile.proxyHttp = proxyString;
-					}
-					else {
-						switch(config.rules.singleProxy.scheme) {
-							case 'socks4':
-								profile.socksVersion = 4;
-								profile.proxySocks = proxyString;
-								break;
-							case 'socks5':
-								profile.socksVersion = 5;
-								profile.proxySocks = proxyString;
-								break;
-							case 'https':
-								profile.proxyHttps = proxyString;
-								break;
-						}
-					}
-				}
-				else {
-					if (config.rules.proxyForHttp) {
-						profile.proxyHttp = config.rules.proxyForHttp.host + ':' + config.rules.proxyForHttp.port;
-					}
-					if (config.rules.proxyForHttps) {
-						profile.proxyHttps = config.rules.proxyForHttps.host + ':' + config.rules.proxyForHttps.port;
-					}
-					if (config.rules.proxyForFtp) {
-						profile.proxyFtp = config.rules.proxyForFtp.host + ':' + config.rules.proxyForFtp.port;
-					}
-					if (config.rules.fallbackProxy) {
-						if (config.rules.fallbackProxy.scheme == 'socks4')
-							profile.socksVersion = 4;
-						else
-							profile.socksVersion = 5;
-						profile.proxySocks = config.rules.fallbackProxy.host + ':' + config.rules.fallbackProxy.port;
-					}
-				}
-				ProxyPlugin.proxyServer = Settings.setValue('proxyServer', ProfileManager.buildProxyString(profile));
-				profile = null;
-				ProxyPlugin.proxyExceptions = Settings.setValue('proxyExceptions', config.rules.bypassList.join(';'));
-				ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
-				break;
-			case 'pac_script':
-				ProxyPlugin.proxyMode = Settings.setValue('proxyMode', 'auto');
-				if (config.pacScript.url !== undefined) {
-					ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', config.pacScript.url);
-					ProxyPlugin.autoPacScriptPath = Settings.setValue('autoPacScriptPath', config.pacScript.url);
-				}
-				else {
-					ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', memoryPath);
-					ProxyPlugin.autoPacScriptPath = Settings.setValue('autoPacScriptPath', memoryPath);
-				}
-				break;
-		}
-	});
+	chrome.switchySharp = {};
+	chrome.switchySharp.updateProxy = ProxyPlugin.updateProxy;
+	ProxyPlugin._proxy.settings.onChange.addListener(ProxyPlugin.updateProxy);
+	ProxyPlugin._proxy.settings.get({}, ProxyPlugin.updateProxy);
 };
+
+ProxyPlugin.updateProxy = function (config){
+	if(ProxyPlugin.mute) return;
+	if (config.value) {
+		config = config.value;
+	}
+	switch (config.mode) {
+		case 'system':
+			ProxyPlugin.proxyMode = Settings.setValue('proxyMode', 'system');
+			ProxyPlugin.proxyServer = Settings.setValue('proxyServer', '');
+			ProxyPlugin.proxyExceptions = Settings.setValue('proxyExceptions', '');
+			ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
+			break;
+		case 'direct':
+			ProxyPlugin.proxyMode = Settings.setValue('proxyMode', 'direct');
+			ProxyPlugin.proxyServer = Settings.setValue('proxyServer', '');
+			ProxyPlugin.proxyExceptions = Settings.setValue('proxyExceptions', '');
+			ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
+			break;
+		case 'fixed_servers':
+			ProxyPlugin.proxyMode = Settings.setValue('proxyMode', 'manual');
+			var profile = {
+				useSameProxy: false,
+				proxyHttp: '',
+				proxyHttps: '',
+				proxyFtp: '',
+				proxySocks: '',
+				socksVersion: 4
+			};
+			if (config.rules.singleProxy) {
+				var proxyString = config.rules.singleProxy.host + ':' + config.rules.singleProxy.port;
+				if (config.rules.singleProxy.scheme == 'http') {
+					profile.useSameProxy = true;
+					profile.proxyHttp = proxyString;
+				}
+				else {
+					switch(config.rules.singleProxy.scheme) {
+						case 'socks4':
+							profile.socksVersion = 4;
+							profile.proxySocks = proxyString;
+							break;
+						case 'socks5':
+							profile.socksVersion = 5;
+							profile.proxySocks = proxyString;
+							break;
+						case 'https':
+							profile.proxyHttps = proxyString;
+							break;
+					}
+				}
+			}
+			else {
+				if (config.rules.proxyForHttp) {
+					profile.proxyHttp = config.rules.proxyForHttp.host + ':' + config.rules.proxyForHttp.port;
+				}
+				if (config.rules.proxyForHttps) {
+					profile.proxyHttps = config.rules.proxyForHttps.host + ':' + config.rules.proxyForHttps.port;
+				}
+				if (config.rules.proxyForFtp) {
+					profile.proxyFtp = config.rules.proxyForFtp.host + ':' + config.rules.proxyForFtp.port;
+				}
+				if (config.rules.fallbackProxy) {
+					if (config.rules.fallbackProxy.scheme == 'socks4')
+						profile.socksVersion = 4;
+					else
+						profile.socksVersion = 5;
+					profile.proxySocks = config.rules.fallbackProxy.host + ':' + config.rules.fallbackProxy.port;
+				}
+			}
+			ProxyPlugin.proxyServer = Settings.setValue('proxyServer', ProfileManager.buildProxyString(profile));
+			profile = null;
+			ProxyPlugin.proxyExceptions = Settings.setValue('proxyExceptions', config.rules.bypassList.join(';'));
+			ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
+			break;
+		case 'pac_script':
+			ProxyPlugin.proxyMode = Settings.setValue('proxyMode', 'auto');
+			if (config.pacScript.url !== undefined) {
+				ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', config.pacScript.url);
+				ProxyPlugin.autoPacScriptPath = Settings.setValue('autoPacScriptPath', config.pacScript.url);
+			}
+			else {
+				ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', memoryPath);
+				ProxyPlugin.autoPacScriptPath = Settings.setValue('autoPacScriptPath', memoryPath);
+			}
+			break;
+	}
+	if (Settings.getValue("monitorProxyChanges", true))
+		setIconInfo(undefined, Settings.getValue("preventProxyChanges", false));
+	
+};
+
 ProxyPlugin._parseProxy = function(str) {
 	if (str) {
 		var proxy = {scheme: 'http', host: '', port: 80};
@@ -222,7 +233,8 @@ ProxyPlugin.setProxy = function(proxyMode, proxyString, proxyExceptions, proxyCo
 			}
 			break;
 	}
-	ProxyPlugin._proxy.settings.set({'value': config}, function() {});
+	ProxyPlugin.mute = true;
+	ProxyPlugin._proxy.settings.set({'value': config}, function() { ProxyPlugin.mute = false; });
 	profile = null;
 	config = null;
 	return 0;

@@ -61,6 +61,10 @@ This work is based on:
 						<img src="assets/images/filter.png" valign="bottom" width="16" height="16"> 
 						<span data-data-i18n-content="options_tabSwitchRules">Switch Rules</span> 
 					</div>
+					<div id="tabNetwork" class="normal">
+						<img src="assets/images/network.png" valign="bottom" width="16" height="16"> 
+						<span data-i18n-content="options_tabNetwork">Network</span> 
+					</div>
 					<div id="tabGeneral" class="normal">
 						<img src="assets/images/options.png" valign="bottom" width="16" height="16"> 
 						<span data-data-i18n-content="options_tabGeneral">General</span> 
@@ -388,7 +392,26 @@ This work is based on:
 						</label>
 						</div>
 					</div>
-
+					
+					<div id="tabNetworkBody" class="tab">
+						<label>
+							<div class="title"><input id="chkMonitorProxyChanges" type="checkbox"> 
+								<span data-i18n-content="options_monitorProxyChanges">Monitor Proxy Changes</span>
+								<span class="help">
+									<p data-i18n-content="options_monitorProxyChanges_help">Repeatedly check for changes in proxy settings done by other applications, and update SwitchyPlus icon to reflect those changes.</p>
+								</span>
+							</div>
+						</label>
+						<label>
+							<div class="indent"><input id="chkPreventProxyChanges" type="checkbox"> 
+								<span data-i18n-content="options_revertProxyChanges">Revert proxy changes done by other apps.</span>
+								<span class="help">
+									<p data-i18n-content="options_revertProxyChanges_help">Revert any change in proxy settings done by other applications.</p>
+								</span>
+							</div>
+						</label>
+					</div>
+					
 					<div id="tabImportExportBody" class="tab">
 						<div class="title" data-i18n-content="options_switchRules">Switch Rules</div>
 						<table id="" class="optionGroup">
