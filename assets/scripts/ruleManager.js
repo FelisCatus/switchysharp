@@ -47,12 +47,12 @@ RuleManager.defaultRule = {
 
 RuleManager.init = function init() {
 	RuleManager.loadRules();
-	if(ProfileManager)
-	{
-		var selectedProfile = ProfileManager.getSelectedProfile();
-		if (selectedProfile != undefined)
-			ProfileManager.applyProfile(selectedProfile);
-	}
+	//if(ProfileManager)
+	//{
+	//	var selectedProfile = ProfileManager.getSelectedProfile();
+	//	if (selectedProfile != undefined)
+	//		ProfileManager.applyProfile(selectedProfile);
+	//}
 	RuleManager.loadRuleList(true);
 };
 
@@ -241,6 +241,7 @@ RuleManager.downloadPacScript = function downloadPacScript(url) {
 RuleManager.downloadProfilesPacScripts = function downloadProfilesPacScripts() {
 	var scripts = {};
 	var rules = RuleManager.getRules();
+	rules["default"] = RuleManager.getDefaultRule();
 	var counter = 1;
 	for (var i in rules) {
 		var rule = rules[i];
@@ -468,7 +469,7 @@ RuleManager.getPacDefaultProxy = function getPacDefaultProxy(defaultProfile) {
             
         } else if (profile.proxyMode == ProfileManager.ProxyModes.auto) {
             var script = RuleManager.profilesScripts[profile.id];
-            if (script) {
+            if (script && script.functionName && script.functionName != "") {
                 proxy = script.functionName + "(url, host)";
             }
         }
