@@ -47,12 +47,12 @@ RuleManager.defaultRule = {
 
 RuleManager.init = function init() {
 	RuleManager.loadRules();
-	//if(ProfileManager)
-	//{
-	//	var selectedProfile = ProfileManager.getSelectedProfile();
-	//	if (selectedProfile != undefined)
-	//		ProfileManager.applyProfile(selectedProfile);
-	//}
+	if(ProfileManager)
+	{
+		var selectedProfile = ProfileManager.getSelectedProfile();
+		if (selectedProfile != undefined)
+			ProfileManager.applyProfile(selectedProfile);
+	}
 	RuleManager.loadRuleList(true);
 };
 
@@ -141,14 +141,54 @@ RuleManager.getSortedRuleArray = function getSortedRuleArray() {
 	return ruleArray;
 };
 
-RuleManager.getAssociatedRule = function getAssociatedRule(url) {
+RuleManager.getProfileByUrl = function getProfileByUrl(url) {
 	var rules = RuleManager.allRules;
 	for (var i in rules) {
 		var rule = rules[i];
 		if (RuleManager.matchPattern(url, rule.urlPattern, rule.patternType))
-			return rule;
+			return ProfileManager.getProfile(rule.profileId);
 	}
-	return undefined;
+	var defaultProfile = ProfileManager.getProfile(RuleManager.getDefaultRule().profileId);
+	if (RuleManager.isRuleListEnabled()) {
+		var ruleListRules = Settings.getObject("ruleListRules");
+
+		if (ruleListRules != undefined) {
+			var ruleListProfile = ProfileManager.getProfile(Settings.getValue("ruleListProfileId"));
+			// start with reverse rules (starting with '!') (top priority)
+			for (var i = 0; i < ruleListRules.wildcard.length; i++) {
+				var urlPattern = ruleListRules.wildcard[i];
+				if (urlPattern[0] == '!') {
+					urlPattern = urlPattern.substr(1);
+					if(RuleManager.matchPattern(url, urlPattern, RuleManager.PatternTypes.wildcard))
+						return defaultProfile;
+				}
+			}
+			for (var i = 0; i < ruleListRules.regexp.length; i++) {
+				var urlPattern = ruleListRules.regexp[i];
+				if (urlPattern[0] == '!') {
+					urlPattern = urlPattern.substr(1);
+					if(RuleManager.matchPattern(url, urlPattern, RuleManager.PatternTypes.regexp))
+						return defaultProfile;
+				}
+			}
+			// normal rules
+			for (var i = 0; i < ruleListRules.wildcard.length; i++) {
+				var urlPattern = ruleListRules.wildcard[i];
+				if (urlPattern[0] != '!') {
+					if(RuleManager.matchPattern(url, urlPattern, RuleManager.PatternTypes.wildcard))
+						return ruleListProfile;
+				}
+			}
+			for (var i = 0; i < ruleListRules.regexp.length; i++) {
+				var urlPattern = ruleListRules.regexp[i];
+				if (urlPattern[0] != '!') {
+					if(RuleManager.matchPattern(url, urlPattern, RuleManager.PatternTypes.regexp))
+						return ruleListProfile;
+				}
+			}
+		}
+	}
+	return defaultProfile;
 };
 
 RuleManager.ruleExists = function ruleExists(urlPattern, patternType) {
@@ -654,18 +694,7 @@ RuleManager.getAutoPacScriptPath = function getAutoPacScriptPath(withSalt) {
 };
 
 RuleManager.getAutomaticModeProfile = function getAutomaticModeProfile(withSalt) {
-	var rule = RuleManager.getDefaultRule();
-	var profile = ProfileManager.getProfile(rule.profileId);
-	if (profile == undefined)
-		return undefined;
-	
-	profile.id = "";
-	profile.proxyMode = ProfileManager.ProxyModes.auto;
-	profile.proxyConfigUrl = RuleManager.getAutoPacScriptPath(withSalt);
-	profile.color = "auto-blue";
-	profile.name = "Auto Switch Mode";
-	profile.isAutomaticModeProfile = true;
-	return profile;
+	return ProfileManager.autoSwitchProfile;
 };
 
 RuleManager.isAutomaticModeEnabled = function isAutomaticModeEnabled(currentProfile) {

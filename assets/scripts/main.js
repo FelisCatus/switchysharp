@@ -22,7 +22,6 @@ var iconDir = "assets/images/";
 var iconInactivePath = "assets/images/inactive.png";
 var refreshInterval = 10000;
 var refreshTimer;
-var currentProfile;
 
 function init() {
 	ProxyPlugin.init();
@@ -105,7 +104,6 @@ function setIconInfo(profile, preventProxyChanges) {
 		}
 	}
 	
-	currentProfile = profile;
 	if (RuleManager.isAutomaticModeEnabled(profile)) {
 		if (setAutoSwitchIcon())
 			return;
@@ -125,7 +123,7 @@ function setIconInfo(profile, preventProxyChanges) {
 }
 
 function setAutoSwitchIcon(url) {
-	if (!RuleManager.isAutomaticModeEnabled(currentProfile))
+	if (!RuleManager.isAutomaticModeEnabled(undefined))
 		return false;
 	
 	if (url == undefined) {
@@ -135,20 +133,13 @@ function setAutoSwitchIcon(url) {
 		return true;
 	}
 	
-	var color = undefined;
-		var rule = RuleManager.getAssociatedRule(url) || RuleManager.getDefaultRule();
-		var profileName = ProfileManager.directConnectionProfile.name;
-		if (rule != undefined) {
-			var profile = ProfileManager.getProfile(rule.profileId);
-			color = profile.color;
-			profileName = profile.name;
-		}
-	var iconPath = iconDir + "icon-auto-" + (color || "blue") + ".png";
+	var profile = RuleManager.getProfileByUrl(url);
+	var iconPath = iconDir + "icon-auto-" + (profile.color || "blue") + ".png";
 
 	chrome.browserAction.setIcon({ path: iconPath });
 
 	var title = "Auto Switch Mode";
-		title += "\nActive Page Proxy: " + profileName;
+		title += "\nActive Page Proxy: " + profile.name;
 	
 	setIconTitle(title);
 	
