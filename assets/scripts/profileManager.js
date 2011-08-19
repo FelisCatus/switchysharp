@@ -47,7 +47,7 @@ ProfileManager.autoSwitchProfile = {
 	id: "auto",
 	name: "[" + I18n.getMessage("proxy_autoSwitch") + "]",
 	proxyMode: ProfileManager.ProxyModes.auto,
-	color: "auto",
+	color: "auto-blue",
 	isAutomaticModeProfile : true,
 	proxyConfigUrl : ":memory:"
 };
