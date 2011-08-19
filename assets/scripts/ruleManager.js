@@ -672,15 +672,7 @@ RuleManager.isAutomaticModeEnabled = function isAutomaticModeEnabled(currentProf
 	if (currentProfile == undefined)
 		currentProfile = ProfileManager.getCurrentProfile();
 	
-	if (currentProfile.proxyMode != ProfileManager.ProxyModes.auto)
-		return false;
-	
-	var autoProfile = RuleManager.getAutomaticModeProfile(false);
-	var length = autoProfile.proxyConfigUrl.length;
-	if (currentProfile.proxyConfigUrl.length > length && currentProfile.proxyConfigUrl.charAt(length) != '?')
-		return false;
-	
-	return (currentProfile.proxyConfigUrl.substr(0, length) == autoProfile.proxyConfigUrl);
+	return (currentProfile.proxyMode == ProfileManager.ProxyModes.auto) && (currentProfile.id == ProfileManager.autoSwitchProfile.id);
 };
 
 RuleManager.loadRuleList = function loadRuleList(scheduleNextReload) {

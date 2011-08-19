@@ -14,5 +14,7 @@
    "name": "SwitchySharp",
    "options_page": "options.html",
    "permissions": [ "proxy", "tabs", "http://*/", "https://*/" ],
-   "version": "1.8.8"
+   "version": "1.8.9",
+   "minimum_chrome_version" : "13.0.0",
+   "homepage_url" : "https://chrome.google.com/webstore/detail/dpplabbmogkhghncfbfdeeokoefdjegm"
 }
