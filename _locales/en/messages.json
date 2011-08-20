@@ -86,9 +86,6 @@
    "options_autoProxyCompatible_help": {
       "message": "Check this option if the url points to an AutoProxy rule list (like 'gfwlist')."
    },
-   "options_binarySwitch": {
-      "message": "Binary Switch"
-   },
    "options_clickToEdit": {
       "message": "Click to edit"
    },
@@ -100,9 +97,6 @@
    },
    "options_confirmDeletion_help": {
       "message": "Show a confirmation dialog for deletion of proxy profiles or switch rules."
-   },
-   "options_cycleAllProxies": {
-      "message": "Cycle All Proxies"
    },
    "options_defaultRule": {
       "message": "Default Rule"
@@ -225,7 +219,16 @@
       "message": "Quick Switch"
    },
    "options_quickSwitch_help": {
-      "message": "\u003Cp\u003EAllows you to switch between two proxy profiles in one click (by clicking on SwitchySharp icon).\u003C/p\u003E\u003Chr /\u003E\r\n\u003Cp\u003E\u003Cb\u003ENote:\u003C/b\u003E After enabling this feature you won't be able to see Switchy\r\n  main menu when clicking on SwitchySharp icon, and so to open this Options page again \r\n  you should go to Chrome Extensions page (Chrome Menu \u003E Extensions).\r\n\u003C/p\u003E"
+      "message": "<p>Allows you to switch among proxy profiles in one click \n(by clicking on SwitchySharp icon).</p><hr />\n<p><b>Note:</b> After enabling this feature you won't be able to see SwitchySharp\nmain menu when clicking on SwitchySharp icon. To open Option page again,\nright-click on the icon and then click \"Options\".</p>"
+   },
+   "options_quickSwitch_cycle_help": {
+      "message": "When you click on the icon, SwitchySharp will apply the following profiles in their order."
+   },
+   "options_cycledProfiles": {
+      "message": "Cycled Profiles (drag to sort):"
+   },
+   "options_notCycledProfiles": {
+      "message": "Not cycled Profiles (drag to the above box to enable):"
    },
    "options_reapplyLastProfile": {
       "message": "Auto apply last selected proxy profile on startup."

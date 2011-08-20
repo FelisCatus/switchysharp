@@ -434,54 +434,54 @@ small {
 	cursor: pointer;
 }
 
-#proxyProfiles .color {
+.color {
 	height: 100%;
 	padding: 6px;
 }
 
-#proxyProfiles .color div {
+.color div {
 	cursor: pointer;
 	height: 100%;
 }
 
-#proxyProfiles .blue {
+.blue {
 	background-color: #9ce;
 	outline: solid 1px #7ac;
 }
 
-#proxyProfiles .green {
+.green {
 	background-color: #9d9;
 	outline: solid 1px #7b7;
 }
 
-#proxyProfiles .red {
+.red {
 	background-color: #fa8;
 	outline: solid 1px #d86;
 }
 
-#proxyProfiles .yellow {
+.yellow {
 	background-color: #fe9;
 	outline: solid 1px #dc7;
 }
 
-#proxyProfiles .purple {
+.purple {
 	background-color: #d497ee;
 	outline: 1px solid #b477ce;
 }
 
-#proxyProfiles .cblue {
+.cblue {
 	color: #47b;
 }
 
-#proxyProfiles .cgreen {
+.cgreen {
 	color: #5b5;
 }
 
-#proxyProfiles .cred {
+.cred {
 	color: #d63;
 }
 
-#proxyProfiles .cyellow {
+.cyellow {
 	color: #ca0;
 }
 
@@ -646,4 +646,27 @@ small {
 
 #txtProxyListURL {
 	width: 100%;
+}
+
+#quickSwitchDiv ul{
+	list-style-type:none;
+	min-height:20px;
+	width:40%;
+	margin: 0;
+	padding: 0;
+	border-style:solid;
+	border-width:2px;
+}
+#quickSwitchDiv ul li
+{
+	display:block;
+	margin:10px;
+	padding:5px;
+	background-color:#ddddff;
+}
+#quickSwitchDiv ul li div
+{
+	float:left;
+	padding:6px;
+	margin-right:10px;
 }

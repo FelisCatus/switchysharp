@@ -26,6 +26,7 @@ This work is based on:
 	<link rel="stylesheet" href="assets/styles/helpToolTip.css" type="text/css">
 	<script src="assets/libs/jquery-1.6.2.min.js" type="text/javascript"></script>
 	<script src="assets/libs/jquery.base64.js" type="text/javascript"></script>
+	<script src="assets/libs/jquery-ui-1.8.16.custom.min.js" type="text/javascript"></script>
 	<script src="assets/libs/FileSaver.js" type="text/javascript"></script>
 	<script src="assets/scripts/options.js" type="text/javascript"></script>
 	<script src="assets/scripts/infoTip.js" type="text/javascript"></script>
@@ -469,48 +470,24 @@ This work is based on:
 							<div class="title"><input id="chkQuickSwitch" type="checkbox"> 
 								<span data-i18n-content="options_quickSwitch">Quick Switch</span>
 								<span class="help" data-i18n-content="options_quickSwitch_help">
-									<p>Allows you to switch between two proxy profiles in one click 
-									(by clicking on SwitchySharp icon).</p><hr />
+									<p>Allows you to switch among proxy profiles in one click 
+									(by clicking on SwitchySharp icon). When you click on the icon, SwitchySharp will apply the following profiles in their order.</p><hr />
 									<p><b>Note:</b> After enabling this feature you won't be able to see SwitchySharp
-									main menu when clicking on SwitchySharp icon, and so to open this Options page again
-									you should go to Chrome Extensions page (Chrome Menu > Extensions).</p>
+									main menu when clicking on SwitchySharp icon. To open Option page again,
+									right-click on the icon and then click "Options".</p>
 								</span>
 							</div>
 						</label>
-						<table id="quickSwitchTable">
-							<tr class="section">
-								<td colspan="2">
-									<label>
-										<input id="rdoBinarySwitch" type="radio" name="quickSwitchType" checked="checked">
-										<span><b data-i18n-content="options_binarySwitch">Binary Switch</b></span>
-									</label>
-								</td>
-							</tr>
-							<tr class="option indent">
-								<td><label data-i18n-content="options_profile1">Profile 1</label></td>
-								<td>
-									<select id="cmbProfile1">
-										<option value="">Direct</option>
-									</select>
-								</td>
-							</tr>
-							<tr class="option indent">
-								<td><label data-i18n-content="options_profile2">Profile 2</label></td>
-								<td>
-									<select id="cmbProfile2">
-										<option value="">Direct</option>
-									</select>
-								</td>
-							</tr>
-							<tr class="section">
-								<td colspan="2">
-									<label>
-										<input id="rdoCycleSwitch" type="radio" name="quickSwitchType">
-										<span><b data-i18n-content="options_cycleAllProxies">Cycle All Proxies</b></span>
-									</label>
-								</td>
-							</tr>
-						</table>
+						<div id="quickSwitchDiv" class="indent">
+							<p>
+								<label class="title" data-i18n-content="options_cycledProfiles">Cycled Profiles (drag to sort):</label>
+								<p data-i18n-content="options_quickSwitch_cycle_help">When you click on the icon, SwitchySharp will apply the following profiles in their order.</p>
+							</p>
+							<ul id="cycleEnabled" class="indent"></ul>
+							<p class="title" data-i18n-content="options_notCycledProfiles">Not cycled Profiles (drag to the above box to enable):</p>
+							<ul id="cycleDisabled" class="indent"></ul>
+						</div>
+						
 						<hr />
 						<div class="title" data-i18n-content="options_miscOptions">Misc Options</div>
 						<label>
