@@ -61,38 +61,30 @@ function quickSwitchProxy() {
 		return;
 	
 	var profile = undefined;
-	var profiles = ProfileManager.getSortedProfileIdArray();
 	var currentProfile = ProfileManager.getCurrentProfile();
-	var quickSwitchType = Settings.getValue("quickSwitchType", "binary");
-	if (quickSwitchType == "binary") {
-		var quickSwitchProfiles = Settings.getObject("quickSwitchProfiles") || {};
-		if (!quickSwitchProfiles.profile1 || !quickSwitchProfiles.profile2)
-			return;
-		
-		var profileId;
-		if (currentProfile.id == quickSwitchProfiles.profile1)
-			profileId = quickSwitchProfiles.profile2;
-		else
-			profileId = quickSwitchProfiles.profile1;
-
-		if (profileId == ProfileManager.directConnectionProfile.id)
-			profile = ProfileManager.directConnectionProfile;
-		else if (profileId == ProfileManager.systemProxyProfile.id)
-			profile = ProfileManager.systemProxyProfile;
-		else if (profileId == ProfileManager.autoSwitchProfile.id)
-			profile = ProfileManager.autoSwitchProfile;
-		else
-			profile = ProfileManager.getProfile(profileId);
-
-	} else {
-		var index = profiles.indexOf(currentProfile.id);
-		if (index == -1)
-			profile = ProfileManager.getProfile(profiles[0]);
-		else if (index == profiles.length - 1)
-			profile = ProfileManager.directConnectionProfile;
-		else
-			profile = ProfileManager.getProfile(profiles[index + 1]);
+	var quickSwitchProfiles = Settings.getObject("quickSwitchProfiles") || [];
+	
+	var sel = false;
+	for(var i in quickSwitchProfiles)
+	{
+		if(sel)
+		{
+			sel = false;
+			profileId = quickSwitchProfiles[i];
+			break;
+		}
+		if(quickSwitchProfiles[i] == currentProfile.id) sel = true;
 	}
+	if(sel || typeof(profileId) == "undefined") profileId = quickSwitchProfiles[0];
+	
+	if (profileId == ProfileManager.directConnectionProfile.id)
+		profile = ProfileManager.directConnectionProfile;
+	else if (profileId == ProfileManager.systemProxyProfile.id)
+		profile = ProfileManager.systemProxyProfile;
+	else if (profileId == ProfileManager.autoSwitchProfile.id)
+		profile = ProfileManager.autoSwitchProfile;
+	else
+		profile = ProfileManager.getProfile(profileId);
 	
 	if (profile == undefined)
 		return;

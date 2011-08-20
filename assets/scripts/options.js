@@ -187,25 +187,17 @@ function initUI() {
 	// General
 	$("#chkQuickSwitch").change(function() {
 		if ($(this).is(":checked")) {
-			$("#quickSwitchTable *").removeClass("disabled");
-			$("#quickSwitchTable input, #quickSwitchTable select").removeAttr("disabled");
-			$("#rdoBinarySwitch").change();
+			$("#quickSwitchDiv ul").removeClass("disabled").sortable("enable");
 		} else {
-			$("#quickSwitchTable *").addClass("disabled");
-			$("#quickSwitchTable input, #quickSwitchTable select").attr("disabled", "disabled");
+			$("#quickSwitchDiv ul").addClass("disabled").sortable("disable");
 		}
 		onFieldModified(false);
 	});
-	$("#rdoBinarySwitch, #rdoCycleSwitch").change(function() {
-		if ($("#rdoBinarySwitch").is(":checked")) {
-			$("#quickSwitchTable .option").removeClass("disabled");
-			$("#quickSwitchTable .option select").removeAttr("disabled");
-		} else {
-			$("#quickSwitchTable .option").addClass("disabled");
-			$("#quickSwitchTable .option select").attr("disabled", "disabled");
-		}
-		onFieldModified(false);
-	});
+	$("#quickSwitchDiv ul").sortable({
+	connectWith: "#quickSwitchDiv ul",
+	change: function(event, ui) { onFieldModified(false); }
+	}).disableSelection();
+	
 
 	$("#chkReapplySelectedProfile, #chkConfirmDeletion").change(function() {
 		onFieldModified(false);
@@ -312,55 +304,22 @@ function loadOptions() {
 	
 	$("#chkQuickSwitch").change();
 	
-	if (Settings.getValue("quickSwitchType", "binary") == "cycle")
-		$("#rdoCycleSwitch").attr("checked", "checked").change();
-	
-	$("#cmbProfile1, #cmbProfile2, #cmbDefaultRuleProfile, #cmbRuleListProfile").empty();
+	$("#cycleEnabled, #cycleDisabled, #cmbDefaultRuleProfile, #cmbRuleListProfile").empty();
 	var directProfile = ProfileManager.directConnectionProfile;
 	var autoProfile = ProfileManager.autoSwitchProfile;
-	var quickSwitchProfiles = Settings.getObject("quickSwitchProfiles") || {};
 	var item = $("<option>").attr("value", directProfile.id).text(directProfile.name);
-	item[0].profile = directProfile;
-	$("#cmbProfile1").append(item);
-	item = item.clone();
-	item[0].profile = directProfile;
-	$("#cmbProfile2").append(item);
-	item = item.clone();
+
 	item[0].profile = directProfile;
 	$("#cmbDefaultRuleProfile").append(item);
 	item = item.clone();
 	item[0].profile = directProfile;
 	$("#cmbRuleListProfile").append(item);
 	
-	var ii = $("<option>").attr("value", autoProfile.id).text(autoProfile.name);
-	item = ii.clone();
-	item[0].profile = autoProfile;
-	if (quickSwitchProfiles.profile1 == autoProfile.id)
-		item.attr("selected", "selected");
-	$("#cmbProfile1").append(item);
-	item = ii.clone();
-	item[0].profile = autoProfile;
-	if (quickSwitchProfiles.profile2 == autoProfile.id)
-		item.attr("selected", "selected");
-	$("#cmbProfile2").append(item);
+	var ps = new Array();
 	
 	$.each(profiles, function(key, profile) {
 		var ii = $("<option>").attr("value", profile.id).text(profile.name);
 		var item = ii.clone();
-		item[0].profile = profile;
-		if (quickSwitchProfiles.profile1 == profile.id)
-			item.attr("selected", "selected");
-		
-		$("#cmbProfile1").append(item);
-		
-		item = ii.clone();
-		item[0].profile = profile;
-		if (quickSwitchProfiles.profile2 == profile.id)
-			item.attr("selected", "selected");
-
-		$("#cmbProfile2").append(item);
-		
-		item = ii.clone();
 		item[0].profile = profile;
 		if (defaultRule.profileId == profile.id)
 			item.attr("selected", "selected");
@@ -373,7 +332,33 @@ function loadOptions() {
 			item.attr("selected", "selected");
 
 		$("#cmbRuleListProfile").append(item);
-	});	
+		
+		ps[profile.id] = profile;
+	});
+
+	ps[autoProfile.id] = autoProfile;
+	ps[directProfile.id] = directProfile;
+	
+	var cycleEnabled = $("#cycleEnabled");
+	var cycleDisabled = $("#cycleDisabled");
+	var QSP = Settings.getObject("quickSwitchProfiles") || [];
+	
+	$.each(QSP, function(key, pid) {
+		var profile = ps[pid];
+		var ii = $("<li>").text(profile.name).append($("<div>").addClass(profile.color));
+		ii[0].profile = profile;
+		cycleEnabled.append(ii);
+		ps[profile.id] = undefined;
+	});
+	for(var i in ps){
+		var profile = ps[i];
+		if(profile == undefined) continue;
+		var ii = $("<li>").text(profile.name).append($("<div>").addClass(profile.color));
+		ii[0].profile = profile;
+		cycleDisabled.append(ii);
+	};
+	
+	$("#quickSwitchDiv ul").sortable("refresh");
 
 	if (Settings.getValue("reapplySelectedProfile", false))
 		$("#chkReapplySelectedProfile").attr("checked", "checked");
@@ -469,12 +454,12 @@ function saveOptions() {
 	
 	// General
 	Settings.setValue("quickSwitch", ($("#chkQuickSwitch").is(":checked")));
-	Settings.setValue("quickSwitchType", ($("#rdoBinarySwitch").is(":checked") ? "binary" : "cycle"));
-	var quickSwitchProfiles = {
-		profile1: $("#cmbProfile1 option:selected")[0].profile.id,
-		profile2: $("#cmbProfile2 option:selected")[0].profile.id
-	};
-	Settings.setObject("quickSwitchProfiles", quickSwitchProfiles);
+
+	var QSP = new Array();
+	$("#cycleEnabled li").each(function(i, n){
+		QSP.push(n.profile.id);
+	});
+	Settings.setObject("quickSwitchProfiles", QSP);
 
 	Settings.setValue("reapplySelectedProfile", ($("#chkReapplySelectedProfile").is(":checked")));
 	Settings.setValue("confirmDeletion", ($("#chkConfirmDeletion").is(":checked")));
