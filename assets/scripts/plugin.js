@@ -234,7 +234,13 @@ ProxyPlugin.setProxy = function(proxyMode, proxyString, proxyExceptions, proxyCo
 			break;
 	}
 	ProxyPlugin.mute = true;
-	ProxyPlugin._proxy.settings.set({'value': config}, function() { ProxyPlugin.mute = false; });
+	ProxyPlugin._proxy.settings.set({'value': config}, function(){
+		ProxyPlugin.mute = false;
+		if(ProxyPlugin.setProxyCallback != undefined){
+			ProxyPlugin.setProxyCallback();
+			ProxyPlugin.setProxyCallback = undefined;
+		}
+	});
 	profile = null;
 	config = null;
 	return 0;

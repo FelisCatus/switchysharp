@@ -345,6 +345,7 @@ function loadOptions() {
 	
 	$.each(QSP, function(key, pid) {
 		var profile = ps[pid];
+		if(profile == undefined) return;
 		var ii = $("<li>").text(profile.name).append($("<div>").addClass(profile.color));
 		ii[0].profile = profile;
 		cycleEnabled.append(ii);
