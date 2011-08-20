@@ -25,6 +25,12 @@ var refreshTimer;
 
 function init() {
 	ProxyPlugin.init();
+	
+	if(Settings.getValue("ruleListEnabled", false) && Settings.getValue("reapplySelectedProfile", false))
+		ProxyPlugin.setProxyCallback = function(){
+			RuleManager.loadRuleList(true);
+			applySavedOptions();
+		};
 	applySavedOptions();
 	checkFirstTime();
 	setIconInfo(undefined);

@@ -47,13 +47,6 @@ RuleManager.defaultRule = {
 
 RuleManager.init = function init() {
 	RuleManager.loadRules();
-	//if(ProfileManager)
-	//{
-	//	var selectedProfile = ProfileManager.getSelectedProfile();
-	//	if (selectedProfile != undefined)
-	//		ProfileManager.applyProfile(selectedProfile);
-	//}
-	RuleManager.loadRuleList(true);
 };
 
 RuleManager.loadRules = function loadRules() {
@@ -736,6 +729,7 @@ RuleManager.loadRuleList = function loadRuleList(scheduleNextReload) {
 		},
 		dataType: "text",
 		cache: true,
+		async: false,
 		timeout: 10000
 	});
 };
@@ -834,7 +828,6 @@ RuleManager.parseAutoProxyRuleList = function parseAutoProxyRuleList(data) {
 		else if (line.substr(0, 2) == "||") {
 			patternType = RuleManager.PatternTypes.regexp;
 			line = '^[\\\\w\\\\-]+:\\\\/+(?!\\\\/)(?:[^\\\\/]+\\\\.)?' + RuleManager.wildcardToRegexp(line.substring(2));
-    	    Logger.log(line + "\n", Logger.Types.log);
 		}
 		else if (line[0] == "|" || line[line.length - 1] == "|") {
 			patternType = RuleManager.PatternTypes.regexp;
