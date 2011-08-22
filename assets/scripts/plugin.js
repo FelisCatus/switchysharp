@@ -35,8 +35,6 @@ ProxyPlugin.init = function() {
 			ProxyPlugin._proxy = chrome.proxy;
 		else
 			alert('Need proxy api support, please update your Chrome');
-	chrome.switchySharp = {};
-	chrome.switchySharp.updateProxy = ProxyPlugin.updateProxy;
 	ProxyPlugin._proxy.settings.onChange.addListener(ProxyPlugin.updateProxy);
 	ProxyPlugin._proxy.settings.get({}, ProxyPlugin.updateProxy);
 };
@@ -126,7 +124,12 @@ ProxyPlugin.updateProxy = function (config){
 			}
 			break;
 	}
-	if (Settings.getValue("monitorProxyChanges", true))
+	
+	if(ProxyPlugin.updateProxyCallback != undefined){
+		ProxyPlugin.updateProxyCallback();
+		ProxyPlugin.updateProxyCallback = undefined;
+	}
+	else if (Settings.getValue("monitorProxyChanges", true))
 		setIconInfo(undefined, Settings.getValue("preventProxyChanges", false));
 	
 };

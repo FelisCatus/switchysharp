@@ -361,7 +361,7 @@ function loadOptions() {
 	
 	$("#quickSwitchDiv ul").sortable("refresh");
 
-	if (Settings.getValue("reapplySelectedProfile", false))
+	if (Settings.getValue("reapplySelectedProfile", true))
 		$("#chkReapplySelectedProfile").attr("checked", "checked");
 	if (Settings.getValue("confirmDeletion", true))
 		$("#chkConfirmDeletion").attr("checked", "checked");

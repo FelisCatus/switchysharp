@@ -336,7 +336,8 @@ RuleManager.ruleToExpr = function ruleToExpr(rule) {
     }
     catch(e) {
         delete tmp;
-        return '';
+        alert("Invalid " + (rule.patternType == RuleManager.PatternTypes.regexp ? "regular expression" : "wildcard") + " : " + urlPattern);
+        return '(false)';
     }
     delete tmp;
 
