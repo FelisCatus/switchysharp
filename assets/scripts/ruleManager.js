@@ -135,53 +135,14 @@ RuleManager.getSortedRuleArray = function getSortedRuleArray() {
 };
 
 RuleManager.getProfileByUrl = function getProfileByUrl(url) {
-	var rules = RuleManager.allRules;
-	for (var i in rules) {
-		var rule = rules[i];
-		if (RuleManager.matchPattern(url, rule.urlPattern, rule.patternType))
-			return ProfileManager.getProfile(rule.profileId);
+	if(url.indexOf("chrome://") > -1 || url.indexOf("file://") > -1)
+		return ProfileManager.directConnectionProfile;
+	else
+	{
+		var i = url.indexOf("#");
+		if(i>0) url = url.substr(0, i);
+		return ProfileManager.getProfile(RuleManager._u2p(url, RuleManager.shExpMatch, RuleManager.regExpMatch));
 	}
-	var defaultProfile = ProfileManager.getProfile(RuleManager.getDefaultRule().profileId);
-	if (RuleManager.isRuleListEnabled()) {
-		var ruleListRules = Settings.getObject("ruleListRules");
-
-		if (ruleListRules != undefined) {
-			var ruleListProfile = ProfileManager.getProfile(Settings.getValue("ruleListProfileId"));
-			// start with reverse rules (starting with '!') (top priority)
-			for (var i = 0; i < ruleListRules.wildcard.length; i++) {
-				var urlPattern = ruleListRules.wildcard[i];
-				if (urlPattern[0] == '!') {
-					urlPattern = urlPattern.substr(1);
-					if(RuleManager.matchPattern(url, urlPattern, RuleManager.PatternTypes.wildcard))
-						return defaultProfile;
-				}
-			}
-			for (var i = 0; i < ruleListRules.regexp.length; i++) {
-				var urlPattern = ruleListRules.regexp[i];
-				if (urlPattern[0] == '!') {
-					urlPattern = urlPattern.substr(1);
-					if(RuleManager.matchPattern(url, urlPattern, RuleManager.PatternTypes.regexp))
-						return defaultProfile;
-				}
-			}
-			// normal rules
-			for (var i = 0; i < ruleListRules.wildcard.length; i++) {
-				var urlPattern = ruleListRules.wildcard[i];
-				if (urlPattern[0] != '!') {
-					if(RuleManager.matchPattern(url, urlPattern, RuleManager.PatternTypes.wildcard))
-						return ruleListProfile;
-				}
-			}
-			for (var i = 0; i < ruleListRules.regexp.length; i++) {
-				var urlPattern = ruleListRules.regexp[i];
-				if (urlPattern[0] != '!') {
-					if(RuleManager.matchPattern(url, urlPattern, RuleManager.PatternTypes.regexp))
-						return ruleListProfile;
-				}
-			}
-		}
-	}
-	return defaultProfile;
 };
 
 RuleManager.ruleExists = function ruleExists(urlPattern, patternType) {
@@ -351,22 +312,18 @@ RuleManager.ruleToString = function ruleToString(rule, prettyPrint) {
 	return result.join("\r\n");
 };
 
-RuleManager.ruleToScript = function ruleToScript(rule) {
-	var proxy;
-	if (rule.proxy) { // predefined proxy (see |generateAutoPacScript|)
-		proxy = rule.proxy;
-	}
-	else {
-		proxy = RuleManager.getPacRuleProxy(rule.profileId);
-	}
-	
+RuleManager.ruleToExpr = function ruleToExpr(rule) {
 	var urlPattern = rule.urlPattern || "";
 	if (rule.patternType == RuleManager.PatternTypes.wildcard) {
-		if (urlPattern.substr(0, 1) != "*")
-			urlPattern = "*" + urlPattern;
-		
-		if (urlPattern.substr(urlPattern.length - 1, 1) != "*")
-			urlPattern += "*";
+		if(urlPattern[0] == "@")
+			urlPattern = urlPattern.substring(1);
+		else{
+			if(urlPattern.indexOf("://") <= 0 && urlPattern[0] != "*")
+				urlPattern = "*" + urlPattern;
+			
+			if (urlPattern[urlPattern.length - 1] != "*")
+				urlPattern += "*";
+			}
 	}
     // just declare to see whether regular expression rule is valid
     try {
@@ -384,13 +341,21 @@ RuleManager.ruleToScript = function ruleToScript(rule) {
     delete tmp;
 
 	var matchFunc = (rule.patternType == RuleManager.PatternTypes.regexp ? "regExpMatch" : "shExpMatch");
-	var script = "if (";
+	var script = "(";
 	script += matchFunc + "(url, '" + urlPattern + "')";
-	if (rule.patternType != RuleManager.PatternTypes.regexp
-		&& (urlPattern.indexOf("://*.") > 0 || urlPattern.indexOf("*.") == 0))
-		script += " || shExpMatch(url, '" + urlPattern.replace("*.", "*") + "')";
+	if (rule.patternType != RuleManager.PatternTypes.regexp)
+	{
+		var urlPattern2 = null;
+		if(urlPattern.indexOf("://*.")>0) urlPattern2 = urlPattern.replace("://*.", "://");
+		else if(urlPattern.indexOf("*.") == 0) urlPattern2 = "*://" + urlPattern.substring(2);
+		
+		if(urlPattern2)
+		{
+			script += " || shExpMatch(url, '" + urlPattern2 + "')";
+		}
+	}
 
-	return script + ") return " + proxy + ";";
+	return script + ")";
 };
 
 RuleManager._getPacRuleProxy = function getPacRuleProxy(profileId) {
@@ -458,7 +423,7 @@ RuleManager.getPacDefaultProxy = function getPacDefaultProxy(defaultProfile) {
                 else
                     proxy = "SOCKS " + profile.proxySocks + (proxy != "'DIRECT'" ? "; DIRECT" : "");
             }
-            proxy = "'" + proxy + "'";
+            if(proxy != "'DIRECT'") proxy = "'" + proxy + "'";
             
         } else if (profile.proxyMode == ProfileManager.ProxyModes.auto) {
             var script = RuleManager.profilesScripts[profile.id];
@@ -499,15 +464,38 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
 	script.push("function regExpMatch(url, pattern) {");
 	script.push("\ttry { return new RegExp(pattern).test(url); } catch(ex) { return false; }");
 	script.push("}\n");
+	script.push('function shExpMatch(url, pattern) {');
+	script.push('\tpattern = pattern.replace(/\\./g, "\\\\.");');
+	script.push('\tpattern = pattern.replace(/\\*/g, ".*");');
+	script.push('\tpattern = pattern.replace(/\\?/g, ".");');;
+	script.push('\tvar regexp = new RegExp("^" + pattern + "$")');
+	script.push('\treturn regexp.test(url);');
+	script.push('}\n;');
 	script.push("function FindProxyForURL(url, host) {");
+	
+	var u2p = [ "(function(url, shExpMatch, regExpMatch){" ];
+	
 	for (var i in rules) {
 		var rule = rules[i];
-		script.push("\t" + RuleManager.ruleToScript(rule));
+		var expr = RuleManager.ruleToExpr(rule);
+		var proxy;
+		if (rule.proxy) { // predefined proxy (see |generateAutoPacScript|)
+			proxy = rule.proxy;
+		}
+		else {
+			proxy = RuleManager.getPacRuleProxy(rule.profileId);
+		}
+		script.push("\tif " + expr + " return " + proxy + ";");
+		u2p.push("\tif " + expr + " return '" + rule.profileId + "';");
 	}
 	
 	var proxy = RuleManager.getPacDefaultProxy(defaultProfile);
-	script.push("\t" + "return " + proxy + ";");
+	script.push("\treturn " + proxy + ";");
 	script.push("}");
+	
+	u2p.push("\treturn '" + defaultProfile.id + "';");
+	u2p.push("})");
+	RuleManager._u2p = eval(u2p.join("\n"));
 	
 	return script.join("\n");
 };
@@ -609,7 +597,6 @@ RuleManager.ruleListToScript = function ruleListToScript() {
 
 RuleManager.generateAutoPacScript = function generateAutoPacScript() {
 	var rules = RuleManager.getRules();
-//	var defaultProfile = RuleManager.getAutomaticModeProfile(false);	
 	var defaultProfile = ProfileManager.getProfile(RuleManager.getDefaultRule().profileId);
 	var defaultProxy = RuleManager.getPacDefaultProxy(defaultProfile);
 
@@ -829,14 +816,16 @@ RuleManager.parseAutoProxyRuleList = function parseAutoProxyRuleList(data) {
 			patternType = RuleManager.PatternTypes.regexp;
 			line = '^[\\\\w\\\\-]+:\\\\/+(?!\\\\/)(?:[^\\\\/]+\\\\.)?' + RuleManager.wildcardToRegexp(line.substring(2));
 		}
-		else if (line[0] == "|" || line[line.length - 1] == "|") {
-			patternType = RuleManager.PatternTypes.regexp;
-			line = RuleManager.wildcardToRegexp(line);
-			line = line.replace(/^\\\|/, "^");
-			line = line.replace(/\\\|$/, "$");
+		else if (line[0] == "|"){
+			patternType = RuleManager.PatternTypes.wildcard;
+			if(line[line.length - 1] == "|")
+				line = "@" + line.substring(1, line.length - 2);
+			else
+				line = "@" + line.substring(1) + "*";
 		}
 		else {
 			patternType = RuleManager.PatternTypes.wildcard;
+			line = "http://*" + line;
 		}
 
 		if (exclude)
