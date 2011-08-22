@@ -24,17 +24,27 @@ var refreshInterval = 10000;
 var refreshTimer;
 
 function init() {
-	ProxyPlugin.init();
 	
-	if(Settings.getValue("ruleListEnabled", false) && Settings.getValue("reapplySelectedProfile", false))
+	var _init = function(){
+		checkFirstTime();
+		setIconInfo(undefined);
+		monitorTabChanges();
+	};
+	
+	if(Settings.getValue("ruleListEnabled", false))
 		ProxyPlugin.setProxyCallback = function(){
 			RuleManager.loadRuleList(true);
 			applySavedOptions();
 		};
+	
+	if(!Settings.getValue("reapplySelectedProfile", true)){
+		ProxyPlugin.updateProxyCallback = _init;
+		ProxyPlugin.init();
+	}else{
+		ProxyPlugin.init();
+		_init();
+	}
 	applySavedOptions();
-	checkFirstTime();
-	setIconInfo(undefined);
-	monitorTabChanges();
 }
 
 function checkFirstTime() {
@@ -72,7 +82,7 @@ function openOptions(firstTime) {
 }
 
 function applySavedOptions() {
-	if (!Settings.getValue("reapplySelectedProfile", false))
+	if (!Settings.getValue("reapplySelectedProfile", true))
 		return;
 	
 	var selectedProfile = ProfileManager.getSelectedProfile();
