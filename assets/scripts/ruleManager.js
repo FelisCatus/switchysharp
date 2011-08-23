@@ -489,6 +489,12 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
 		script.push("\tif " + expr + " return " + proxy + ";");
 		u2p.push("\tif " + expr + " return '" + rule.profileId + "';");
 	}
+	if(defaultProfile.proxyExceptions)
+	{
+		var proxyExceptionsList = defaultProfile.proxyExceptions.split(';');
+		for(var i in proxyExceptionsList)
+			script.push("\tif(shExpMatch(host, '" + proxyExceptionsList[i].trim() + "')) return 'DIRECT';");
+	}
 	
 	var proxy = RuleManager.getPacDefaultProxy(defaultProfile);
 	script.push("\treturn " + proxy + ";");
