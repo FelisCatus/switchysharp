@@ -661,7 +661,14 @@ small {
 	display:block;
 	margin:10px;
 	padding:5px;
-	background-color:#ddddff;
+}
+#cycleEnabled li
+{
+	background-color:#E4FFCD;
+}
+#cycleDisabled li
+{
+	background-color:#ddd;
 }
 #quickSwitchDiv ul li div
 {
