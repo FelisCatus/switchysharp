@@ -11,6 +11,18 @@
    "global_textAlign": {
       "message": "left"
    },
+   "message_saveOptions": {
+      "message": "Do you want to save your options?"
+   },
+   "message_errorDownloadingRuleList": {
+      "message": "Error downloading rule list file!"
+   },
+   "message_ruleListUpdated": {
+      "message": "Rule list updated successfully."
+   },
+   "message_SwitchRulesDisabled": {
+      "message": "You must enable switch rules and online rule list first!"
+   },
    "message_cannotReadOptionsBackup": {
       "message": "Oops! Can't read the backup file!"
    },
@@ -73,6 +85,12 @@
    },
    "options_6Hours": {
       "message": "6 Hours"
+   },
+   "options_lastSuccessfulUpdate": {
+      "message": "Last successful update: "
+   },
+   "options_updateListNow": {
+      "message": "Update List Now"
    },
    "options_autoConfig": {
       "message": "Automatic Configuration"
