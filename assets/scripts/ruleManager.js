@@ -694,7 +694,7 @@ RuleManager.isAutomaticModeEnabled = function isAutomaticModeEnabled(currentProf
 
 RuleManager.loadRuleList = function loadRuleList(scheduleNextReload) {
 	if (!RuleManager.isEnabled() || !RuleManager.isRuleListEnabled())
-		return;
+		return null;
 	
 	if (scheduleNextReload) {
 		var interval = Settings.getValue("ruleListReload", 1) * 1000 * 60;
@@ -706,9 +706,9 @@ RuleManager.loadRuleList = function loadRuleList(scheduleNextReload) {
 	var ruleListUrl = Settings.getValue("ruleListUrl");
 	if (!(/^https?:\/\//).test(ruleListUrl)) {
 		Logger.log("Invalid rule list url: (" + ruleListUrl + ")", Logger.Types.error);
-		return;
+		return false;
 	}
-
+	RuleManager.loadRuleListSuccess = true;
 	$.ajax({
 		url: ruleListUrl,
 		success: function(data, textStatus){
@@ -720,12 +720,17 @@ RuleManager.loadRuleList = function loadRuleList(scheduleNextReload) {
 		},
 		error: function(request, textStatus, thrownError){
 			Logger.log("Error downloading rule list file!", Logger.Types.warning);
+			RuleManager.loadRuleListSuccess = false;
 		},
 		dataType: "text",
 		cache: true,
 		async: false,
 		timeout: 10000
 	});
+	
+	if(RuleManager.loadRuleListSuccess)
+		Settings.setValue("lastListUpdate", new Date().toString())
+	return RuleManager.loadRuleListSuccess;
 };
 
 RuleManager.parseRuleList = function parseRuleList(data) {

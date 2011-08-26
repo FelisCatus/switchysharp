@@ -1,4 +1,5 @@
 /*
+/*
 Copyright (c) 2011 Shyc2001 (http://twitter.com/shyc2001)
 This work is based on:
 *"Switchy! Chrome Proxy Manager and Switcher" (by Mohammad Hejazi (mohammadhi at gmail d0t com))
@@ -369,9 +370,32 @@ function loadOptions() {
 	$("#chkReapplySelectedProfile").change();
 	$("#chkConfirmDeletion").change();	
 	
+	$("#lastListUpdate").text(Settings.getValue("lastListUpdate", "Never"));
+	
 	// Done
 	ignoreFieldsChanges = false;
 	anyValueModified = false;
+}
+
+function updateListNow()
+{
+	if(anyValueModified)
+		if(InfoTip.confirmI18n("message_saveOptions"))
+			saveOptions();
+		else
+			return;
+	var result = RuleManager.loadRuleList(true);
+	if(result == null)
+		InfoTip.alertI18n("message_SwitchRulesDisabled");
+	else if(!result)
+		InfoTip.alertI18n("message_errorDownloadingRuleList");
+	else
+	{
+		if (RuleManager.isAutomaticModeEnabled(ProfileManager.getCurrentProfile()))
+			ProfileManager.applyProfile(RuleManager.getAutomaticModeProfile(false));
+		$("#lastListUpdate").text(Settings.getValue("lastListUpdate", new Date().toString()));
+		InfoTip.alertI18n("message_ruleListUpdated");
+	}
 }
 
 function saveOptions() {
@@ -932,7 +956,6 @@ function SwitchySharpBackup(o){
 		return;
 	for (var optionName in o)
 		localStorage[optionName] = o[optionName];
-	Settings.setValue("ruleListEnabled", false); // for security concerns
 	InfoTip.alertI18n("message_successRestoreOptionsBackup");
 	window.location.reload();
 }
