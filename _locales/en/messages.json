@@ -63,7 +63,7 @@
       "message": "You should set the backup file path first.."
    },
    "message_successRestoreOptionsBackup": {
-      "message": "SwitchySharp options restored successfully..\n\nYou should restart Chrome for the new options to take effect."
+      "message": "SwitchySharp options restored successfully."
    },
    "options_12Hours": {
       "message": "12 Hours"
@@ -177,7 +177,7 @@
       "message": "Monitor Proxy Changes"
    },
    "options_monitorProxyChanges_help": {
-      "message": "Repeatedly check for changes in proxy settings done by other applications, and update SwitchySharp icon to reflect those changes."
+      "message": "When proxy settings changes, SwitchySharp will update its icon to reflect those changes."
    },
    "options_moreInfo": {
       "message": "More Info"
@@ -205,12 +205,6 @@
    },
    "options_patternType_help": {
       "message": "\u003Cp\u003EThe type of URL Pattern.\u003C/p\u003E\u003Chr /\u003E\r\n\u003Ctable\u003E\r\n\t\u003Ctr\u003E\r\n\t\t\u003Ctd\u003E\u003Ci\u003EWildcard\u003C/i\u003E\u003C/td\u003E\r\n\t\t\u003Ctd\u003Efor Wildcard matching.\u003C/td\u003E\r\n\t\u003C/tr\u003E\r\n\t\u003Ctr\u003E\r\n\t\t\u003Ctd\u003E\u003Ci\u003ERegExp\u003C/i\u003E\u003C/td\u003E\r\n\t\t\u003Ctd\u003Efor Regular Expression matching.\u003C/td\u003E\r\n\t\u003C/tr\u003E\r\n\u003C/table\u003E"
-   },
-   "options_profile1": {
-      "message": "Profile 1"
-   },
-   "options_profile2": {
-      "message": "Profile 2"
    },
    "options_profileColor": {
       "message": "Profile Color"
@@ -288,7 +282,7 @@
       "message": "Rule List URL"
    },
    "options_ruleListUrl_help": {
-      "message": "The location of Rule List (you can't use local files)."
+      "message": "The location of Rule List (local files is okay)."
    },
    "options_ruleList_help": {
       "message": "Import predefined Switch Rules from online repository."

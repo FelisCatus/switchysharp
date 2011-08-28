@@ -32,7 +32,7 @@ This work is based on:
 	<script src="assets/scripts/infoTip.js" type="text/javascript"></script>
 	<script src="assets/scripts/helpToolTip.js" type="text/javascript"></script>
 </head>
-<body onload="init()" data-data-i18n-values=".style.direction:global_direction;.style.textAlign:global_textAlign">
+<body onload="init()" data-i18n-values=".style.direction:global_direction;.style.textAlign:global_textAlign">
 	<table id="optionsTable">
 		<tr>
 			<td>
@@ -41,7 +41,7 @@ This work is based on:
 						<tr>
 							<td width="100%">
 								<img src="assets/images/icon-128.png" width="50" height="50" class="title" />
-								<span class="title" data-data-i18n-content="options_headerTitle">SwitchySharp Options</span>
+								<span class="title" data-i18n-content="options_headerTitle">SwitchySharp Options</span>
 							</td>
 							<td width="100">
 								<!--img src="assets/images/close.png" class="close" title="Close" onclick="closeWindow();" /-->
@@ -56,11 +56,11 @@ This work is based on:
 				<div id="tabsContainer">
 					<div id="tabProfiles" class="selected">
 						<img src="assets/images/profile.png" valign="bottom" width="16" height="16"> 
-						<span data-data-i18n-content="options_tabProxyProfiles">Proxy Profiles</span> 
+						<span data-i18n-content="options_tabProxyProfiles">Proxy Profiles</span> 
 					</div>
 					<div id="tabRules" class="normal">
 						<img src="assets/images/filter.png" valign="bottom" width="16" height="16"> 
-						<span data-data-i18n-content="options_tabSwitchRules">Switch Rules</span> 
+						<span data-i18n-content="options_tabSwitchRules">Switch Rules</span> 
 					</div>
 					<div id="tabNetwork" class="normal">
 						<img src="assets/images/network.png" valign="bottom" width="16" height="16"> 
@@ -68,11 +68,11 @@ This work is based on:
 					</div>
 					<div id="tabGeneral" class="normal">
 						<img src="assets/images/options.png" valign="bottom" width="16" height="16"> 
-						<span data-data-i18n-content="options_tabGeneral">General</span> 
+						<span data-i18n-content="options_tabGeneral">General</span> 
 					</div>
 					<div id="tabImportExport" class="normal">
 						<img src="assets/images/save.png" valign="bottom" width="16" height="16"> 
-						<span data-data-i18n-content="options_tabImportExport">Import/Export</span> 
+						<span data-i18n-content="options_tabImportExport">Import/Export</span> 
 					</div>
 				</div>
 			</td>
@@ -453,7 +453,7 @@ This work is based on:
 								<input type="file" id="rfile" name="rfile" style="visibility:hidden;position:absolute;" onchange="restoreLocal();" />
 								<button class="button" onclick="javascript:rfile.click();" data-i18n-content="options_restoreLocal">Restore from File</button>
 								</td>
-								<td data-i18n-values="value:options_restoreLocal_help">
+								<td data-i18n-content="options_restoreLocal_help">
 									Restore your SwitchySharp options from a local file.
 								</td>
 							</tr>
