@@ -18,25 +18,21 @@ This work is based on:
     You should have received a copy of the GNU General Public License
     along with SwitchySharp.  If not, see <http://www.gnu.org/licenses/>.
 */
-.help {
+span[data-help] {
 	display: inline-block;
 	width: 14px;
-	margin: -2px 0;
 	height: 14px;
+	margin: -2px 0;
 	background: url("../images/help.png") center bottom no-repeat;
 	opacity: 0.33;
 	cursor: help;
 }
 
-.help:hover {
+span[data-help]:hover {
 	opacity: 1;
 }
 
-.help * {
-	display: none;
-}
-
-#helpTooltip {
+.help {
 	z-index: 1000;
 	position: absolute;
 	background: #e6f0ff;
@@ -48,22 +44,23 @@ This work is based on:
 	line-height: 150%;
 	?font-size: 92%;
 	color: #456;
+	visibility: hidden;
 }
 
-#helpTooltip p {
+.help p {
 	margin: 0.2em 0;
 }
 
-#helpTooltip hr {
+.help hr {
 	border-top: solid 1px #c6d0df;
 	margin: 9px 0px;
 }
 
-#helpTooltip table {
+.help table {
 	border-spacing: 7px;
 }
 
-#helpTooltip td {
+.help td {
 	vertical-align: top;
 	line-height: 150%;
 }

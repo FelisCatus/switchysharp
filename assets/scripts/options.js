@@ -76,15 +76,15 @@ function initUI() {
 			selectedRow[0].profile.proxyMode = ProfileManager.ProxyModes.manual;
 			$("#httpRow, #sameProxyRow, #httpsRow, #ftpRow, #socksRow, #socksVersionRow").removeClass("disabled");
 			$("#httpRow input, #sameProxyRow input, #httpsRow input, #ftpRow input, #socksRow input, #socksVersionRow input").removeAttr("disabled");
-			$("#configUrlRow").addClass("disabled");
-			$("#configUrlRow input").attr("disabled", "disabled");
+			$("#configUrlRow, #importPACButton").addClass("disabled");
+			$("#configUrlRow input, #importPACButton").attr("disabled", "disabled");
 			$("#useSameProxy").change();
 		} else {
 			selectedRow[0].profile.proxyMode = ProfileManager.ProxyModes.auto;
 			$("#httpRow, #sameProxyRow, #httpsRow, #ftpRow, #socksRow, #socksVersionRow").addClass("disabled");
 			$("#httpRow input, #sameProxyRow input, #httpsRow input, #ftpRow input, #socksRow input, #socksVersionRow input").attr("disabled", "disabled");
-			$("#configUrlRow").removeClass("disabled");
-			$("#configUrlRow input").removeAttr("disabled");
+			$("#configUrlRow, #importPACButton").removeClass("disabled");
+			$("#configUrlRow input, #importPACButton").removeAttr("disabled");
 		}
 		onFieldModified(true);
 	});
@@ -397,7 +397,15 @@ function updateListNow()
 		InfoTip.alertI18n("message_ruleListUpdated");
 	}
 }
-
+function apply2All()
+{
+	var id = $("#rulesTable .defaultRow")[0].rule.profileId;
+	if(!InfoTip.confirmI18n("message_apply2All", $("#rulesTable .defaultRow option[value=" + id + "]").text())) return;
+	var rs = $("#rulesTable .tableRow");
+	$("select[name=profileId]", rs).val(id);
+	rs.each(function(i,t){ t.rule.profileId = id; });
+	onFieldModified(true);
+}
 function saveOptions() {
 	// Proxy Profiles
 	var currentProfile = ProfileManager.getCurrentProfile();
@@ -730,8 +738,11 @@ function enterFieldEditMode(cell) {
 	var span = $("span", cell);
 	if (input.is(":visible"))
 		return;
-	
-	input.val(span.text());
+	var v = span.text();
+	if(v == "-")
+		input.val("");
+	else
+		input.val(span.text());
 	input.toggle();
 	span.toggle();
 	input.focus();
@@ -741,9 +752,9 @@ function enterFieldEditMode(cell) {
 function exitFieldEditMode(cell) {
 	var input = $("input", cell);
 	var span = $("span", cell);
-	var newValue = input.val();
+	var newValue = input.val().replace(/(^\s*)|(\s*$)/g, "");
 	if (newValue == "")
-		newValue = "\x0b\x20"; // workaround for jQuery bug (toggling an empty span).
+		newValue = "-"; // workaround for jQuery bug (toggling an empty span).
 		
 	if (!anyValueModified)
 		anyValueModified = (span.text() != newValue);
@@ -935,7 +946,21 @@ function restoreLocal()
 		rfile.value = "";
 	}
 }
-
+function importPAC()
+{
+	if(pfile.files.length>0 && pfile.files[0].name.length>0){
+		var r = new FileReader();
+		r.onload = function(e){
+			$("#proxyConfigUrl").val(selectedRow[0].profile.proxyConfigUrl = e.target.result);
+			onFieldModified(true);
+		};
+		r.onerror = function(e){
+			InfoTip.alertI18n("message_cannotReadOptionsBackup");
+		}
+		r.readAsDataURL(pfile.files[0]);
+		pfile.value = "";
+	}
+}
 function restoreBase64Json(j) {
 		var o;
 	try 

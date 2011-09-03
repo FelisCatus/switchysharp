@@ -174,21 +174,26 @@ RuleManager.ruleExistsForUrl = function ruleExistsForUrl(url) {
 
 RuleManager.downloadPacScript = function downloadPacScript(url) {
 	var result = "";
-
-	$.ajax({
-		url: url,
-		success: function(data, textStatus){
-			result = data;
-		},
-		error: function(request, textStatus, thrownError){
-			Logger.log("Error downloading PAC file!", Logger.Types.warning);
-		},
-		dataType: "text",
-		cache: true,
-		timeout: 10000,
-		async: false
-	});
 	
+	if(url.indexOf("data:") == 0)
+	{
+		result = dataURI.decode(url).data;
+	}
+	else{
+		$.ajax({
+			url: url,
+			success: function(data, textStatus){
+				result = data;
+			},
+			error: function(request, textStatus, thrownError){
+				Logger.log("Error downloading PAC file!", Logger.Types.warning);
+			},
+			dataType: "text",
+			cache: true,
+			timeout: 10000,
+			async: false
+		});
+	}
 	return result;
 };
 

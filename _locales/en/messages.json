@@ -65,6 +65,9 @@
    "message_successRestoreOptionsBackup": {
       "message": "SwitchySharp options restored successfully."
    },
+   "message_apply2All": {
+      "message": "Do you want to apply this profile to all rules? \n\n Selected profile: ($1)"
+   },
    "options_12Hours": {
       "message": "12 Hours"
    },
@@ -97,6 +100,9 @@
    },
    "options_autoConfigUrl": {
       "message": "Auto Config URL"
+   },
+   "options_importPAC": {
+      "message": "Import PAC File"
    },
    "options_autoProxyCompatible": {
       "message": "AutoProxy Compatible List"
@@ -282,7 +288,7 @@
       "message": "Rule List URL"
    },
    "options_ruleListUrl_help": {
-      "message": "The location of Rule List (local files is okay)."
+      "message": "The location of Rule List (you can't use local files)."
    },
    "options_ruleList_help": {
       "message": "Import predefined Switch Rules from online repository."

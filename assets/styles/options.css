@@ -562,6 +562,10 @@ small {
 	-webkit-padding-start: 22px !important;
 }
 
+span.indent{
+	-webkit-padding-start: 16px;
+}
+
 .tab div.indent {
 	-webkit-padding-start: 16px;
 	padding-bottom: 8px;
