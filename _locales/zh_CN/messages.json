@@ -74,6 +74,9 @@
    "message_successRestoreOptionsBackup": {
       "message": "设置导入成功。"
    },
+   "message_apply2All": {
+      "message": "您确定将这个情景模式应用到所有规则吗？\n\n选中的情景模式: ($1)"
+   },
    "options_12Hours": {
       "message": "12 小时"
    },
@@ -100,6 +103,9 @@
    },
    "options_autoConfigUrl": {
       "message": "自动配置的URL"
+   },
+   "options_importPAC": {
+      "message": "导入 PAC 文件"
    },
    "options_autoProxyCompatible": {
       "message": "AutoProxy 兼容列表"
@@ -288,7 +294,7 @@
       "message": "规则列表URL"
    },
    "options_ruleListUrl_help": {
-      "message": "规则列表的地址(可使用本地文件)。"
+      "message": "规则列表的地址(不能使用本地文件)。"
    },
    "options_ruleList_help": {
       "message": "导入在线规则列表。"
@@ -315,7 +321,7 @@
       "message": "启用切换规则"
    },
    "options_switchRulesEnable_help": {
-      "message": "<p>切换规则指定哪个代理应该用于每一个网址。</p><hr />\r\n<p>这个选项被激活时,你就会看到两个项目在主菜单:</p>\r\n<table>\r\n\t<tr>\r\n\t\t<td><i>自动模式</i></td>\r\n\t\t<td>点击这个项目将启动开关的规则。</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td><i>新规则</i></td>\r\n\t\t<td>为当前的网站快速增加一个新的切换规则。</td>\r\n\t</tr>\r\n</table>"
+      "message": "<p>切换规则指定哪个代理应该用于每一个网址。</p><hr />\r\n<p>这个选项被激活时,你可以在弹出菜单看到两个项目：</p>\r\n<table>\r\n\t<tr>\r\n\t\t<td><i>自动模式</i></td>\r\n\t\t<td>点击这个项目将启动开关的规则。</td>\r\n\t</tr>\r\n\t<tr>\r\n\t\t<td><i>新规则</i></td>\r\n\t\t<td>为当前的网站快速增加一个新的切换规则。</td>\r\n\t</tr>\r\n</table>"
    },
    "options_tabGeneral": {
       "message": "通用设置"
