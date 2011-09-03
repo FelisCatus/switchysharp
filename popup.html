@@ -21,11 +21,12 @@ This work is based on:
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<link rel="stylesheet" href="assets/styles/popup.css" type="text/css">
+	<script src="assets/libs/jquery-1.6.2.min.js" type="text/javascript"></script>
+	<script src="assets/libs/parseUri.js" type="text/javascript"></script>
 	<script src="assets/scripts/popup.js" type="text/javascript"></script>
 	<script>
 		quickSwitchProxy();
 	</script>
-	<script src="assets/libs/jquery-1.6.2.min.js" type="text/javascript"></script>
 </head>
 <body onload="init()" data-i18n-values=".style.direction:global_direction;.style.textAlign:global_textAlign">
 	<div id="menu">
@@ -52,6 +53,13 @@ This work is based on:
 			data-i18n-values="title:popup_newRule_help">
 			<img src="assets/images/filter-add.png" /><span data-i18n-content="popup_newRule">New Rule</span>
 		</div>
+		<div class="item" onclick="showTempRule();" id="divDomain" title="Add a temporary rule for the current domain." data-i18n-values="title:popup_newTempRule_help">
+			<div class="icon"></div><span id="spanDomain"></span>
+		</div>
+		<div id="menuAddTempRule" class="item" title="The profile to be applied temporarily for the current domain." style="display:none;" data-i18n-values="title:popup_newTempRule2_help">
+			<select id="cmbTempProfileId"></select>
+		</div>
+		
 		<div id="separatorOptions" class="separator"></div>
 		<div id="menuOptions" class="item" onclick="openOptions();">
 			<img src="assets/images/options.png" /><span data-i18n-content="popup_options">Options</span>
