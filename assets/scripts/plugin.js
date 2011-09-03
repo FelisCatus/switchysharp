@@ -209,9 +209,9 @@ ProxyPlugin.setProxy = function(proxyMode, proxyString, proxyExceptions, proxyCo
 					if (profile.proxyHttp)
 						config.rules.proxyForHttp = ProxyPlugin._parseProxy(profile.proxyHttp);
 					if (profile.proxyFtp)
-						config.rules.proxyForHttps = ProxyPlugin._parseProxy(profile.proxyFtp);
+						config.rules.proxyForFtp = ProxyPlugin._parseProxy(profile.proxyFtp);
 					if (profile.proxyHttps)
-						config.rules.proxyForFtp = ProxyPlugin._parseProxy(profile.proxyHttps);
+						config.rules.proxyForHttps = ProxyPlugin._parseProxy(profile.proxyHttps);
 				}
 			}
 			tmpbypassList = null;
