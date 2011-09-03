@@ -26,6 +26,10 @@ var extension;
 //var I18n;
 var activeTabUrl = undefined;
 
+var activeTabDomain = null;
+
+var autoEnabled = false;
+
 function init() {
 	extension = chrome.extension.getBackgroundPage();
 	ProfileManager = extension.ProfileManager;
@@ -33,14 +37,18 @@ function init() {
 	Settings = extension.Settings;
 	Utils = extension.Utils;
 	I18n = extension.I18n;
-
+	autoEnabled = RuleManager.isEnabled();
 	I18n.process(document);
 	document.body.style.visibility = "visible";
 	
 	buildMenuItems();
 	initUI();
 }
-
+function showTempRule()
+{
+	$("#divDomain").remove();
+	$("#menuAddTempRule").show();
+}
 function initUI() {
 	$("#about, #addRule .close").click(closePopup);
 
@@ -101,6 +109,10 @@ function closePopup() {
 	window.close();
 }
 
+function refreshTab() {
+	chrome.tabs.executeScript(null, { code: "history.go(0);" });
+}
+
 function openOptions() {
 	closePopup();
 	extension.openOptions();
@@ -148,7 +160,7 @@ function showAbout() {
 	$("#about").css("visibility", "visible");					// ....
 }
 
-function showAddRule() {	
+function showAddRule() {
 	var lastProfileId = Settings.getValue("quickRuleProfileId");
 	var lastPatternType = Settings.getValue("quickRulePatternType", RuleManager.PatternTypes.wildcard);
 	if (lastPatternType == "regex") // backward compatibility
@@ -157,15 +169,17 @@ function showAddRule() {
 	var combobox = $("#cmbProfileId");
 	var profiles = ProfileManager.getSortedProfileArray();
 	var directProfile = ProfileManager.directConnectionProfile;
+
 	var item = $("<option>").attr("value", directProfile.id).text(directProfile.name);
 	item[0].profile = directProfile;
 	combobox.append(item);
+	
 	$.each(profiles, function(key, profile) {
 		var item = $("<option>").attr("value", profile.id).text(profile.name);
-		item[0].profile = profile;		
-		combobox.append(item);
+		item[0].profile = profile;
 		if (lastProfileId == profile.id)
 			item.attr("selected", "selected");
+		combobox.append(item);
 	});
 	
 	$("#cmbPatternType option[value='" + lastPatternType + "']").attr("selected", "selected");
@@ -179,8 +193,8 @@ function showAddRule() {
 			else
 				previousPatternType = RuleManager.PatternTypes.regexp;
 			
-			if (patternField.val() == RuleManager.urlToRule(activeTabUrl, previousPatternType).urlPattern)
-				patternField.val(RuleManager.urlToRule(activeTabUrl, patternTypeField.val()).urlPattern);
+			if (patternField.val() == RuleManager.domainToRule(activeTabDomain, previousPatternType).urlPattern)
+				patternField.val(RuleManager.domainToRule(activeTabDomain, patternTypeField.val()).urlPattern);
 		}
 		
 		if (RuleManager.ruleExists(patternField.val(), patternTypeField.val())) {
@@ -195,14 +209,11 @@ function showAddRule() {
 		$(this).change();
 	});
 	
-	chrome.tabs.getSelected(undefined, function(tab) {
-		activeTabUrl = tab.url;
-		var rule = RuleManager.urlToRule(tab.url, $("#cmbPatternType option:selected").val());
-		$("#addRule")[0].rule = rule;
-		$("#txtUrlPattern").val(rule.urlPattern).change();
-		$("#txtRuleName").val(rule.name);
-		$("#txtRuleName").focus().select();
-	});
+	var rule = RuleManager.domainToRule(activeTabDomain, $("#cmbPatternType option:selected").val());
+	$("#addRule")[0].rule = rule;
+	$("#txtUrlPattern").val(rule.urlPattern).change();
+	$("#txtRuleName").val(rule.name);
+	$("#txtRuleName").focus().select();
 	
 	var currentBodyDirection = document.body.style.direction;	// ....workaround for a Chrome bug
 	document.body.style.direction = "ltr";						// ....prevents resizing the popup
@@ -239,16 +250,28 @@ function addSwitchRule() {
 	
 	Settings.setValue("quickRuleProfileId", rule.profileId);
 	Settings.setValue("quickRulePatternType", rule.patternType);
+	
+	refreshTab();
 }
 
 function clearMenuProxyItems() {
 	$("#proxies .item").remove();
 }
 
-function buildMenuProxyItems(currentProfile) {	
+var addTempRule = function addTempRule(){
+	var combobox = $("#cmbTempProfileId");
+	closePopup();
+	RuleManager.addTempRule(activeTabDomain, combobox.val());
+	refreshTab();
+}
+
+function buildMenuProxyItems(currentProfile) {
 	var profiles = ProfileManager.getSortedProfileArray();
+	var pp = RuleManager.LastProfile;
 	var menu = $("#proxies");
 	var templateItem = $("#proxies .templateItem");
+	var combobox = $("#cmbTempProfileId");
+	combobox.change(addTempRule);
 	for (var i in profiles) {
 		var profile = profiles[i];
 		var item = templateItem.clone().attr({
@@ -264,6 +287,14 @@ function buildMenuProxyItems(currentProfile) {
 			item.addClass("checked");
 		
 		menu.append(item);
+		
+		if(autoEnabled && pp){
+			item = $("<option>").attr("value", profile.id).text(profile.name);
+			item[0].profile = profile;
+			if (pp.id == profile.id)
+				item.attr("selected", "selected");
+			combobox.append(item);
+		}
 	}
 	
 	$("#separatorProxies").show();
@@ -289,9 +320,15 @@ function buildMenuProxyItems(currentProfile) {
 function buildMenuDirectConnectionItem(currentProfile) {
 	var item = $("#directConnection");
 	item.click(onSelectProxyItem);
-	item[0].profile = ProfileManager.directConnectionProfile;
+	var profile = ProfileManager.directConnectionProfile;
+	item[0].profile = profile;
 	if (currentProfile.proxyMode == ProfileManager.ProxyModes.direct)
 		item.addClass("checked");
+	else if(autoEnabled){
+		item = $("<option>").attr("value", profile.id).text(profile.name);
+		item[0].profile = profile;
+		$("#cmbTempProfileId").append(item);
+	}
 }
 
 function buildMenuSystemProxyItem(currentProfile) {
@@ -304,10 +341,16 @@ function buildMenuSystemProxyItem(currentProfile) {
 
 function buildMenuAutomaticModeItem(currentProfile) {
 	var item = $("#automaticMode");
-	if (!RuleManager.isEnabled()) {
-		item.hide();
-		$("#menuAddRule").hide();
-		return;
+	if (autoEnabled && (activeTabDomain = RuleManager.LastDomain)) {
+			$("#spanDomain").text(activeTabDomain);
+	}
+	else
+	{
+		$("#menuAddRule, #divDomain").hide();
+		if(!autoEnabled){
+			item.hide();
+			return;
+		}
 	}
 	var autoProfile = RuleManager.getAutomaticModeProfile(false);
 	item.click(onSelectProxyItem);
@@ -344,6 +387,7 @@ function onSelectProxyItem() {
 	
 	if (profile.isAutomaticModeProfile)
 		checkRulesFirstTimeUse();
+	refreshTab();
 }
 
 function checkRulesFirstTimeUse() {

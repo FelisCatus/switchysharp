@@ -138,6 +138,8 @@ function setIconInfo(profile, preventProxyChanges) {
 	setIconTitle(title);
 }
 
+RuleManager.LastProfile = null;
+
 function setAutoSwitchIcon(url) {
 	if (!RuleManager.isAutomaticModeEnabled(undefined))
 		return false;
@@ -149,7 +151,7 @@ function setAutoSwitchIcon(url) {
 		return true;
 	}
 	
-	var profile = RuleManager.getProfileByUrl(url);
+	var profile = RuleManager.LastProfile = RuleManager.getProfileByUrl(url);
 	var iconPath = iconDir + "icon-auto-" + (profile.color || "blue") + ".png";
 
 	chrome.browserAction.setIcon({ path: iconPath });

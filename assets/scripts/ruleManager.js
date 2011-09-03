@@ -29,6 +29,8 @@ RuleManager.rules = {};
 
 RuleManager.allRules = {};
 
+RuleManager.TempRules = {};
+
 RuleManager.enabled = true;
 
 RuleManager.ruleListEnabled = false;
@@ -124,6 +126,13 @@ RuleManager.addRule = function addRule(rule) {
 		ProfileManager.applyProfile(RuleManager.getAutomaticModeProfile(false));
 };
 
+RuleManager.addTempRule = function addTempRule(domain, profileId) {
+	RuleManager.TempRules[domain] = profileId;
+	
+	if (RuleManager.isAutomaticModeEnabled(undefined))
+		ProfileManager.applyProfile(RuleManager.getAutomaticModeProfile(false));
+};
+
 RuleManager.getSortedRuleArray = function getSortedRuleArray() {
 	var rules = RuleManager.getRules();
 	var ruleArray = [];
@@ -141,7 +150,10 @@ RuleManager.getProfileByUrl = function getProfileByUrl(url) {
 	{
 		var i = url.indexOf("#");
 		if(i>0) url = url.substr(0, i);
-		return ProfileManager.getProfile(RuleManager._u2p(url, RuleManager.shExpMatch, RuleManager.regExpMatch));
+		RuleManager.LastUri = url;
+		var host = parseUri(RuleManager.LastUri)["authority"];
+		RuleManager.LastDomain = host;
+		return ProfileManager.getProfile(RuleManager._u2p(url, host, RuleManager.shExpMatch, RuleManager.regExpMatch));
 	}
 };
 
@@ -271,18 +283,15 @@ RuleManager.matchPattern = function matchPattern(url, pattern, patternType) {
 	return RuleManager.shExpMatch(url, pattern);
 };
 
-RuleManager.urlToRule = function urlToRule(url, patternType) {
-	var urlParts = parseUri(url);
-	var pattern = "*://" + urlParts["authority"] + "/*";
+RuleManager.domainToRule = function domainToRule(domain, patternType) {
 	var nameId = RuleManager.generateId("Quick Rule ");
-	var rule = {
+	return {
 		id: nameId,
 		name: nameId,
-		urlPattern: (patternType == RuleManager.PatternTypes.regexp ? RuleManager.wildcardToRegexp(pattern) : pattern),
+		urlPattern: patternType == RuleManager.PatternTypes.regexp ? "^https?://" + RuleManager.wildcardToRegexp(domain) + "/" : "*://" + domain + "/*",
 		patternType: patternType,
 		profileId : ProfileManager.directConnectionProfile.id
 	};
-	return rule;
 };
 
 RuleManager.generateId = function generateId(ruleName) {
@@ -470,17 +479,14 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
 	script.push("function regExpMatch(url, pattern) {");
 	script.push("\ttry { return new RegExp(pattern).test(url); } catch(ex) { return false; }");
 	script.push("}\n");
-	script.push('function shExpMatch(url, pattern) {');
-	script.push('\tpattern = pattern.replace(/\\./g, "\\\\.");');
-	script.push('\tpattern = pattern.replace(/\\*/g, ".*");');
-	script.push('\tpattern = pattern.replace(/\\?/g, ".");');;
-	script.push('\tvar regexp = new RegExp("^" + pattern + "$")');
-	script.push('\treturn regexp.test(url);');
-	script.push('}\n;');
 	script.push("function FindProxyForURL(url, host) {");
 	
-	var u2p = [ "(function(url, shExpMatch, regExpMatch){" ];
-	
+	var u2p = [ "(function(url, host, shExpMatch, regExpMatch){" ];
+	for (var i in RuleManager.TempRules) {
+		var profileId = RuleManager.TempRules[i];
+		script.push("\tif (host == '" + i + "') return " + RuleManager.getPacRuleProxy(profileId) + ";");
+		u2p.push("\tif (host == '" + i + "') return '" + profileId + "';");
+	}
 	for (var i in rules) {
 		var rule = rules[i];
 		var expr = RuleManager.ruleToExpr(rule);
@@ -903,43 +909,4 @@ RuleManager.contains = function contains(rule) {
 };
 
 RuleManager.init();
-
-///////////////////////////////////////////////////////////////////////////
-//   parseUri 1.2.2                                                      //
-//   (c) Steven Levithan <stevenlevithan.com>                            //
-//   MIT License                                                         //
-///////////////////////////////////////////////////////////////////////////
-
-function parseUri(str) {
-	var options = parseUri.options;
-	var matches = options.parser[options.strictMode ? "strict" : "loose"].exec(str);
-	var uri = {};
-	var i = 14;
-
-	while (i--) {
-		uri[options.key[i]] = matches[i] || "";
-	}
-	uri[options.query.name] = {};
-	uri[options.key[12]].replace(options.query.parser, function($0, $1, $2) {
-		if ($1)
-			uri[options.query.name][$1] = $2;
-	});
-
-	return uri;
-};
-
-parseUri.options = {
-	strictMode : false,
-	key : [ "source", "protocol", "authority", "userInfo", "user", "password",
-			"host", "port", "relative", "path", "directory", "file", "query",
-			"anchor" ],
-	query : {
-		name : "queryKey",
-		parser : /(?:^|&)([^&=]*)=?([^&]*)/g
-	},
-	parser : {
-		strict : /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-		loose : /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
-	}
-};
 

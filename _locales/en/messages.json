@@ -356,6 +356,12 @@
    "popup_autoSwitchMode": {
       "message": "Auto Switch Mode"
    },
+   "popup_newTempRule_help": {
+      "message": "Add a temporary rule for the current domain."
+   },
+   "popup_newTempRule2_help": {
+      "message": "The profile to be applied temporarily for the current domain."
+   },
    "popup_autoSwitchMode_help": {
       "message": "Automatically choose the proper proxy profile \nfor each URL, based on Switch Rules."
    },

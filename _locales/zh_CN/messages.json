@@ -365,6 +365,12 @@
    "popup_autoSwitchMode": {
       "message": "自动切换模式"
    },
+   "popup_newTempRule_help": {
+      "message": "为当前域名添加一条临时规则。"
+   },
+   "popup_newTempRule2_help": {
+      "message": "对当前域名临时应用的代理情景模式。"
+   },
    "popup_autoSwitchMode_help": {
       "message": "为每个网站自动选择合适的情景模式。"
    },
