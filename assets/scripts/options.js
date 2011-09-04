@@ -1034,7 +1034,7 @@ function parseProxy(proxy, port) {
 }
 
 function joinProxy(proxy, port, defaultPort) {
-	if (proxy.indexOf(":") >= 0)
+	if (proxy.indexOf(":") >= 0 && (proxy[0] != '[' || proxy[proxy.length - 1] != ']'))
 		return proxy;
 	
 	if (port != undefined && port.trim().length == 0)
