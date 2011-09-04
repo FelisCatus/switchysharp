@@ -122,6 +122,12 @@
    "options_confirmDeletion_help": {
       "message": "Show a confirmation dialog for deletion of proxy profiles or switch rules."
    },
+   "options_refreshTab": {
+      "message": "Refresh current tab on profile change"
+   },
+   "options_refreshTab_help": {
+      "message": "Refresh the current tab when changing profile via popup menu or quick switch."
+   },
    "options_defaultRule": {
       "message": "Default Rule"
    },

@@ -123,7 +123,13 @@
       "message": "删除情景模式或规则时需要确认"
    },
    "options_confirmDeletion_help": {
-      "message": "如果选中此规则，在您要删除情景模式或规则时， SwitchySharp 会询问您是否确定。"
+      "message": "如果选中此选项，在您要删除情景模式或规则时， SwitchySharp 会询问您是否确定。"
+   },
+   "options_refreshTab": {
+      "message": "当更改情景模式时刷新当前标签"
+   },
+   "options_refreshTab_help": {
+      "message": "当在弹出菜单中或快速切换中更改情景模式时，刷新当前标签页。"
    },
    "options_cycledProfiles": {
       "message": "循环切换以下情景模式: "
