@@ -137,8 +137,20 @@ ProxyPlugin.updateProxy = function (config){
 ProxyPlugin._parseProxy = function(str) {
 	if (str) {
 		var proxy = {scheme: 'http', host: '', port: 80};
-		var t1 = str.split(':');
-		proxy.host = t1[0];
+		var t1 = null;
+		var t = str.indexOf(']') + 1;
+		if(t>0)
+		{
+			t1 = new Array();
+			t1.push(proxy.host = str.substr(0, t));
+			if(t < str.length - 1)
+				t1.push(str.substr(t + 1));
+		}
+		else
+		{
+			t1 = str.split(':');
+			proxy.host = t1[0];
+		}
 		var t2 = proxy.host.split('=');
 		if (t2.length > 1) {
 			proxy.scheme = t2[0] == 'socks' ? 'socks4' : t2[0];
