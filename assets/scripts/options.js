@@ -200,7 +200,7 @@ function initUI() {
 	}).disableSelection();
 	
 
-	$("#chkReapplySelectedProfile, #chkConfirmDeletion").change(function() {
+	$("#chkReapplySelectedProfile, #chkConfirmDeletion, #chkRefreshTab").change(function() {
 		onFieldModified(false);
 	});
 	
@@ -366,9 +366,12 @@ function loadOptions() {
 		$("#chkReapplySelectedProfile").attr("checked", "checked");
 	if (Settings.getValue("confirmDeletion", true))
 		$("#chkConfirmDeletion").attr("checked", "checked");
+	if (Settings.getValue("refreshTab", false))
+		$("#chkRefreshTab").attr("checked", "checked");
 	
 	$("#chkReapplySelectedProfile").change();
 	$("#chkConfirmDeletion").change();	
+	$("#chkRefreshTab").change();	
 	
 	$("#lastListUpdate").text(Settings.getValue("lastListUpdate", "Never"));
 	
@@ -496,7 +499,7 @@ function saveOptions() {
 
 	Settings.setValue("reapplySelectedProfile", ($("#chkReapplySelectedProfile").is(":checked")));
 	Settings.setValue("confirmDeletion", ($("#chkConfirmDeletion").is(":checked")));
-	
+	Settings.setValue("refreshTab", ($("#chkRefreshTab").is(":checked")));
 	
 	extension.setIconInfo();
 	InfoTip.showMessageI18n("message_optionsSaved", InfoTip.types.success);

@@ -103,6 +103,7 @@ function quickSwitchProxy() {
 	extension.setIconInfo(profile);	
 	
 	window.close();
+	refreshTab();
 }
 
 function closePopup() {
@@ -110,7 +111,8 @@ function closePopup() {
 }
 
 function refreshTab() {
-	chrome.tabs.executeScript(null, { code: "history.go(0);" });
+	if(Settings.getValue("refreshTab", false))
+		chrome.tabs.executeScript(null, { code: "history.go(0);" });
 }
 
 function openOptions() {
