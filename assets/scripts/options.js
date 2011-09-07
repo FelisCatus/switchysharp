@@ -977,14 +977,15 @@ function restoreBase64Json(j) {
 		InfoTip.alertI18n("message_cannotRestoreOptionsBackup");
 		return;
 	}
-	SwitchySharpBackup(o);
+	restoreObject(o);
 }
-function SwitchySharpBackup(o){
+function restoreObject(o){
 	if (!InfoTip.confirmI18n("message_restoreOptionsBackup"))
 		return;
 	for (var optionName in o)
 		localStorage[optionName] = o[optionName];
 	InfoTip.alertI18n("message_successRestoreOptionsBackup");
+	Settings.refreshCache();
 	window.location.reload();
 }
 

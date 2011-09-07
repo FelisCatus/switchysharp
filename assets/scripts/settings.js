@@ -68,3 +68,7 @@ Settings.getObject = function getObject(key) {
 	
 	return JSON.parse(localStorage[key]);
 };
+
+Settings.refreshCache = function refreshCache() {
+	Settings.configCache = {};
+};
