@@ -32,6 +32,7 @@ var autoEnabled = false;
 
 function init() {
 	extension = chrome.extension.getBackgroundPage();
+	App = extension.App;
 	ProfileManager = extension.ProfileManager;
 	RuleManager = extension.RuleManager;
 	Settings = extension.Settings;
@@ -51,7 +52,9 @@ function showTempRule()
 }
 function initUI() {
 	$("#about, #addRule .close").click(closePopup);
-
+	
+	$(".versionNumber").text(App.version);
+	
 	// Reverse buttons order on Linux and Mac OS X
 	if (!Utils.OS.isWindows) {
 		var btnSaveContainer = $("#btnSave").parent();

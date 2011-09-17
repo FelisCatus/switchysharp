@@ -23,28 +23,39 @@ var iconInactivePath = "assets/images/inactive.png";
 var refreshInterval = 10000;
 var refreshTimer;
 
+var App = chrome.app.getDetails();
+
+var InitComplete = false;
+
 function init() {
-	
-	var _init = function(){
-		checkFirstTime();
-		setIconInfo(undefined);
-		monitorTabChanges();
-	};
-	
 	if(Settings.getValue("ruleListEnabled", false))
 		ProxyPlugin.setProxyCallback = function(){
 			RuleManager.loadRuleList(true);
 			applySavedOptions();
+			InitComplete = true;
 		};
-	
-	if(!Settings.getValue("reapplySelectedProfile", true)){
-		ProxyPlugin.updateProxyCallback = _init;
-		ProxyPlugin.init();
-	}else{
-		ProxyPlugin.init();
-		_init();
+	else
+	{
+		ProxyPlugin.setProxyCallback = function(){
+			InitComplete = true;
+		}
 	}
+	//if(!Settings.getValue("reapplySelectedProfile", true)){
+	//var _init = function(){
+	//	checkFirstTime();
+	//	setIconInfo(undefined);
+	//	monitorTabChanges();
+	//};
+	//	ProxyPlugin.updateProxyCallback = _init;
+	//	ProxyPlugin.init();
+	//}
+	
+	ProxyPlugin.init();
+	checkFirstTime();
+	monitorTabChanges();
+	
 	applySavedOptions();
+	
 }
 
 function checkFirstTime() {
@@ -82,12 +93,17 @@ function openOptions(firstTime) {
 }
 
 function applySavedOptions() {
-	if (!Settings.getValue("reapplySelectedProfile", true))
-		return;
+	var pid = Settings.getValue("startupProfileId", "");
+	var profile = null;
 	
-	var selectedProfile = ProfileManager.getSelectedProfile();
-	if (selectedProfile != undefined)
-		ProfileManager.applyProfile(selectedProfile);
+	if(pid == "")
+		profile = ProfileManager.getSelectedProfile();
+	else
+		profile = ProfileManager.getProfile(pid);
+	
+	if (profile != undefined)
+		ProfileManager.applyProfile(profile);
+	setIconInfo(profile);
 }
 
 function setIconBadge(text) {

@@ -34,6 +34,7 @@ var switchRulesEnabled;
 
 function init() {
 	extension = chrome.extension.getBackgroundPage();
+	if(!extension.InitComplete) return;
 	ProfileManager = extension.ProfileManager;
 	RuleManager = extension.RuleManager;
 	Settings = extension.Settings;
@@ -200,7 +201,11 @@ function initUI() {
 	}).disableSelection();
 	
 
-	$("#chkReapplySelectedProfile, #chkConfirmDeletion, #chkRefreshTab").change(function() {
+	$("#cmbStartupProfile").change(function() {
+		onFieldModified(false);
+	});
+	
+	$("#chkConfirmDeletion, #chkRefreshTab").change(function() {
 		onFieldModified(false);
 	});
 	
@@ -305,16 +310,20 @@ function loadOptions() {
 	
 	$("#chkQuickSwitch").change();
 	
-	$("#cycleEnabled, #cycleDisabled, #cmbDefaultRuleProfile, #cmbRuleListProfile").empty();
+	$("#cycleEnabled, #cycleDisabled, #cmbDefaultRuleProfile, #cmbRuleListProfile, #cmbStartupProfile").empty();
 	var directProfile = ProfileManager.directConnectionProfile;
 	var autoProfile = ProfileManager.autoSwitchProfile;
-	var item = $("<option>").attr("value", directProfile.id).text(directProfile.name);
+	var systemProfile = ProfileManager.systemProxyProfile;
+	//var item = $("<option>").attr("value", directProfile.id).text(directProfile.name);
 
-	item[0].profile = directProfile;
-	$("#cmbDefaultRuleProfile").append(item);
-	item = item.clone();
-	item[0].profile = directProfile;
-	$("#cmbRuleListProfile").append(item);
+	//item[0].profile = directProfile;
+	//$("#cmbDefaultRuleProfile").append(item);
+	//item = item.clone();
+	//item[0].profile = directProfile;
+	//$("#cmbRuleListProfile").append(item);
+	
+	
+	profiles.unshift(directProfile);
 	
 	var ps = new Array();
 	
@@ -336,9 +345,25 @@ function loadOptions() {
 		
 		ps[profile.id] = profile;
 	});
-
+	
 	ps[autoProfile.id] = autoProfile;
-	ps[directProfile.id] = directProfile;
+	ps[systemProfile.id] = systemProfile;
+	
+	var startupProfileId = Settings.getValue("startupProfileId", "");
+	
+	var item = $("<option>").attr("value", "").text(I18n.getMessage("options_lastSelectedProfile"));
+	item[0].profile = { id : "" };
+	$("#cmbStartupProfile").append(item);
+	
+	for(var i in ps){
+		var profile = ps[i];
+		var ii = $("<option>").attr("value", profile.id).text(profile.name);
+		ii[0].profile = profile;
+		
+		if (startupProfileId == profile.id)
+			ii.attr("selected", "selected");
+		$("#cmbStartupProfile").append(ii);
+	};
 	
 	var cycleEnabled = $("#cycleEnabled");
 	var cycleDisabled = $("#cycleDisabled");
@@ -362,16 +387,14 @@ function loadOptions() {
 	
 	$("#quickSwitchDiv ul").sortable("refresh");
 
-	if (Settings.getValue("reapplySelectedProfile", true))
-		$("#chkReapplySelectedProfile").attr("checked", "checked");
+	
 	if (Settings.getValue("confirmDeletion", true))
 		$("#chkConfirmDeletion").attr("checked", "checked");
 	if (Settings.getValue("refreshTab", false))
 		$("#chkRefreshTab").attr("checked", "checked");
 	
-	$("#chkReapplySelectedProfile").change();
-	$("#chkConfirmDeletion").change();	
-	$("#chkRefreshTab").change();	
+	$("#chkConfirmDeletion").change();
+	$("#chkRefreshTab").change();
 	
 	$("#lastListUpdate").text(Settings.getValue("lastListUpdate", "Never"));
 	
@@ -497,7 +520,8 @@ function saveOptions() {
 	});
 	Settings.setObject("quickSwitchProfiles", QSP);
 
-	Settings.setValue("reapplySelectedProfile", ($("#chkReapplySelectedProfile").is(":checked")));
+	Settings.setValue("startupProfileId", $("#cmbStartupProfile option:selected")[0].profile.id);
+	
 	Settings.setValue("confirmDeletion", ($("#chkConfirmDeletion").is(":checked")));
 	Settings.setValue("refreshTab", ($("#chkRefreshTab").is(":checked")));
 	

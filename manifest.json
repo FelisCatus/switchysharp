@@ -3,18 +3,19 @@
    "background_page": "main.html",
    "browser_action": {
       "default_icon": "assets/images/icon-blue.png",
-      "default_title": "SwitchySharp",
+      "default_title": "[Loading...]",
       "popup": "popup.html"
    },
    "default_locale": "en",
-   "description": "Manage and switch between multiple proxies quickly and easily.",
+   "description": "A proxy extension which can be used to manage and switch between multiple proxies quickly and easily.",
    "icons": {
+      "16" : "assets/images/icon.png",
       "128": "assets/images/icon-128.png"
    },
-   "name": "SwitchySharp",
+   "name": "Proxy SwitchySharp",
    "options_page": "options.html",
-   "permissions": [ "proxy", "tabs", "http://*/", "https://*/" ],
-   "version": "1.8.28",
+   "permissions": [ "proxy", "tabs", "<all_urls>" ],
+   "version": "1.9.1",
    "minimum_chrome_version" : "13.0.0",
    "homepage_url" : "https://chrome.google.com/webstore/detail/dpplabbmogkhghncfbfdeeokoefdjegm"
 }

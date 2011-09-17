@@ -417,15 +417,18 @@ This work is based on:
 						</div>
 						
 						<hr />
-						<div class="title" data-i18n-content="options_miscOptions">Misc Options</div>
+						
+						<div class="title">
+							<span data-i18n-content="options_startupProfile">Startup Profile:</span>
+							<span data-help="startupProfile"/>
+						</div>
 						<p>
-							<label>
-								<span class="indent"><input id="chkReapplySelectedProfile" type="checkbox"/> 
-									<span data-i18n-content="options_reapplyLastProfile">Auto apply last selected proxy profile on startup.</span>
-									<span data-help="reapplyLastProfile"/>
-								</span>
-							</label>
+							<select id="cmbStartupProfile"></select>
 						</p>
+						
+						<hr />
+						
+						<div class="title" data-i18n-content="options_miscOptions">Misc Options</div>
 						<p>
 							<label>
 								<span class="indent"><input id="chkConfirmDeletion" type="checkbox"/> 
@@ -561,14 +564,14 @@ This work is based on:
 			<p>Allows you to switch among proxy profiles in one click (by clicking on SwitchySharp icon). When you click on the icon, SwitchySharp will apply the following profiles in their order.</p><hr />
 			<p><b>Note:</b> After enabling this feature you won't be able to see SwitchySharp main menu when clicking on SwitchySharp icon. To open Option page again, right-click on the icon and then click "Options".</p>
 		</div>
-		<div class="help" id="help_reapplyLastProfile">
-			<p data-i18n-content="options_reapplyLastProfile_help">If this option is checked SwitchySharp will apply last user-selected proxy profile on Chrome startup.</p>
-		</div>
 		<div class="help" id="help_confirmDeletion">
 			<p data-i18n-content="options_confirmDeletion_help">Show a confirmation dialog for deletion of proxy profiles or switch rules.</p>
 		</div>
 		<div class="help" id="help_refreshTab">
 			<p data-i18n-content="options_refreshTab_help">Refresh the current tab when changing profile via popup menu or quick switch.</p>
+		</div>
+		<div class="help" id="help_startupProfile">
+			<p data-i18n-content="options_startupProfile_help">The profile to be applied on extension startup.</p>
 		</div>
 	</div>
 </body>

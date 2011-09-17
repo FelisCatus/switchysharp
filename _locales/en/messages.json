@@ -254,8 +254,14 @@
    "options_notCycledProfiles": {
       "message": "Not cycled Profiles (drag to the above box to enable):"
    },
-   "options_reapplyLastProfile": {
-      "message": "Auto apply last selected proxy profile on startup."
+   "options_startupProfile_help": {
+      "message": "Startup Profile:"
+   },
+   "options_startupProfile_help": {
+      "message": "The profile to be applied on extension startup."
+   },
+   "options_lastSelectedProfile": {
+      "message": "(Last selected profile)"
    },
    "options_reapplyLastProfile_help": {
       "message": "If this option is checked SwitchySharp will apply last user-selected proxy profile on Chrome startup."

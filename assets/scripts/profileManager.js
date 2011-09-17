@@ -113,12 +113,12 @@ ProfileManager.getProfile = function getProfile(profileId) {
 	var profile;
 	if (profileId == ProfileManager.directConnectionProfile.id)
 		profile = ProfileManager.directConnectionProfile;
-	else {
-		if (profileId == ProfileManager.systemProxyProfile)
-			profile = ProfileManager.systemProxyProfile;
-		else
-			profile = ProfileManager.profiles[profileId];
-	}
+	else if (profileId == ProfileManager.systemProxyProfile.id)
+		profile = ProfileManager.systemProxyProfile;
+	else if (profileId == ProfileManager.autoSwitchProfile.id)
+		profile = ProfileManager.autoSwitchProfile;
+	else
+		profile = ProfileManager.profiles[profileId];
 
 	profile = ProfileManager.normalizeProfile(profile);
 	return profile;

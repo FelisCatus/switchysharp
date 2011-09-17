@@ -374,7 +374,7 @@ small {
 }
 
 #proxyProfiles td input, .rulesTable td input {
-	width: 100% !important;
+	width: 97% !important;
 	min-height: 24px;
 	height: 100%;
 	padding: 0px 3px;
