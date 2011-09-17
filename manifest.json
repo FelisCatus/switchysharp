@@ -15,7 +15,7 @@
    "name": "Proxy SwitchySharp",
    "options_page": "options.html",
    "permissions": [ "proxy", "tabs", "<all_urls>" ],
-   "version": "1.9.1",
+   "version": "1.9.32",
    "minimum_chrome_version" : "13.0.0",
    "homepage_url" : "https://chrome.google.com/webstore/detail/dpplabbmogkhghncfbfdeeokoefdjegm"
 }
