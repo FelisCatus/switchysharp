@@ -34,7 +34,6 @@ var switchRulesEnabled;
 
 function init() {
 	extension = chrome.extension.getBackgroundPage();
-	if(!extension.InitComplete) return;
 	ProfileManager = extension.ProfileManager;
 	RuleManager = extension.RuleManager;
 	Settings = extension.Settings;
@@ -572,7 +571,10 @@ function resetOptions() {
 		return;
 
 	extension.localStorage.clear();
+	Settings.refreshCache();
 	alert("\nOptions reset successfully..");
+	loadOptions();
+	anyValueModified = false;
 }
 
 function onFieldModified(isChangeInProfile) {
