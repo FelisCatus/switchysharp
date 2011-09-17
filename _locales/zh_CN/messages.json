@@ -257,8 +257,14 @@
    "options_quickSwitch_help": {
       "message": "<p>可以让您一键切换代理配置 \n(点击SwitchyShap图标即可)。</p><hr />\n<p><b>注意:</b> 启用此特性后，您无法通过单击 SwitchySharp 图标弹出配置菜单。你需要右击SwitchySharp图标并选择\"选项\"来进入配置页面。</p>"
    },
-   "options_reapplyLastProfile": {
-      "message": "启动时自动应用上次的情景模式。"
+   "options_startupProfile": {
+      "message": "启动情景模式："
+   },
+   "options_startupProfile_help": {
+      "message": "扩展启动时应用的情景模式。"
+   },
+   "options_lastSelectedProfile": {
+      "message": "(上次使用的情景模式)"
    },
    "options_reapplyLastProfile_help": {
       "message": "如果这个选项被选中 SwitchySharp 启动时将应用用户最后选择的情景模式"
