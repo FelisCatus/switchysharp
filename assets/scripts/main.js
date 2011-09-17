@@ -103,6 +103,8 @@ function applySavedOptions() {
 	
 	if (profile != undefined)
 		ProfileManager.applyProfile(profile);
+	else
+		InitComplete = true;
 	setIconInfo(profile);
 }
 
