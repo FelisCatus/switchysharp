@@ -412,15 +412,22 @@ function updateListNow()
 	var result = RuleManager.loadRuleList(true);
 	if(result == null)
 		InfoTip.alertI18n("message_SwitchRulesDisabled");
-	else if(!result)
-		InfoTip.alertI18n("message_errorDownloadingRuleList");
-	else
-	{
-		if (RuleManager.isAutomaticModeEnabled(ProfileManager.getCurrentProfile()))
+	
+	$("#updatingListIcon").css("visibility", "visible");
+	
+	RuleManager.loadRuleListCallback = function(success){
+		$("#updatingListIcon").css("visibility", "hidden");
+		if(!success)
+		{
+			InfoTip.alertI18n("message_errorDownloadingRuleList");
+		}
+		else
+		{
 			ProfileManager.applyProfile(RuleManager.getAutomaticModeProfile(false));
-		$("#lastListUpdate").text(Settings.getValue("lastListUpdate", new Date().toString()));
-		InfoTip.alertI18n("message_ruleListUpdated");
-	}
+			$("#lastListUpdate").text(Settings.getValue("lastListUpdate", new Date().toString()));
+			InfoTip.alertI18n("message_ruleListUpdated");
+		}
+	};
 }
 function apply2All()
 {

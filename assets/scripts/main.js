@@ -28,17 +28,20 @@ var App = chrome.app.getDetails();
 var InitComplete = false;
 
 function init() {
-	if(Settings.getValue("ruleListEnabled", false))
+	if (RuleManager.isEnabled() && RuleManager.isRuleListEnabled()){
 		ProxyPlugin.setProxyCallback = function(){
+			RuleManager.loadRuleListCallback = function(success){
+				applySavedOptions();
+				InitComplete = true;
+			};
 			RuleManager.loadRuleList(true);
-			applySavedOptions();
-			InitComplete = true;
 		};
+	}
 	else
 	{
 		ProxyPlugin.setProxyCallback = function(){
 			InitComplete = true;
-		}
+		};
 	}
 	//if(!Settings.getValue("reapplySelectedProfile", true)){
 	//var _init = function(){

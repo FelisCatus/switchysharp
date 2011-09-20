@@ -705,7 +705,7 @@ RuleManager.isAutomaticModeEnabled = function isAutomaticModeEnabled(currentProf
 
 RuleManager.loadRuleList = function loadRuleList(scheduleNextReload) {
 	if (!RuleManager.isEnabled() || !RuleManager.isRuleListEnabled())
-		return null;
+		return RuleManager.loadRuleListCallback = null;
 	
 	if (scheduleNextReload) {
 		var interval = Settings.getValue("ruleListReload", 1) * 1000 * 60;
@@ -715,34 +715,44 @@ RuleManager.loadRuleList = function loadRuleList(scheduleNextReload) {
 	}
 	
 	var ruleListUrl = Settings.getValue("ruleListUrl");
-	if (!(/^https?:\/\//).test(ruleListUrl)) {
-		Logger.log("Invalid rule list url: (" + ruleListUrl + ")", Logger.Types.error);
-		return false;
-	}
-	RuleManager.loadRuleListSuccess = true;
+	//if (!(/^https?:\/\//).test(ruleListUrl)) {
+	//	Logger.log("Invalid rule list url: (" + ruleListUrl + ")", Logger.Types.error);
+	//	return false;
+	//}
+	
 	$.ajax({
 		url: ruleListUrl,
 		success: function(data, textStatus){
-			if (data.length <= 1024 * 1024) // bigger than 1 megabyte
+			if (data.length <= 1024 * 1024){ // bigger than 1 megabyte
 				RuleManager.parseRuleList(data);
+				Settings.setValue("lastListUpdate", new Date().toString());
+				RuleManager.doLoadRuleListCallback(true);
+			}
 			else {
 				Logger.log("Too big rule list file!", Logger.Types.error);
+				RuleManager.doLoadRuleListCallback(false);
 			}
 		},
 		error: function(request, textStatus, thrownError){
 			Logger.log("Error downloading rule list file!", Logger.Types.warning);
-			RuleManager.loadRuleListSuccess = false;
+			RuleManager.doLoadRuleListCallback(false);
 		},
 		dataType: "text",
 		cache: true,
-		async: false,
+		async: true,
 		timeout: 10000
 	});
-	
-	if(RuleManager.loadRuleListSuccess)
-		Settings.setValue("lastListUpdate", new Date().toString())
-	return RuleManager.loadRuleListSuccess;
+	return true;
 };
+
+RuleManager.doLoadRuleListCallback = function doLoadRuleListCallback(success)
+{
+	if(RuleManager.loadRuleListCallback)
+	{
+		RuleManager.loadRuleListCallback(true);
+		RuleManager.loadRuleListCallback = null;
+	}
+}
 
 RuleManager.parseRuleList = function parseRuleList(data) {
 	if (Settings.getValue("ruleListAutoProxy", false))
