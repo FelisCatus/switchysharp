@@ -749,7 +749,7 @@ RuleManager.doLoadRuleListCallback = function doLoadRuleListCallback(success)
 {
 	if(RuleManager.loadRuleListCallback)
 	{
-		RuleManager.loadRuleListCallback(true);
+		RuleManager.loadRuleListCallback(success);
 		RuleManager.loadRuleListCallback = null;
 	}
 }
