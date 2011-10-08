@@ -1,4 +1,13 @@
 {
+   "manifest_appName": {
+      "message": "Proxy SwitchySharp"
+   },
+   "manifest_appDescription": {
+      "message": "Manage and switch between multiple proxies quickly & easily. Based on \"Proxy Switchy!\" & \"SwitchyPlus\""
+   },
+   "manifest_iconTitle": {
+      "message": "[Loading...]"
+   },
    "global_direction": {
       "message": "ltr"
    },
@@ -379,9 +388,6 @@
    },
    "popup_cancel": {
       "message": "Cancel"
-   },
-   "popup_chromeExtensionGallery": {
-      "message": "Chrome Extension Gallery"
    },
    "popup_copyright": {
       "message": "Copyright &copy; 2011 @Shyc2001.<br />Some rights reserved."
