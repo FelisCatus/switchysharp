@@ -423,9 +423,10 @@ function updateListNow()
 		}
 		else
 		{
-			ProfileManager.applyProfile(RuleManager.getAutomaticModeProfile(false));
-			$("#lastListUpdate").text(Settings.getValue("lastListUpdate", new Date().toString()));
-			InfoTip.alertI18n("message_ruleListUpdated");
+			ProfileManager.applyProfile(RuleManager.getAutomaticModeProfile(false), function(){
+				$("#lastListUpdate").text(Settings.getValue("lastListUpdate", new Date().toString()));
+				InfoTip.alertI18n("message_ruleListUpdated");
+			});
 		}
 	};
 }
