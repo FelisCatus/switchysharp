@@ -184,36 +184,63 @@ RuleManager.ruleExistsForUrl = function ruleExistsForUrl(url) {
 	return false;
 };
 
-RuleManager.downloadPacScript = function downloadPacScript(url) {
-	var result = "";
-	
+RuleManager.downloadPacScript = function downloadPacScript(url, callback) {
 	if(url.indexOf("data:") == 0)
 	{
-		result = dataURI.decode(url).data;
+		var result = dataURI.decode(url).data;
+		doCallback(callback, result);
+	}
+	else if(url.indexOf("file:") == 0){
+		window.webkitResolveLocalFileSystemURL(url,
+			function(entry){
+				entry.file(
+					function(file){
+						var reader = new FileReader();
+						reader.onload = function(e) {
+							doCallback(callback, e.target.result);
+						};
+						reader.onerror = function(e){
+							Logger.log("Error downloading PAC file!", Logger.Types.warning);
+							doCallback(callback, null);
+						}
+						reader.readAsText(file);
+					},
+					function(error){
+						Logger.log("Error downloading PAC file!", Logger.Types.warning);
+						doCallback(callback, null);
+					}
+				);
+				doCallback(callback, result);
+			},
+			function(error){
+				Logger.log("Error downloading PAC file!", Logger.Types.warning);
+				doCallback(callback, null);
+			}
+		);
 	}
 	else{
 		$.ajax({
 			url: url,
 			success: function(data, textStatus){
-				result = data;
+				doCallback(callback, data);
 			},
 			error: function(request, textStatus, thrownError){
 				Logger.log("Error downloading PAC file!", Logger.Types.warning);
+				doCallback(callback, null);
 			},
 			dataType: "text",
 			cache: true,
 			timeout: 10000,
-			async: false
+			async: true
 		});
 	}
-	return result;
 };
 
-RuleManager.downloadProfilesPacScripts = function downloadProfilesPacScripts() {
+RuleManager.downloadProfilesPacScripts = function downloadProfilesPacScripts(callback) {
 	var scripts = {};
 	var rules = RuleManager.getRules();
 	rules["default"] = RuleManager.getDefaultRule();
-	var counter = 1;
+	var tl = new TaskList();
 	for (var i in rules) {
 		var rule = rules[i];
 		var profile = ProfileManager.getProfile(rule.profileId);
@@ -223,34 +250,43 @@ RuleManager.downloadProfilesPacScripts = function downloadProfilesPacScripts() {
 		if (profile.proxyMode != ProfileManager.ProxyModes.auto)
 			continue;
 		
-		var script = RuleManager.downloadPacScript(profile.proxyConfigUrl);
-		if (!script || script.length == 0) {
-			scripts[profile.id] = {functionName: "", script: ""};
-			continue;
-		}
-		
-		var functionName = "Proxy" + counter++;
-		script = "var " + functionName + " = (function(){\r\n\t" + 
-				 script.replace(/([\r\n]+)/g, "\r\n\t") + "\r\n\treturn FindProxyForURL;\r\n})();\r\n";
-		scripts[profile.id] = {functionName: functionName, script: script};
+		tl.addTask(profile.id, (function(url){
+			return function(callback){ RuleManager.downloadPacScript(url, callback) }
+		})(profile.proxyConfigUrl));
 	}
-	
-	return scripts;
+	tl.whenDone(function(scripts){
+		var counter = 1;
+		for (var i in scripts) {
+			var script = scripts[i];
+			if (!script || script.length == 0) {
+				scripts[i] = {functionName: "", script: ""};
+				continue;
+			}
+			
+			var functionName = "Proxy" + counter++;
+			script = "var " + functionName + " = (function(){\r\n\t" + 
+					 script.replace(/([\r\n]+)/g, "\r\n\t") + "\r\n\treturn FindProxyForURL;\r\n})();\r\n";
+			scripts[i] = {functionName: functionName, script: script};
+		}
+		RuleManager.profilesScripts = scripts;
+		doCallback(callback, scripts);
+	});
 };
 
-RuleManager.saveAutoPacScript = function saveAutoPacScript() {
-	RuleManager.profilesScripts = RuleManager.downloadProfilesPacScripts();
-
-	var script = RuleManager.generateAutoPacScript();
-	try {
-		var result = ProxyPlugin.writeAutoPacFile(script);
-		if (result != 0 || result != "0")
-			throw "Error Code (" + result + ")";
-		
-	} catch(ex) {
-		Logger.log("Plugin Error @RuleManager.saveAutoPacScript() > " + ex.toString(), Logger.Types.error);		
-		return false;
-	}
+RuleManager.saveAutoPacScript = function saveAutoPacScript(callback) {
+	RuleManager.downloadProfilesPacScripts(function(){
+		var script = RuleManager.generateAutoPacScript();
+		try {
+			var result = ProxyPlugin.writeAutoPacFile(script);
+			if (result != 0 || result != "0")
+				throw "Error Code (" + result + ")";
+			
+		} catch(ex) {
+			Logger.log("Plugin Error @RuleManager.saveAutoPacScript() > " + ex.toString(), Logger.Types.error);
+			return false;
+		}
+		doCallback(callback);
+	});
 };
 
 RuleManager.wildcardToRegexp = function wildcardToRegexp(pattern) {

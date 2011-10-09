@@ -103,7 +103,7 @@ function quickSwitchProxy() {
 	window.stop();
 	
 	ProfileManager.applyProfile(profile);
-	extension.setIconInfo(profile);	
+	extension.setIconInfo(profile);
 	
 	window.close();
 	refreshTab();

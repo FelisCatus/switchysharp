@@ -425,10 +425,10 @@
    "popup_version": {
       "message": "version"
    },
-  "proxy_systemProxy": {
+   "proxy_systemProxy": {
      "message": "System Proxy"
   },
-  "proxy_autoSwitch": {
+   "proxy_autoSwitch": {
      "message": "Auto Switch"
   },
   "proxy_systemProxy_help": {
@@ -439,5 +439,8 @@
    },
    "proxy_directConnection_help": {
       "message": "Disable Proxy"
+   },
+   "proxy_autoSwitchIconTitle": {
+      "message": "Auto Switch Mode\nActive Page Proxy: $1"
    }
 }

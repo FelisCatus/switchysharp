@@ -174,7 +174,7 @@ ProfileManager.getCurrentProfile = function getCurrentProfile() {
 	return profile;
 };
 
-ProfileManager.applyProfile = function applyProfile(profile) {
+ProfileManager.applyProfile = function applyProfile(profile, callback) {
 	Settings.setObject("selectedProfile", profile);
 	
 	if(profile.id == "auto")
@@ -183,10 +183,22 @@ ProfileManager.applyProfile = function applyProfile(profile) {
 	}
 	if (profile.isAutomaticModeProfile)
 	{
-		RuleManager.saveAutoPacScript();
-		profile.proxyConfigUrl = ProxyPlugin.autoPacScriptPath;
+		RuleManager.saveAutoPacScript((function(p){ 
+			return function(){
+				p.proxyConfigUrl = ProxyPlugin.autoPacScriptPath;
+				ProfileManager.setProxyConfig(p);
+				doCallback(callback, p);
+			};
+		})(profile));
 	}
+	else
+	{
+		ProfileManager.setProxyConfig(profile);
+		doCallback(callback, profile);
+	}
+}
 
+ProfileManager.setProxyConfig = function setProxyConfig(profile) {
 	var proxyString = ProfileManager.buildProxyString(profile);
 	
 	try {
@@ -196,7 +208,7 @@ ProfileManager.applyProfile = function applyProfile(profile) {
 			throw "Error Code (" + result + ")";
 		
 	} catch(ex) {
-		Logger.log("Plugin Error @ProfileManager.applyProfile(" + ProfileManager.profileToString(profile, false) + ") > " +
+		Logger.log("Plugin Error @ProfileManager.setProxyConfig(" + ProfileManager.profileToString(profile, false) + ") > " +
 			ex.toString(), Logger.Types.error);
 	}
 };

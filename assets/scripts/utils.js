@@ -43,3 +43,50 @@ Utils.compareStrings = function compareStrings(s1, s2) {
 Utils.compareNamedObjects = function compareNamedObjects(o1, o2) {
 	return Utils.compareStrings(o1.name, o2.name);
 };
+
+
+function TaskList() {
+	var taskCount = 0;
+	var states = {};
+	var callback = null;
+	
+	var taskCompleted = function(id, state) {
+		states[id] = state;
+		taskCount--;
+		if(taskCount <= 0 && callback != null)
+		{
+			callback(states);
+			callback = null;
+		}
+	};
+	
+	this.addTask = function(id, task) {
+		taskCount++;
+		task((function(i, c){
+			return function(state){
+				c(i, state);
+			};
+		})(id, taskCompleted));
+	};
+	
+	this.whenDone = function(cb){
+		if(taskCount <= 0)
+		{
+			cb(states);
+			callback = null;
+		}
+		else
+			callback = cb;
+	}
+	
+	this.getTaskCount = function() {
+		return taskCount;
+	};
+	
+	this.isCompleted = function() { return taskCount <= 0; };
+	
+	this.getStates = function() { return states; };
+}
+function doCallback(callback, data) {
+	if(typeof(callback) != "undefined" && callback != null) callback(data);
+}

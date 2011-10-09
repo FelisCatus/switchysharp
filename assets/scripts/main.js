@@ -176,9 +176,9 @@ function setAutoSwitchIcon(url) {
 	var iconPath = iconDir + "icon-auto-" + (profile.color || "blue") + ".png";
 
 	chrome.browserAction.setIcon({ path: iconPath });
-
-	var title = "Auto Switch Mode";
-		title += "\nActive Page Proxy: " + profile.name;
+	
+	
+	var title = I18n.getMessage("proxy_autoSwitchIconTitle", profile.name);
 	
 	setIconTitle(title);
 	
