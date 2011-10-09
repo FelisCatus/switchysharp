@@ -216,7 +216,7 @@
       "message": "新建规则"
    },
    "options_noProxyFor": {
-      "message": "这些地址不使用代理："
+      "message": "不代理的地址:"
    },
    "options_noProxyFor_help": {
       "message": "使用分号 ( ; ) 分隔。"
@@ -451,5 +451,8 @@
    },
    "proxy_systemProxy_help": {
       "message": "使用系统代理设置 (需要重启)"
+   },
+   "proxy_autoSwitchIconTitle": {
+      "message": "自动切换模式\n本页情景模式: $1"
    }
 }

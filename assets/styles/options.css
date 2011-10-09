@@ -524,11 +524,12 @@ small {
 }
 
 #profileDetails td:nth-child(2) {
-	width: 65%;
+	width: 80%;
+	white-space: normal;
 }
 
 #profileDetails td:nth-child(4) {
-	width: 35%;
+	width: 20%;
 	white-space: normal;
 }
 
@@ -604,27 +605,27 @@ span.indent{
 	font-style: italic;
 } 
 
-#ruleListTable {
+#ruleListsTable {
 	?table-layout: fixed;
 }
-
-#ruleListTable td:nth-child(2) {
+/*
+#ruleListsTable td:nth-child(2) {
 	width: 70%;
 }
 
-#ruleListTable td:nth-child(5) {
+#ruleListsTable td:nth-child(5) {
 	width: 30%;
 }
 
-#ruleListTable td:nth-child(3) {
+#ruleListsTable td:nth-child(3) {
 	width: 0%;
 }
-
-#ruleListTable select {
+*/
+#ruleListsTable select {
 	height: 22px;
 }
 
-#ruleListTable input, #ruleListTable select {
+#ruleListsTable input, #ruleListsTable select {
 	width: 100%;
 }
 
