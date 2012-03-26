@@ -631,7 +631,7 @@ RuleManager.generateAutoPacScript = function generateAutoPacScript() {
 					rules["__ruleW" + i] = {
 						urlPattern: urlPattern,
 						patternType: RuleManager.PatternTypes.wildcard,
-						profileId : ruleListProfileId,
+						profileId : defaultProfile.id,
 						proxy: defaultProxy
 					};
 				}
@@ -643,7 +643,7 @@ RuleManager.generateAutoPacScript = function generateAutoPacScript() {
 					rules["__ruleR" + i] = {
 						urlPattern: urlPattern,
 						patternType: RuleManager.PatternTypes.regexp,
-						profileId : ruleListProfileId,
+						profileId : defaultProfile.id,
 						proxy: defaultProxy
 					};
 				}
