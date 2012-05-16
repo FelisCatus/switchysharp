@@ -328,6 +328,16 @@ RuleManager.ruleToString = function ruleToString(rule, prettyPrint) {
 
 RuleManager.ruleToExpr = function ruleToExpr(rule) {
 	var urlPattern = rule.urlPattern || "";
+	
+	// Check Non-ASCII chars
+	for (var i = 0; i < urlPattern.length; i++) {
+		var code = urlPattern.charCodeAt(i);
+		if (code >= 128) {
+			alert('Invalid non-ASCII char "' + urlPattern[i] + '" (U+' + code.toString(16).toUpperCase() +  ')' + " in " + urlPattern);
+			return '(false)';
+		}
+	}
+	
 	if (rule.patternType == RuleManager.PatternTypes.wildcard) {
 		if(urlPattern[0] == "@")
 			urlPattern = urlPattern.substring(1);
@@ -339,21 +349,21 @@ RuleManager.ruleToExpr = function ruleToExpr(rule) {
 				urlPattern += "*";
 			}
 	}
-    // just declare to see whether regular expression rule is valid
-    try {
-        if (rule.patternType == RuleManager.PatternTypes.regexp) {
-            var tmp = new RegExp(urlPattern);
-        }
-        else {
-            var tmp = new RegExp(RuleManager.wildcardToRegexp(urlPattern));
-        }
-    }
-    catch(e) {
-        delete tmp;
-        alert("Invalid " + (rule.patternType == RuleManager.PatternTypes.regexp ? "regular expression" : "wildcard") + " : " + urlPattern);
-        return '(false)';
-    }
-    delete tmp;
+	// just declare to see whether regular expression rule is valid
+	try {
+			if (rule.patternType == RuleManager.PatternTypes.regexp) {
+					var tmp = new RegExp(urlPattern);
+			}
+			else {
+					var tmp = new RegExp(RuleManager.wildcardToRegexp(urlPattern));
+			}
+	}
+	catch(e) {
+			delete tmp;
+			alert("Invalid " + (rule.patternType == RuleManager.PatternTypes.regexp ? "regular expression" : "wildcard") + " : " + urlPattern);
+			return '(false)';
+	}
+	delete tmp;
 
 	var matchFunc = (rule.patternType == RuleManager.PatternTypes.regexp ? "regExpMatch" : "shExpMatch");
 	var script = "(";
