@@ -367,7 +367,7 @@ RuleManager.ruleToExpr = function ruleToExpr(rule) {
 
 	var matchFunc = (rule.patternType == RuleManager.PatternTypes.regexp ? "regExpMatch" : "shExpMatch");
 	var script = "(";
-	script += matchFunc + "(url, '" + urlPattern + "')";
+	script += matchFunc + "(url, " + JSON.stringify(urlPattern) + ")";
 	if (rule.patternType != RuleManager.PatternTypes.regexp)
 	{
 		var urlPattern2 = null;
@@ -376,7 +376,7 @@ RuleManager.ruleToExpr = function ruleToExpr(rule) {
 		
 		if(urlPattern2)
 		{
-			script += " || shExpMatch(url, '" + urlPattern2 + "')";
+			script += " || shExpMatch(url, " + JSON.stringify(urlPattern2) + ")";
 		}
 	}
 
