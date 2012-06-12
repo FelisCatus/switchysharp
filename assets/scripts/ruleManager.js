@@ -861,7 +861,7 @@ RuleManager.parseAutoProxyRuleList = function parseAutoProxyRuleList(data) {
 		}
 		else if (line.substr(0, 2) == "||") {
 			patternType = RuleManager.PatternTypes.regexp;
-			line = '^[\\\\w\\\\-]+:\\\\/+(?!\\\\/)(?:[^\\\\/]+\\\\.)?' + RuleManager.wildcardToRegexp(line.substring(2));
+			line = '^[\\w\\-]+:\\/+(?!\\/)(?:[^\\/]+\\.)?' + RuleManager.wildcardToRegexp(line.substring(2));
 		}
 		else if (line[0] == "|"){
 			patternType = RuleManager.PatternTypes.wildcard;
