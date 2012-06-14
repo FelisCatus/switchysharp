@@ -109,7 +109,8 @@ ProxyPlugin.updateProxy = function (config){
 			}
 			ProxyPlugin.proxyServer = Settings.setValue('proxyServer', ProfileManager.buildProxyString(profile));
 			profile = null;
-			ProxyPlugin.proxyExceptions = Settings.setValue('proxyExceptions', config.rules.bypassList.join(';'));
+			ProxyPlugin.proxyExceptions = Settings.setValue('proxyExceptions',
+				config.rules.bypassList ? config.rules.bypassList.join(';') : '');
 			ProxyPlugin.proxyConfigUrl = Settings.setValue('proxyConfigUrl', '');
 			break;
 		case 'pac_script':
