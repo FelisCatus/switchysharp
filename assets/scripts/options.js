@@ -3,7 +3,7 @@
  Copyright (c) 2011 Shyc2001 (http://twitter.com/shyc2001)
  This work is based on:
  *"Switchy! Chrome Proxy Manager and Switcher" (by Mohammad Hejazi (mohammadhi at gmail d0t com))
- *"SwitchyPlus" by @gh05tw01f (http://twitter.com/gh05tw01f)
+ *"SwitchyPlus" by @ayanamist (http://twitter.com/ayanamist)
 
  This file is part of SwitchySharp.
  SwitchySharp is free software: you can redistribute it and/or modify
