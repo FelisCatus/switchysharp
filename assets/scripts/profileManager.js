@@ -192,14 +192,8 @@ ProfileManager.applyProfile = function applyProfile(profile, callback) {
     }
     if (profile.isAutomaticModeProfile) {
         RuleManager.saveAutoPacScript();
+        profile.proxyConfigUrl = ProxyPlugin.autoPacScriptPath;
     }
-    else {
-        ProfileManager.setProxyConfig(profile);
-        doCallback(callback, profile);
-    }
-};
-
-ProfileManager.setProxyConfig = function setProxyConfig(profile) {
     var proxyString = ProfileManager.buildProxyString(profile);
 
     try {
@@ -209,7 +203,7 @@ ProfileManager.setProxyConfig = function setProxyConfig(profile) {
             throw "Error Code (" + result + ")";
 
     } catch (ex) {
-        Logger.log("Plugin Error @ProfileManager.setProxyConfig(" + ProfileManager.profileToString(profile, false) + ") > " +
+        Logger.log("Plugin Error @ProfileManager.applyProfile(" + ProfileManager.profileToString(profile, false) + ") > " +
             ex.toString(), Logger.Types.error);
     }
 };
