@@ -34,7 +34,7 @@ This work is based on:
     <script src="assets/scripts/infoTip.js" type="text/javascript"></script>
     <script src="assets/scripts/helpToolTip.js" type="text/javascript"></script>
 </head>
-<body onload="init()" data-i18n-values=".style.direction:global_direction;.style.textAlign:global_textAlign">
+<body data-i18n-values=".style.direction:global_direction;.style.textAlign:global_textAlign">
 <table id="optionsTable">
 <tr>
     <td>
@@ -98,18 +98,18 @@ This work is based on:
                     <tr class="templateRow">
                         <td style="width:100%" data-i18n-content="options_untitledProfile">[Untitled Profile]</td>
                         <td style="width:28px">
-                            <div class="color" title="Profile Color" onclick="changeColor();"
+                            <div class="color" title="Profile Color"
                                  data-i18n-values="title:options_profileColor">
                                 <div></div>
                             </div>
                         </td>
                         <td style="width:30px">
-                            <div class="delete" title="Delete Profile" onclick="deleteRow();"
+                            <div class="delete row" title="Delete Profile"
                                  data-i18n-values="title:options_deleteProfile"></div>
                         </td>
                     </tr>
                 </table>
-                <button class="button" onclick="newRow();">
+                <button class="button" id="btn-new">
                     <img src="assets/images/add.png" alt="add"/>
                     <span data-i18n-content="options_newProfile">New Profile</span>
                 </button>
@@ -203,9 +203,8 @@ This work is based on:
                     </tr>
                     <tr class="indent">
                         <td colspan="4">
-                            <input type="file" id="pfile" name="pfile" style="visibility:hidden;position:absolute;"
-                                   onchange="importPAC();"/>
-                            <button class="button" onclick="pfile.click();"
+                            <input type="file" id="pfile" name="pfile" style="visibility:hidden;position:absolute;"/>
+                            <button class="button"
                                     data-i18n-content="options_importPAC" id="importPACButton">Import PAC File
                             </button>
                         </td>
@@ -275,7 +274,7 @@ This work is based on:
                         <select name="profileId"></select></div>
                 </td>
                 <td>
-                    <div class="delete" title="Delete Rule" onclick="deleteRuleRow();"
+                    <div class="delete rule" title="Delete Rule"
                          data-i18n-values="title:options_deleteRule"></div>
                 </td>
             </tr>
@@ -294,10 +293,10 @@ This work is based on:
                     <div>
                         <select id="cmbDefaultRuleProfile" name="profileId"></select></div>
                 </td>
-                <td><img src="assets/images/filter.png" alt="Apply profile to all rules" onclick="apply2All();"/></td>
+                <td><img src="assets/images/filter.png" alt="Apply profile to all rules" id="apply2All"/></td>
             </tr>
         </table>
-        <button class="button" id="btnNewRule" onclick="newRuleRow(undefined, true);">
+        <button class="button" id="btnNewRule">
             <img src="assets/images/add.png" alt="add"/>
             <span data-i18n-content="options_newRule">New Rule</span>
         </button>
@@ -359,7 +358,7 @@ This work is based on:
                 id="lastListUpdate"></span>
             <img src="assets/images/loading.gif" style="width:16px;height:16px;visibility:hidden;" alt="Loading"
                  id="updatingListIcon"/>
-            <button class="button" onclick="updateListNow();" data-i18n-content="options_updateListNow">Update List
+            <button class="button" id="updateListNow" data-i18n-content="options_updateListNow">Update List
                 Now
             </button>
         </div>
@@ -392,7 +391,7 @@ This work is based on:
     <table class="optionGroup">
         <tr class="section">
             <td>
-                <button class="button" onclick="exportPacFile();" data-i18n-content="options_exportPacFile">Export PAC
+                <button class="button" id="exportPacFile" data-i18n-content="options_exportPacFile">Export PAC
                     File
                 </button>
             </td>
@@ -402,7 +401,7 @@ This work is based on:
         </tr>
         <tr class="section">
             <td>
-                <button class="button" onclick="exportRuleList();" data-i18n-content="options_exportRuleList">Export
+                <button class="button" id="exportRuleList" data-i18n-content="options_exportRuleList">Export
                     Rule List
                 </button>
             </td>
@@ -416,7 +415,7 @@ This work is based on:
     <table id="exportRulesTable" class="optionGroup">
         <tr class="section">
             <td>
-                <button class="button" onclick="makeBackup();" data-i18n-content="options_makeBackup">Make Backup
+                <button class="button" id="makeBackup" data-i18n-content="options_makeBackup">Make Backup
                 </button>
             </td>
             <td data-i18n-content="options_makeBackup_help">
@@ -425,9 +424,8 @@ This work is based on:
         </tr>
         <tr class="section">
             <td>
-                <input type="file" id="rfile" name="rfile" style="visibility:hidden;position:absolute;"
-                       onchange="restoreLocal();"/>
-                <button class="button" onclick="rfile.click();" data-i18n-content="options_restoreLocal">
+                <input type="file" id="rfile" name="rfile" style="visibility:hidden;position:absolute;"/>
+                <button class="button" id="RestoreFileButton" data-i18n-content="options_restoreLocal">
                     Restore from File
                 </button>
             </td>
@@ -437,7 +435,7 @@ This work is based on:
         </tr>
         <tr class="section">
             <td>
-                <button class="button" onclick="restoreBackup();" data-i18n-content="options_restoreBackup">Restore from
+                <button class="button" id="restoreBackup" data-i18n-content="options_restoreBackup">Restore from
                     Online
                 </button>
             </td>
@@ -508,18 +506,18 @@ This work is based on:
     <table>
         <tr>
             <td style="width:100%">
-                <button class="button" id="btnResetOptions" onclick="resetOptions();"
+                <button class="button" id="btnResetOptions" id="resetOptions"
                         data-i18n-content="options_resetOptions">Reset Options
                 </button>
             </td>
             <td>
-                <button class="button bold" id="btnSave" onclick="saveOptions();" data-i18n-content="options_save">
+                <button class="button bold" id="btnSave" id="saveOptions" data-i18n-content="options_save">
                     Save
                 </button>
             </td>
             <td></td>
             <td>
-                <button class="button" id="btnClose" onclick="closeWindow();" data-i18n-content="options_close">Close
+                <button class="button" id="btnClose" id="closeWindow" data-i18n-content="options_close">Close
                 </button>
             </td>
         </tr>
