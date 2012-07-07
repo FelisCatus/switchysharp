@@ -43,7 +43,7 @@ var dataURI = {
         if (charset) {
             // Only support UTF-8 decoding
             if (charset.toUpperCase() === "UTF-8") {
-                data = decodeURIComponent(encodeURI(uri.data));
+                data = decodeURIComponent(escape(uri.data));
             } else {
                 throw new Error("Unsupported character encoding: " + charset);
             }
@@ -62,7 +62,7 @@ var dataURI = {
         if (charset) {
             // Only support UTF-8 encoding
             if (charset.toUpperCase() === "UTF-8") {
-                data = decodeURI(encodeURIComponent(data));
+                data = unescape(encodeURIComponent(data));
             } else {
                 throw new Error("Unsupported character encoding: " + charset);
             }
