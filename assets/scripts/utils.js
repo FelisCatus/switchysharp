@@ -43,7 +43,3 @@ Utils.compareStrings = function compareStrings(s1, s2) {
 Utils.compareNamedObjects = function compareNamedObjects(o1, o2) {
     return Utils.compareStrings(o1.name, o2.name);
 };
-
-function doCallback(callback, data) {
-    if (typeof(callback) != "undefined" && callback != null) callback(data);
-}
