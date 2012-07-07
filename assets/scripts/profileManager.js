@@ -393,7 +393,6 @@ ProfileManager.contains = function contains(profile) {
             }
         }
     }
-    return false;
 };
 
 ProfileManager.init();
