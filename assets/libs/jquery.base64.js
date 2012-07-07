@@ -47,7 +47,7 @@
 
     var keyString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
-    var UTF8Encode = function (string) {
+    var utf8Encode = function (string) {
         string = string.replace(/\x0d\x0a/g, "\x0a");
         var output = "";
         for (var n = 0; n < string.length; n++) {
@@ -66,7 +66,7 @@
         return output;
     };
 
-    var UTF8Decode = function (input) {
+    var utf8Decode = function (input) {
         var string = "";
         var i = 0;
         var c = c1 = c2 = 0;
@@ -94,7 +94,7 @@
             var output = "";
             var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
             var i = 0;
-            input = UTF8Encode(input);
+            input = utf8Encode(input);
             while (i < input.length) {
                 chr1 = input.charCodeAt(i++);
                 chr2 = input.charCodeAt(i++);
@@ -134,7 +134,7 @@
                     output = output + String.fromCharCode(chr3);
                 }
             }
-            output = UTF8Decode(output);
+            output = utf8Decode(output);
             return output;
         }
     });
