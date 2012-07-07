@@ -19,82 +19,76 @@ This work is based on:
     along with SwitchySharp.  If not, see <http://www.gnu.org/licenses/>.
 */
 #infoTipContainer {
-	margin-top: -1px;
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: -100px;
-	line-height: 21px;
-	?font-weight: bold;
-	font-size: 9pt;
-	text-align: center;
-	z-index: 100;
+    margin-top: -1px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -100px;
+    line-height: 21px;
+    font-size: 9pt;
+    text-align: center;
+    z-index: 100;
 }
 
 #infoTipContainer > div {
-	display: inline-block;
-	-webkit-box-shadow: 0px 1px 4px #ddd;
-	padding: 8px 27px 8px 43px;
-	border-radius: 0px 0px 5px 5px;
-	color: #458;
-	border: solid 1px #cde;
-	background: #edf5ff url("../images/info.png") 22px 9px no-repeat;
-	text-align: left;
+    display: inline-block;
+    -webkit-box-shadow: 0 1px 4px #ddd;
+    padding: 8px 27px 8px 43px;
+    border-radius: 0 0 5px 5px;
+    color: #458;
+    border: solid 1px #cde;
+    background: #edf5ff url("../images/info.png") 22px 9px no-repeat;
+    text-align: left;
 }
 
 #infoTipContainer .close {
-	float: right;
-	width: 16px;
-	height: 16px;
-	margin-right: -23px;
-	margin-top: -10px;
-	padding: 5px;
-	background: url("../images/close-tip.png") center no-repeat;
-	cursor: pointer;
-	opacity: 0.6;
-	display: none;
-	?border: solid 1px #cde;
+    float: right;
+    width: 16px;
+    height: 16px;
+    margin-right: -23px;
+    margin-top: -10px;
+    padding: 5px;
+    background: url("../images/close-tip.png") center no-repeat;
+    cursor: pointer;
+    opacity: 0.6;
+    display: none;
 }
 
 #infoTipContainer .close:hover {
-	opacity: 1;
+    opacity: 1;
 }
 
 #infoTipContainer.info div {
-	color: #458;
-	border: solid 1px #cde;
-	background: #edf5ff url("../images/info.png") 22px 9px no-repeat;
+    color: #458;
+    border: solid 1px #cde;
+    background: #edf5ff url("../images/info.png") 22px 9px no-repeat;
 }
 
 #infoTipContainer.note div {
-	padding: 14px 27px;
-	color: #456;
-	border: solid 1px #cdb;
-	background-color: #efd;
-	background-image: none;
+    padding: 14px 27px;
+    color: #456;
+    border: solid 1px #cdb;
+    background: #efd none;
 }
 
 #infoTipContainer.note ol {
-	margin: 4px;
+    margin: 4px;
 }
 
 #infoTipContainer.success div {
-	color: #274;
-	border: solid 1px #caefc5;
-	background-color: #e4ffcd;
-	background-image: url("../images/accept.png");
+    color: #274;
+    border: solid 1px #caefc5;
+    background: #e4ffcd url("../images/accept.png");
 }
 
 #infoTipContainer.warning div {
-	color: #863;
-	border: solid 1px #edc;
-	background-color: #fff8dd;
-	background-image: url("../images/warning.png");
+    color: #863;
+    border: solid 1px #edc;
+    background: #fff8dd url("../images/warning.png");
 }
 
 #infoTipContainer.error div {
-	color: #854;
-	border: solid 1px #eba;
-	background-color: #ffe8dd;
-	background-image: url("../images/error.png");
+    color: #854;
+    border: solid 1px #eba;
+    background: #ffe8dd url("../images/error.png");
 }

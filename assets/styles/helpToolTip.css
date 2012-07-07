@@ -19,48 +19,47 @@ This work is based on:
     along with SwitchySharp.  If not, see <http://www.gnu.org/licenses/>.
 */
 span[data-help] {
-	display: inline-block;
-	width: 14px;
-	height: 14px;
-	margin: -2px 0;
-	background: url("../images/help.png") center bottom no-repeat;
-	opacity: 0.33;
-	cursor: help;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin: -2px 0;
+    background: url("../images/help.png") center bottom no-repeat;
+    opacity: 0.33;
+    cursor: help;
 }
 
 span[data-help]:hover {
-	opacity: 1;
+    opacity: 1;
 }
 
 .help {
-	z-index: 1000;
-	position: absolute;
-	background: #e6f0ff;
-	padding: 0.6em 1.0em;
-	max-width: 40em;
-	-webkit-box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.33);
-	border: 1px solid #a8cfff;
-	-webkit-border-radius: 0;
-	line-height: 150%;
-	?font-size: 92%;
-	color: #456;
-	visibility: hidden;
+    z-index: 1000;
+    position: absolute;
+    background: #e6f0ff;
+    padding: 0.6em 1.0em;
+    max-width: 40em;
+    -webkit-box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.33);
+    border: 1px solid #a8cfff;
+    -webkit-border-radius: 0;
+    line-height: 150%;
+    color: #456;
+    visibility: hidden;
 }
 
 .help p {
-	margin: 0.2em 0;
+    margin: 0.2em 0;
 }
 
 .help hr {
-	border-top: solid 1px #c6d0df;
-	margin: 9px 0px;
+    border-top: solid 1px #c6d0df;
+    margin: 9px 0;
 }
 
 .help table {
-	border-spacing: 7px;
+    border-spacing: 7px;
 }
 
 .help td {
-	vertical-align: top;
-	line-height: 150%;
+    vertical-align: top;
+    line-height: 150%;
 }
