@@ -84,7 +84,7 @@ RuleManager.isEnabled = function isEnabled() {
 };
 
 RuleManager.setEnabled = function setEnabled(enabled) {
-    RuleManager.enabled = !!(enabled == true);
+    RuleManager.enabled = !!enabled;
 };
 
 RuleManager.isRuleListEnabled = function isRuleListEnabled() {
@@ -92,7 +92,7 @@ RuleManager.isRuleListEnabled = function isRuleListEnabled() {
 };
 
 RuleManager.setRuleListEnabled = function setRuleListEnabled(enabled) {
-    RuleManager.ruleListEnabled = !!(enabled == true);
+    RuleManager.ruleListEnabled = !!enabled;
 };
 
 RuleManager.getDefaultRule = function getDefaultRule() {
