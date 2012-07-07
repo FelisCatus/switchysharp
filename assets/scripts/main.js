@@ -199,3 +199,6 @@ function monitorTabChanges() {
         }
     });
 }
+$(document).ready(function(){
+    init();
+});

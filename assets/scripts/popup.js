@@ -404,3 +404,17 @@ function checkRulesFirstTimeUse() {
         }
     }
 }
+
+$(document).ready(function(){
+    init();
+    quickSwitchProxy();
+    $("#menuAddRule").click(showAddRule);
+    $("#divDomain").click(showTempRule);
+    $("#menuOptions").click(openOptions);
+    $("#menuAbout").click(showAbout);
+    $("#openMainWebsite").click(openMainWebsite);
+    $("#openPlusWebsite").click(openPlusWebsite);
+    $("#openSupportWebsite").click(openSupportWebsite);
+    $("#btnSave").click(addSwitchRule);
+    $("#btnCancel").click(closePopup);
+});
