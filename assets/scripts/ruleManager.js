@@ -159,7 +159,7 @@ RuleManager.getProfileByUrl = function getProfileByUrl(url) {
         RuleManager.LastUri = url;
         var host = parseUri(RuleManager.LastUri)["authority"];
         RuleManager.LastDomain = host;
-        return ProfileManager.getProfile(RuleManager._u2p(url, host, RuleManager.shExpMatch, RuleManager.regExpMatch));
+        return ProfileManager.getProfile(RuleManager.urlToProfile(url, host, RuleManager.shExpMatch, RuleManager.regExpMatch));
     }
 };
 
@@ -278,12 +278,53 @@ RuleManager.wildcardToRegexp = function wildcardToRegexp(pattern) {
 };
 
 RuleManager.shExpMatch = function shExpMatch(url, pattern) {
-    pattern = pattern.replace(/\./g, "\\.");
-    pattern = pattern.replace(/\*/g, ".*");
-    pattern = pattern.replace(/\?/g, ".");
-    var regexp = new RegExp("^" + pattern + "$");
-    return regexp.test(url);
+    var pCharCode;
+    var isAggressive = false;
+    var pIndex;
+    var urlIndex = 0;
+    var lastIndex;
+    var patternLength = pattern.length;
+    var urlLength = url.length;
+    for (pIndex = 0; pIndex < patternLength; pIndex += 1) {
+        pCharCode = pattern.charCodeAt(pIndex); // use charCodeAt for performance, see http://jsperf.com/charat-charcodeat-brackets
+        if (pCharCode === 63) { // use if instead of switch for performance, see http://jsperf.com/switch-if
+            if (isAggressive) {
+                urlIndex += 1;
+            }
+            isAggressive = false;
+            urlIndex += 1;
+        }
+        else if (pCharCode === 42) {
+            if (pIndex === patternLength - 1) {
+                return urlIndex <= urlLength;
+            }
+            else {
+                isAggressive = true;
+            }
+        }
+        else {
+            if (isAggressive) {
+                lastIndex = urlIndex;
+                urlIndex = url.indexOf(String.fromCharCode(pCharCode), lastIndex + 1);
+                if (urlIndex < 0) {
+                    if (url.charCodeAt(lastIndex) !== pCharCode) {
+                        return false;
+                    }
+                    urlIndex = lastIndex;
+                }
+                isAggressive = false;
+            }
+            else {
+                if (urlIndex >= urlLength || url.charCodeAt(urlIndex) !== pCharCode) {
+                    return false;
+                }
+            }
+            urlIndex += 1;
+        }
+    }
+    return urlIndex === urlLength;
 };
+
 
 RuleManager.regExpMatch = function regExpMatch(url, pattern) {
     var regexp = new RegExp(pattern);
@@ -523,7 +564,7 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
 
     u2p.push("\treturn '" + defaultProfile.id + "';");
     u2p.push("})");
-    RuleManager._u2p = eval(u2p.join("\n"));
+    RuleManager.urlToProfile = eval(u2p.join("\n"));
 
     return script.join("\n");
 };
