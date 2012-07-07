@@ -1,10 +1,12 @@
 {
     "update_url":"http://clients2.google.com/service/update2/crx",
-    "background_page":"main.html",
+    "background": {
+        "page": "main.html"
+    },
     "browser_action":{
         "default_icon":"assets/images/icon-blue.png",
         "default_title":"__MSG_manifest_iconTitle__",
-        "popup":"popup.html"
+        "default_popup":"popup.html"
     },
     "default_locale":"en",
     "description":"__MSG_manifest_appDescription__",
@@ -16,6 +18,7 @@
     "options_page":"options.html",
     "permissions":[ "proxy", "tabs", "<all_urls>" ],
     "version":"1.9.48",
-    "minimum_chrome_version":"13.0.0",
+    "minimum_chrome_version":"18.0.0",
+    "manifest_version": 2,
     "homepage_url":"https://chrome.google.com/webstore/detail/dpplabbmogkhghncfbfdeeokoefdjegm"
 }

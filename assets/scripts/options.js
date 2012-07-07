@@ -220,6 +220,7 @@ function initUI() {
 
 function loadOptions() {
     // Proxy Profiles
+    ignoreFieldsChanges = true;
     $("#proxyProfiles .tableRow").remove();
     ProfileManager.loadProfiles();
     var profiles = ProfileManager.getSortedProfileArray();
@@ -502,6 +503,7 @@ function saveOptions() {
     Settings.setValue("ruleListUrl", $("#txtRuleListUrl").val());
     Settings.setValue("ruleListReload", $("#cmbRuleListReload option:selected").val());
     Settings.setValue("ruleListProfileId", $("#cmbRuleListProfile option:selected")[0].profile.id);
+    Settings.setValue("ruleListAutoProxy", $("#chkAutoProxy").is(":checked"));
 
     RuleManager.save();
     if (RuleManager.isAutomaticModeEnabled(currentProfile))
@@ -710,6 +712,7 @@ function onSelectRow(e) {
         profile = e;
     }
 
+    ignoreFieldsChanges = true;
     var proxyInfo;
     $("#profileName").val(profile.name || "");
 
@@ -960,7 +963,8 @@ function restoreBackup() {
 
     restoreBase64Json(backupData);
 }
-function restoreLocal(rfile) {
+function restoreLocal() {
+    var rfile = $("#rfile");
     if (rfile.files.length > 0 && rfile.files[0].name.length > 0) {
         var r = new FileReader();
         r.onload = function (e) {
@@ -973,7 +977,8 @@ function restoreLocal(rfile) {
         rfile.value = "";
     }
 }
-function importPAC(pfile) {
+function importPAC() {
+    var pfile = $("#pfile");
     if (pfile.files.length > 0 && pfile.files[0].name.length > 0) {
         var r = new FileReader();
         r.onload = function (e) {
@@ -1084,3 +1089,31 @@ function fixProxyString(proxy, defaultPort) {
     defaultPort = defaultPort || "80";
     return proxy + ":" + defaultPort;
 }
+$(document).ready(function(){
+    init();
+    $("div.color").click(changeColor);
+    $("div.delete.row").click(deleteRow);
+    $("#btn-new").click(newRow);
+    $("#rfile").change(restoreLocal);
+    $("#RestoreFileButton").click(function(){
+        $("#rfile").click();
+    });
+    $("#pfile").change(importPAC);
+    $("#importPACButton").click(function(){
+        $("#pfile").click();
+    });
+    $("div.delete.rule").click(deleteRuleRow);
+    $("#apply2All").click(apply2All);
+    $("#btnNewRule").click(function(){
+        newRuleRow(undefined, true);
+    });
+    $("#updateListNow").click(updateListNow);
+    $("#exportPacFile").click(exportPacFile);
+    $("#exportRuleList").click(exportRuleList);
+    $("#makeBackup").click(makeBackup);
+    $("#restoreBackup").click(restoreBackup);
+    $("#resetOptions").click(resetOptions);
+    $("#saveOptions").click(saveOptions);
+    $("#closeWindow").click(closeWindow);
+});
+
