@@ -149,9 +149,9 @@ RuleManager.getSortedRuleArray = function getSortedRuleArray() {
     return ruleArray;
 };
 
-RuleManager.getProfileByUrl = function getProfileByUrl(url) {
+RuleManager.getProfileByUrl = function getProfileByUrl(url, callback) {
     if (url.indexOf("chrome://") > -1 || url.indexOf("file://") > -1) {
-        return ProfileManager.directConnectionProfile;
+        callback(ProfileManager.directConnectionProfile);
     }
     else {
         var i = url.indexOf("#");
@@ -159,7 +159,9 @@ RuleManager.getProfileByUrl = function getProfileByUrl(url) {
         RuleManager.LastUri = url;
         var host = parseUri(RuleManager.LastUri)["authority"];
         RuleManager.LastDomain = host;
-        return ProfileManager.getProfile(RuleManager.urlToProfile(url, host, RuleManager.shExpMatch, RuleManager.regExpMatch));
+        RuleManager.urlToProfile(url, host, function(profileId){
+            callback(ProfileManager.getProfile(profileId));
+        });
     }
 };
 
@@ -511,27 +513,27 @@ RuleManager.getPacDefaultProxy = function getPacDefaultProxy(defaultProfile) {
 };
 
 RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile) {
-    var script = [];
+    var script = "";
     var i;
 
     for (i in RuleManager.profilesScripts) {
         if (RuleManager.profilesScripts.hasOwnProperty(i)) {
             var profileScript = RuleManager.profilesScripts[i];
-            script.push(profileScript.script);
+            script += profileScript.script;
         }
     }
 
-    script.push("function regExpMatch(url, pattern) {");
-    script.push("\ttry { return new RegExp(pattern).test(url); } catch(ex) { return false; }");
-    script.push("}\n");
-    script.push("function FindProxyForURL(url, host) {");
+    script += "function regExpMatch(url, pattern) {\
+    try { return new RegExp(pattern).test(url); } catch(ex) { return false; }\
+    }\n\
+    function FindProxyForURL(url, host) {";
 
-    var u2p = [ "(function(url, host, shExpMatch, regExpMatch){" ];
+    var u2p = "(function(url, host, shExpMatch, regExpMatch){";
     for (i in RuleManager.TempRules) {
         if (RuleManager.TempRules.hasOwnProperty(i)) {
             var profileId = RuleManager.TempRules[i];
-            script.push("\tif (host == '" + i + "') return " + RuleManager.getPacRuleProxy(profileId) + ";");
-            u2p.push("\tif (host == '" + i + "') return '" + profileId + "';");
+            script += "\tif (host == '" + i + "') return " + RuleManager.getPacRuleProxy(profileId) + ";";
+            u2p += "\tif (host == '" + i + "') return '" + profileId + "';";
         }
     }
     var proxy;
@@ -545,28 +547,39 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
             else {
                 proxy = RuleManager.getPacRuleProxy(rule.profileId);
             }
-            script.push("\tif " + expr + " return " + proxy + ";");
-            u2p.push("\tif " + expr + " return '" + rule.profileId + "';");
+            script += "\tif " + expr + " return " + proxy + ";";
+            u2p += "\tif " + expr + " return '" + rule.profileId + "';";
         }
     }
     if (defaultProfile.proxyExceptions) {
         var proxyExceptionsList = defaultProfile.proxyExceptions.split(';');
         for (i in proxyExceptionsList) {
             if (proxyExceptionsList.hasOwnProperty(i)) {
-                script.push("\tif(shExpMatch(host, '" + proxyExceptionsList[i].trim() + "')) return 'DIRECT';");
+                script += "\tif(shExpMatch(host, '" + proxyExceptionsList[i].trim() + "')) return 'DIRECT';";
             }
         }
     }
 
     proxy = RuleManager.getPacDefaultProxy(defaultProfile);
-    script.push("\treturn " + proxy + ";");
-    script.push("}");
+    script += "\treturn " + proxy + ";\
+    }";
 
-    u2p.push("\treturn '" + defaultProfile.id + "';");
-    u2p.push("})");
-    RuleManager.urlToProfile = eval(u2p.join("\n"));
+    u2p += "\treturn '" + defaultProfile.id + "';\
+    })";
+    chrome.extension.sendMessage({"u2p": u2p});
+    return script;
+};
 
-    return script.join("\n");
+RuleManager.urlToProfile = function urlToProfile(url, host, callback) {
+    if (!$("iframe#evalFrame").length) {
+        var evalFrame = document.createElement("iframe");
+        evalFrame.sandbox = "allow-scripts";
+        evalFrame.src = "data:text/html,<script src='assets/scripts/sandbox.js'></script>";
+        document.body.appendChild(evalFrame);
+    }
+    chrome.extension.sendMessage({"match": {"url": url, "host": host}}, function(response) {
+        callback(response["profileId"]);
+    });
 };
 
 RuleManager.generateRuleList = function generateRuleList() {
