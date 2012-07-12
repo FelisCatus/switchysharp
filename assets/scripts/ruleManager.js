@@ -571,9 +571,10 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
 };
 
 RuleManager.urlToProfile = function urlToProfile(url, host, callback) {
-    if (!$("iframe#evalFrame").length) {
+    if (!document.getElementById("evalFrame")) {
         var evalFrame = document.createElement("iframe");
         evalFrame.sandbox = "allow-scripts";
+        evalFrame.id = "evalFrame";
         evalFrame.src = "data:text/html,<script src='assets/scripts/sandbox.js'></script>";
         document.body.appendChild(evalFrame);
     }
