@@ -571,13 +571,6 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
 };
 
 RuleManager.urlToProfile = function urlToProfile(url, host, callback) {
-    if (!document.getElementById("evalFrame")) {
-        var evalFrame = document.createElement("iframe");
-        evalFrame.sandbox = "allow-scripts";
-        evalFrame.id = "evalFrame";
-        evalFrame.src = "data:text/html,<script src='assets/scripts/sandbox.js'></script>";
-        document.body.appendChild(evalFrame);
-    }
     chrome.extension.sendMessage({"match": {"url": url, "host": host}}, function(response) {
         callback(response["profileId"]);
     });
