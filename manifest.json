@@ -1,4 +1,5 @@
 {
+    "manifest_version": 2,
     "update_url":"http://clients2.google.com/service/update2/crx",
     "background": {
         "page": "main.html"
@@ -17,8 +18,7 @@
     "name":"__MSG_manifest_appName__",
     "options_page":"options.html",
     "permissions":[ "proxy", "tabs", "<all_urls>" ],
-    "version":"1.9.48",
+    "version":"1.10.1",
     "minimum_chrome_version":"18.0.0",
-    "manifest_version": 2,
     "homepage_url":"https://chrome.google.com/webstore/detail/dpplabbmogkhghncfbfdeeokoefdjegm"
 }
