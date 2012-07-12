@@ -141,8 +141,8 @@ function setIconInfo(profile, preventProxyChanges) {
     }
 
     if (RuleManager.isAutomaticModeEnabled(profile)) {
-        if (setAutoSwitchIcon())
-            return;
+        setAutoSwitchIcon();
+        return;
     }
 
     var title = "";
@@ -171,16 +171,17 @@ function setAutoSwitchIcon(url) {
         return true;
     }
 
-    var profile = RuleManager.LastProfile = RuleManager.getProfileByUrl(url);
-    var iconPath = iconDir + "icon-auto-" + (profile.color || "blue") + ".png";
+    RuleManager.getProfileByUrl(url, function(profile){
+        RuleManager.LastProfile = profile;
+        var iconPath = iconDir + "icon-auto-" + (profile.color || "blue") + ".png";
 
-    chrome.browserAction.setIcon({ path:iconPath });
+        chrome.browserAction.setIcon({ path:iconPath });
 
 
-    var title = I18n.getMessage("proxy_autoSwitchIconTitle", profile.name);
+        var title = I18n.getMessage("proxy_autoSwitchIconTitle", profile.name);
 
-    setIconTitle(title);
-
+        setIconTitle(title);
+    });
     return true;
 }
 
