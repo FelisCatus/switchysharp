@@ -964,7 +964,7 @@ function restoreBackup() {
     restoreBase64Json(backupData);
 }
 function restoreLocal() {
-    var rfile = $("#rfile");
+    var rfile = $("#rfile")[0];
     if (rfile.files.length > 0 && rfile.files[0].name.length > 0) {
         var r = new FileReader();
         r.onload = function (e) {
@@ -978,7 +978,7 @@ function restoreLocal() {
     }
 }
 function importPAC() {
-    var pfile = $("#pfile");
+    var pfile = $("#pfile")[0];
     if (pfile.files.length > 0 && pfile.files[0].name.length > 0) {
         var r = new FileReader();
         r.onload = function (e) {
