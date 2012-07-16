@@ -566,14 +566,36 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
 
     u2p += "\treturn '" + defaultProfile.id + "';\
     })";
-    chrome.extension.sendMessage({"u2p": u2p});
+    
+   if (!RuleManager.sandboxFrame) {
+      RuleManager.sandboxFrame = $('#sandbox-frame')[0].contentWindow;
+      window.addEventListener("message", function (e) {
+        var callback = RuleManager._waitingReply[e.data.reqid];
+        delete RuleManager._waitingReply[e.data.reqid];
+        callback(e.data.profileId);
+      }, false);
+    }
+    
+    RuleManager.sandboxFrame.postMessage(
+        {"u2p": u2p},
+        "*");
     return script;
 };
 
+RuleManager.sandboxFrame = null;
+
+RuleManager._waitingReply = {};
+
 RuleManager.urlToProfile = function urlToProfile(url, host, callback) {
-    chrome.extension.sendMessage({"match": {"url": url, "host": host}}, function(response) {
-        callback(response["profileId"]);
-    });
+    var reqid;
+    do {
+      reqid = Math.random().toString();
+    } while (RuleManager._waitingReply[reqid] != null);
+    RuleManager._waitingReply[reqid] = callback;
+    
+    RuleManager.sandboxFrame.postMessage(
+        {"match": {"url": url, "host": host}, "reqid": reqid},
+        "*");
 };
 
 RuleManager.generateRuleList = function generateRuleList() {
