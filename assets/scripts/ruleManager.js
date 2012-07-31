@@ -528,7 +528,7 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
     }\n\
     function FindProxyForURL(url, host) {";
 
-    var u2p = "(function(url, host, shExpMatch, regExpMatch){";
+    var u2p = "(function(url, host) {";
     for (i in RuleManager.TempRules) {
         if (RuleManager.TempRules.hasOwnProperty(i)) {
             var profileId = RuleManager.TempRules[i];
