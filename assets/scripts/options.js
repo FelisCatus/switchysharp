@@ -896,13 +896,20 @@ function deleteRuleRow() {
 
 function saveFileAs(fileName, fileData) {
     try {
-        var bb = null;
-        if (typeof(BlobBuilder) == 'undefined')
-            bb = new window.WebKitBlobBuilder();
-        else
-            bb = new BlobBuilder();
-        bb.append(fileData);
-        saveAs(bb.getBlob('text/plain'), fileName);
+        var Blob = window.Blob || window.WebKitBlob;
+
+        var b = null;
+        if (Blob) {
+          b = new Blob([fileData], { "type" : "text/plain" });
+        } else {
+          // Deprecated BlobBuilder API
+          var BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder;
+          var bb = new BlobBuilder();
+          bb.append(fileData);
+          b = bb.getBlob("text/plain");
+        }
+
+        saveAs(b, fileName);
     } catch (e) {
         Logger.log("Oops! Can't save generated file, " + e.toString(), Logger.Types.error);
         InfoTip.alertI18n("message_cannotSaveFile");
