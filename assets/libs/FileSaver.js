@@ -1,7 +1,10 @@
 /*
+ Copyright (c) 2011 Eli Grey, http://eligrey.com
  Copyright (c) 2011 Shyc2001 (http://twitter.com/shyc2001)
  This file is based on:
- * http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js (Eli Grey, http://eligrey.com)
+ https://github.com/eligrey/FileSaver.js/blob/master/FileSaver.js ,
+ licensed under X11/MIT.
+ See https://github.com/eligrey/FileSaver.js/blob/master/LICENSE.md
 
  This file is part of SwitchySharp.
  SwitchySharp is free software: you can redistribute it and/or modify
