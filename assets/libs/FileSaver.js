@@ -1,6 +1,5 @@
 /*
  Copyright (c) 2011 Eli Grey, http://eligrey.com
- Copyright (c) 2011 Shyc2001 (http://twitter.com/shyc2001)
  This file is based on:
  https://github.com/eligrey/FileSaver.js/blob/master/FileSaver.js ,
  licensed under X11/MIT.
