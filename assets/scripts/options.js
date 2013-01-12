@@ -899,13 +899,12 @@ function saveFileAs(fileName, fileData) {
         var Blob = window.Blob || window.WebKitBlob;
 
         // Detect availability of the Blob constructor.
-        var constructor_supported = true;
+        var constructor_supported = false;
         if (Blob) {
           try {
             new Blob([], { "type" : "text/plain" });
-          } catch (_) {
-            constructor_supported = false;
-          }
+            constructor_supported = true;
+          } catch (_) { }
         }
 
         var b = null;
