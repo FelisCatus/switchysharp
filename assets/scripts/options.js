@@ -903,15 +903,24 @@ function saveFileAs(fileName, fileData) {
     try {
         var Blob = window.Blob || window.WebKitBlob;
 
-        var b = null;
+        // Detect availability of the Blob constructor.
+        var constructor_supported = false;
         if (Blob) {
-            b = new Blob([fileData], { "type" : "text/plain" });
+          try {
+            new Blob([], { "type" : "text/plain" });
+            constructor_supported = true;
+          } catch (_) { }
+        }
+
+        var b = null;
+        if (constructor_supported) {
+          b = new Blob([fileData], { "type" : "text/plain" });
         } else {
-            // Deprecated BlobBuilder API
-            var BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder;
-            var bb = new BlobBuilder();
-            bb.append(fileData);
-            b = bb.getBlob("text/plain");
+          // Deprecated BlobBuilder API
+          var BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder;
+          var bb = new BlobBuilder();
+          bb.append(fileData);
+          b = bb.getBlob("text/plain");
         }
 
         saveAs(b, fileName);
