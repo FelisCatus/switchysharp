@@ -898,8 +898,18 @@ function saveFileAs(fileName, fileData) {
     try {
         var Blob = window.Blob || window.WebKitBlob;
 
-        var b = null;
+        // Detect availability of the Blob constructor.
+        var constructor_supported = true;
         if (Blob) {
+          try {
+            new Blob([], { "type" : "text/plain" });
+          } catch (_) {
+            constructor_supported = false;
+          }
+        }
+
+        var b = null;
+        if (constructor_supported) {
           b = new Blob([fileData], { "type" : "text/plain" });
         } else {
           // Deprecated BlobBuilder API
