@@ -79,6 +79,8 @@ This work is based on:
     color: #274;
     border: solid 1px #caefc5;
     background: #e4ffcd url("../images/accept.png");
+    background-repeat: no-repeat;
+    background-position: 10px center;
 }
 
 #infoTipContainer.warning div {
