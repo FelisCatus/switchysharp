@@ -430,8 +430,10 @@ function updateListNow()
 }
 function apply2All()
 {
-	var id = $("#rulesTable .defaultRow")[0].rule.profileId;
-	if(!InfoTip.confirmI18n("message_apply2All", $("#rulesTable .defaultRow option[value=" + id + "]").text())) return;
+  var id = $("#rulesTable .defaultRow")[0].rule.profileId;
+  var select = $("#rulesTable .defaultRow select")[0];
+  var name = select.selectedOptions[0].innerText;
+  if (!InfoTip.confirmI18n("message_apply2All", name)) return;
 	var rs = $("#rulesTable .tableRow");
 	$("select[name=profileId]", rs).val(id);
 	rs.each(function(i,t){ t.rule.profileId = id; });
