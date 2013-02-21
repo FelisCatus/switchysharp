@@ -1109,9 +1109,9 @@ function fixProxyString(proxy, defaultPort) {
 }
 $(document).ready(function(){
     init();
-    $("div.color").click(changeColor);
+    $("body").on("click", "div.color", changeColor);
     $("div.delete.row").click(deleteRow);
-    $("#btn-new").click(newRow);
+    $("#btn-new").click(function() { newRow(); });
     $("#rfile").change(restoreLocal);
     $("#RestoreFileButton").click(function(){
         $("#rfile").click();
