@@ -1110,7 +1110,7 @@ function fixProxyString(proxy, defaultPort) {
 $(document).ready(function(){
     init();
     $("body").on("click", "div.color", changeColor);
-    $("div.delete.row").click(deleteRow);
+    $("body").on("click", "div.delete.row", deleteRow);
     $("#btn-new").click(function() { newRow(); });
     $("#rfile").change(restoreLocal);
     $("#RestoreFileButton").click(function(){
@@ -1120,7 +1120,7 @@ $(document).ready(function(){
     $("#importPACButton").click(function(){
         $("#pfile").click();
     });
-    $("div.delete.rule").click(deleteRuleRow);
+    $("body").on("click", "div.delete.rule", deleteRuleRow);
     $("#apply2All").click(apply2All);
     $("#btnNewRule").click(function(){
         newRuleRow(undefined, true);
