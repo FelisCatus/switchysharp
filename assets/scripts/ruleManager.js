@@ -494,8 +494,10 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
 	var u2p = [ "(function(url, host, shExpMatch, regExpMatch){" ];
 	for (var i in RuleManager.TempRules) {
 		var profileId = RuleManager.TempRules[i];
-		script.push("\tif (host == '" + i + "') return " + RuleManager.getPacRuleProxy(profileId) + ";");
-		u2p.push("\tif (host == '" + i + "') return '" + profileId + "';");
+    var hostStr = JSON.stringify(i);
+    var profileIdStr = JSON.stringify(profileId);
+		script.push("\tif (host == " + hostStr + ") return " + RuleManager.getPacRuleProxy(profileId) + ";");
+		u2p.push("\tif (host == " + hostStr + ") return " + profileIdStr + ";");
 	}
 	for (var i in rules) {
 		var rule = rules[i];
@@ -508,7 +510,8 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
 			proxy = RuleManager.getPacRuleProxy(rule.profileId);
 		}
 		script.push("\tif " + expr + " return " + proxy + ";");
-		u2p.push("\tif " + expr + " return '" + rule.profileId + "';");
+    var profileIdStr = JSON.stringify(rule.profileId);
+		u2p.push("\tif " + expr + " return " + profileIdStr + ";");
 	}
 	if(defaultProfile.proxyExceptions)
 	{
@@ -521,7 +524,7 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
 	script.push("\treturn " + proxy + ";");
 	script.push("}");
 	
-	u2p.push("\treturn '" + defaultProfile.id + "';");
+	u2p.push("\treturn " + JSON.stringify(defaultProfile.id) + ";");
 	u2p.push("})");
 	RuleManager._u2p = eval(u2p.join("\n"));
 	
