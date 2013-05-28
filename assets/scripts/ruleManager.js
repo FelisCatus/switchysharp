@@ -526,14 +526,16 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
     script += "function regExpMatch(url, pattern) {\
     try { return new RegExp(pattern).test(url); } catch(ex) { return false; }\
     }\n\
-    function FindProxyForURL(url, host) {";
+    function FindProxyForURL(url, host) {\n";
 
-    var u2p = "(function(url, host) {";
+    var u2p = "(function(url, host) {\n";
     for (i in RuleManager.TempRules) {
         if (RuleManager.TempRules.hasOwnProperty(i)) {
             var profileId = RuleManager.TempRules[i];
-            script += "\tif (host == '" + i + "') return " + RuleManager.getPacRuleProxy(profileId) + ";";
-            u2p += "\tif (host == '" + i + "') return '" + profileId + "';";
+            var hostStr = JSON.stringify(i);
+            var profileIdStr = JSON.stringify(profileId);
+            script += "\tif (host == " + hostStr + ") return " + RuleManager.getPacRuleProxy(profileId) + ";\n";
+            u2p += "\tif (host == " + hostStr + ") return " + profileIdStr + ";\n";
         }
     }
     var proxy;
@@ -547,25 +549,24 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
             else {
                 proxy = RuleManager.getPacRuleProxy(rule.profileId);
             }
-            script += "\tif " + expr + " return " + proxy + ";";
-            u2p += "\tif " + expr + " return '" + rule.profileId + "';";
+            script += "\tif " + expr + " return " + proxy + ";\n";
+            var profileIdStr = JSON.stringify(rule.profileId);
+            u2p += "\tif " + expr + " return " + profileIdStr + ";\n";
         }
     }
     if (defaultProfile.proxyExceptions) {
         var proxyExceptionsList = defaultProfile.proxyExceptions.split(';');
         for (i in proxyExceptionsList) {
             if (proxyExceptionsList.hasOwnProperty(i)) {
-                script += "\tif(shExpMatch(host, '" + proxyExceptionsList[i].trim() + "')) return 'DIRECT';";
+                script += "\tif(shExpMatch(host, '" + proxyExceptionsList[i].trim() + "')) return 'DIRECT';\n";
             }
         }
     }
 
     proxy = RuleManager.getPacDefaultProxy(defaultProfile);
-    script += "\treturn " + proxy + ";\
-    }";
+    script += "\treturn " + proxy + ";\n}";
 
-    u2p += "\treturn '" + defaultProfile.id + "';\
-    })";
+    u2p += "\treturn '" + JSON.stringify(defaultProfile.id) + "';\n})";
     
    if (!RuleManager.sandboxFrame) {
       RuleManager.sandboxFrame = $('#sandbox-frame')[0].contentWindow;
