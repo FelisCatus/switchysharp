@@ -150,7 +150,7 @@ RuleManager.getSortedRuleArray = function getSortedRuleArray() {
 };
 
 RuleManager.getProfileByUrl = function getProfileByUrl(url, callback) {
-    if (url.indexOf("chrome://") > -1 || url.indexOf("file://") > -1) {
+    if (url.indexOf("chrome") == 0 || url.indexOf("file://") > -1) {
         callback(ProfileManager.directConnectionProfile);
     }
     else {
