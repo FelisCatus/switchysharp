@@ -566,7 +566,7 @@ RuleManager.generatePacScript = function generatePacScript(rules, defaultProfile
     proxy = RuleManager.getPacDefaultProxy(defaultProfile);
     script += "\treturn " + proxy + ";\n}";
 
-    u2p += "\treturn '" + JSON.stringify(defaultProfile.id) + "';\n})";
+    u2p += "\treturn " + JSON.stringify(defaultProfile.id) + ";\n})";
     
    if (!RuleManager.sandboxFrame) {
       RuleManager.sandboxFrame = $('#sandbox-frame')[0].contentWindow;
