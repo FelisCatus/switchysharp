@@ -56,6 +56,53 @@ function init() {
 
     applySavedOptions();
 
+    chrome.browserAction.onClicked.addListener(function () {
+        if (!Settings.getValue("quickSwitch", false)) return;
+
+        var profile = undefined;
+        var currentProfile = ProfileManager.getCurrentProfile();
+        var quickSwitchProfiles = Settings.getObject("quickSwitchProfiles") || [];
+
+        var sel = false;
+        for (var i in quickSwitchProfiles) {
+            if (quickSwitchProfiles.hasOwnProperty(i)) {
+                if (sel) {
+                    sel = false;
+                    profileId = quickSwitchProfiles[i];
+                    break;
+                }
+                if (quickSwitchProfiles[i] == currentProfile.id) {
+                    sel = true;
+                }
+            }
+        }
+        if (sel || typeof(profileId) == "undefined") {
+            profileId = quickSwitchProfiles[0];
+        }
+
+        if (profileId == ProfileManager.directConnectionProfile.id) {
+            profile = ProfileManager.directConnectionProfile;
+        }
+        else if (profileId == ProfileManager.systemProxyProfile.id) {
+            profile = ProfileManager.systemProxyProfile;
+        }
+        else if (profileId == ProfileManager.autoSwitchProfile.id) {
+            profile = ProfileManager.autoSwitchProfile;
+        }
+        else {
+            profile = ProfileManager.getProfile(profileId);
+        }
+
+        if (profile == undefined) {
+          return;
+        }
+
+        ProfileManager.applyProfile(profile);
+        setIconInfo(profile);
+
+        if (Settings.getValue("refreshTab", false))
+            chrome.tabs.executeScript(null, { code:"history.go(0);" });
+    });
 }
 
 function checkFirstTime() {
@@ -108,6 +155,15 @@ function applySavedOptions() {
     else
         InitComplete = true;
     setIconInfo(profile);
+    applyQuickSwitch();
+}
+
+function applyQuickSwitch() {
+    if (Settings.getValue('quickSwitch', false)) {
+        chrome.browserAction.setPopup({ popup:'' });
+    } else {
+        chrome.browserAction.setPopup({ popup:'popup.html' });
+    }
 }
 
 function setIconBadge(text) {

@@ -530,6 +530,7 @@ function saveOptions() {
     Settings.setValue("refreshTab", ($("#chkRefreshTab").is(":checked")));
 
     extension.setIconInfo();
+    extension.applyQuickSwitch();
     InfoTip.showMessageI18n("message_optionsSaved", InfoTip.types.success);
     loadOptions();
     anyValueModified = false;

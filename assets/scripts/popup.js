@@ -56,61 +56,6 @@ function initUI() {
     }
 }
 
-function quickSwitchProxy() {
-    extension = chrome.extension.getBackgroundPage();
-    ProfileManager = extension.ProfileManager;
-    Settings = extension.Settings;
-
-    if (!Settings.getValue("quickSwitch", false) && typeof(chrome.flag) == 'undefined')
-        return;
-
-    var profile = undefined;
-    var currentProfile = ProfileManager.getCurrentProfile();
-    var quickSwitchProfiles = Settings.getObject("quickSwitchProfiles") || [];
-
-    var sel = false;
-    for (var i in quickSwitchProfiles) {
-        if (quickSwitchProfiles.hasOwnProperty(i)) {
-            if (sel) {
-                sel = false;
-                profileId = quickSwitchProfiles[i];
-                break;
-            }
-            if (quickSwitchProfiles[i] == currentProfile.id) {
-                sel = true;
-            }
-        }
-    }
-    if (sel || typeof(profileId) == "undefined") {
-        profileId = quickSwitchProfiles[0];
-    }
-
-    if (profileId == ProfileManager.directConnectionProfile.id) {
-        profile = ProfileManager.directConnectionProfile;
-    }
-    else if (profileId == ProfileManager.systemProxyProfile.id) {
-        profile = ProfileManager.systemProxyProfile;
-    }
-    else if (profileId == ProfileManager.autoSwitchProfile.id) {
-        profile = ProfileManager.autoSwitchProfile;
-    }
-    else {
-        profile = ProfileManager.getProfile(profileId);
-    }
-
-    if (profile == undefined) {
-        return;
-    }
-
-    window.stop();
-
-    ProfileManager.applyProfile(profile);
-    extension.setIconInfo(profile);
-
-    window.close();
-    refreshTab();
-}
-
 function closePopup() {
     window.close();
 }
@@ -407,7 +352,6 @@ function checkRulesFirstTimeUse() {
 
 $(document).ready(function(){
     init();
-    quickSwitchProxy();
     $("#menuAddRule").click(showAddRule);
     $("#divDomain").click(showTempRule);
     $("#menuOptions").click(openOptions);
