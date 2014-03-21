@@ -17,7 +17,7 @@
     },
     "name":"__MSG_manifest_appName__",
     "options_page":"options.html",
-    "permissions":[ "proxy", "tabs", "<all_urls>", "http://*/*", "https://*/*", "ftp://*/*", "file://*/*" ],
+    "permissions":[ "proxy", "tabs", "<all_urls>", "http://*/*", "https://*/*", "ftp://*/*" ],
     "version":"1.10.4",
     "minimum_chrome_version":"18.0.0",
     "homepage_url":"https://chrome.google.com/webstore/detail/dpplabbmogkhghncfbfdeeokoefdjegm"
