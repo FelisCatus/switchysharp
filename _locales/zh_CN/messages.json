@@ -428,6 +428,18 @@
     "popup_version":{
         "message":"版本"
     },
+    "disabled_title":{
+        "message":"升级到 SwitchyOmega"
+    },
+    "disabled_newOptions":{
+        "message":"SwitchyOmega 选项"
+    },
+    "disabled_content":{
+        "message":"代理设置现在由新版 SwitchyOmega 控制，请前往 SwitchyOmega 选项更改设置。您可以禁用此扩展以避免新旧版本冲突。"
+    },
+    "disabled_manage":{
+        "message":"管理扩展"
+    },
     "proxy_autoSwitch":{
         "message":"自动切换"
     },

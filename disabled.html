@@ -1,0 +1,49 @@
+<!--
+Copyright (c) 2011 Shyc2001 (http://twitter.com/shyc2001)
+This work is based on:
+*"Switchy! Chrome Proxy Manager and Switcher" (by Mohammad Hejazi (mohammadhi at gmail d0t com))
+*"SwitchyPlus" by @ayanamist (http://twitter.com/ayanamist)
+
+    This file is part of SwitchySharp.
+    SwitchySharp is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    SwitchySharp is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with SwitchySharp.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <link rel="stylesheet" href="assets/styles/popup.css" type="text/css">
+</head>
+<body style="visibility: visible; width: 400px;">
+    <div id="addRule" style="display: block; height: auto">
+        <div class="header title">
+            <img src="assets/images/info.png" style="height: 13px"/>
+            <span data-i18n-content="disabled_title">Migrate to SwitchyOmega</span>
+        </div>
+        <div class="header light" style="margin-bottom: 0">
+            <div style="float:left; margin-right: 10px; cursor: pointer;">
+                <img src="assets/images/omega-64.png" title="SwitchyOmega Options"
+                    data-open-tab="chrome-extension://padekgcemlokbadohgkifijomclgjgif/options.html"
+                    data-i18n-values="title:disabled_newOptions"></img>
+            </div>
+            <span style="white-space: normal;" data-i18n-content="disabled_content">
+                Proxy settings are now controlled by SwitchyOmega. Please disable
+                this extension and use SwitchyOmega options instead.
+            </span>
+            <div class="control" style="padding-top: 10px; text-align: right;">
+              <button class="button bold" data-open-tab="chrome://extensions/" id="btnManage" data-i18n-content="disabled_manage">Manage</button>
+              <button class="button" id="btnCancel" data-i18n-content="popup_cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script src="assets/scripts/disabled.js"></script>
+</body>
+</html>

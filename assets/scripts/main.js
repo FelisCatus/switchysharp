@@ -25,6 +25,8 @@ var App = chrome.app.getDetails();
 
 var InitComplete = false;
 
+var extDisabled = false;
+
 function init() {
     if (RuleManager.isEnabled() && RuleManager.isRuleListEnabled()) {
         ProxyPlugin.setProxyCallback = function () {
@@ -55,6 +57,7 @@ function init() {
     monitorTabChanges();
 
     applySavedOptions();
+    openMessagePort();
 
     chrome.browserAction.onClicked.addListener(function () {
         if (!Settings.getValue("quickSwitch", false)) return;
@@ -176,6 +179,7 @@ function setIconBadge(text) {
 }
 
 function setIconTitle(title) {
+    if (extDisabled) return;
     if (title == undefined)
         title = "";
 
@@ -203,11 +207,11 @@ function setIconInfo(profile, preventProxyChanges) {
 
     var title = "";
     if (profile.proxyMode == ProfileManager.ProxyModes.direct || profile.proxyMode == ProfileManager.ProxyModes.system) {
-        chrome.browserAction.setIcon({ path:iconInactivePath });
+        if (!extDisabled) chrome.browserAction.setIcon({ path:iconInactivePath });
         title += profile.name;
     } else {
         var iconPath = iconDir + "icon-" + (profile.color || "blue") + ".png";
-        chrome.browserAction.setIcon({ path:iconPath });
+        if (!extDisabled) chrome.browserAction.setIcon({ path:iconPath });
         title += ProfileManager.profileToString(profile, true);
     }
 
@@ -231,7 +235,7 @@ function setAutoSwitchIcon(url) {
         RuleManager.LastProfile = profile;
         var iconPath = iconDir + "icon-auto-" + (profile.color || "blue") + ".png";
 
-        chrome.browserAction.setIcon({ path:iconPath });
+        if (!extDisabled) chrome.browserAction.setIcon({ path:iconPath });
 
 
         var title = I18n.getMessage("proxy_autoSwitchIconTitle", profile.name);
@@ -256,6 +260,59 @@ function monitorTabChanges() {
         }
     });
 }
+
+function openMessagePort() {
+  chrome.runtime.onConnectExternal.addListener(function (port) {
+    if (port.sender.id != 'padekgcemlokbadohgkifijomclgjgif') return;
+    var reenable = function () {
+      if (ProxyPlugin.disabled) {
+        extDisabled = false;
+        ProxyPlugin.disabled = false;
+        ProxyPlugin.refresh();
+        chrome.browserAction.setBadgeText({text: ''});
+        var profile = ProfileManager.getCurrentProfile();
+        if (profile) {
+          setIconInfo(profile);
+          applyQuickSwitch();
+        } else {
+          applySavedOptions();
+        }
+      }
+    };
+    port.onMessage.addListener(function (msg) {
+      console.log(msg);
+      switch (msg.action) {
+        case 'disable':
+          extDisabled = true;
+          ProxyPlugin.disabled = true;
+          ProxyPlugin.clearProxy();
+
+          chrome.browserAction.setPopup({popup:'disabled.html' });
+          chrome.browserAction.setIcon({path: iconInactivePath});
+          var title = I18n.getMessage("proxy_disabledTitle");
+          chrome.browserAction.setTitle({title: title });
+          setIconBadge("X");
+          port.postMessage({action: 'state', state: 'disabled'});
+          break;
+        case 'enable':
+          reenable();
+          port.postMessage({action: 'state', state: 'enabled'});
+          break;
+        case 'getOptions':
+          var options = {};
+          for (var key in localStorage) {
+            options[key] = localStorage[key];
+          }
+          port.postMessage({action: 'options', options: options});
+          break;
+      }
+    });
+    port.onDisconnect.addListener(function () {
+      reenable();
+    });
+  });
+}
+
 $(document).ready(function(){
     init();
 });

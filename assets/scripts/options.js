@@ -42,6 +42,8 @@ function init() {
     I18n = extension.I18n;
     ProxyPlugin = extension.ProxyPlugin;
 
+    if (extension.extDisabled) initDisabled();
+
     I18n.process(document);
     document.body.style.visibility = "visible";
 
@@ -50,6 +52,28 @@ function init() {
     checkPageParams();
 
     HelpToolTip.enableTooltips();
+}
+
+function initDisabled() {
+  var backdrop = $('<div/>').css({
+    'position': 'fixed',
+    'width': '100%',
+    'height': '100%',
+    'left': '0',
+    'top': '0',
+    'background-color': '#fafbff',
+  }).appendTo('body');
+  var iframe = $('<iframe/>').attr('src', 'disabled.html').css({
+    'margin': '5% auto 0',
+    'width': '400px',
+    'height': '50%',
+    'min-height': '300px',
+    'border': 'none',
+    'display': 'block',
+  }).appendTo(backdrop);
+  iframe[0].contentWindow.close = function () {
+    window.close();
+  };
 }
 
 function initUI() {

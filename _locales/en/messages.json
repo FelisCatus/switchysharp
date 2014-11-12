@@ -425,6 +425,18 @@
     "popup_version":{
         "message":"version"
     },
+    "disabled_title":{
+        "message":"Migrate to SwitchyOmega"
+    },
+    "disabled_newOptions":{
+        "message":"SwitchyOmega Options"
+    },
+    "disabled_content":{
+        "message":"Proxy settings are now controlled by SwitchyOmega. Please disable this extension and use SwitchyOmega options instead."
+    },
+    "disabled_manage":{
+        "message":"Manage"
+    },
     "proxy_systemProxy":{
         "message":"System Proxy"
     },
