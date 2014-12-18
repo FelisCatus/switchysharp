@@ -368,6 +368,18 @@
     "options_vpnDialupProxy":{
         "message":"VPN/拨号网络的代理"
     },
+    "options_upgradeTitle":{
+        "message": "SwitchyOmega, 下一代 SwitchySharp 升级版"
+    },
+    "options_upgradeContent":{
+        "message":"<p>为了回应大家的期待，我每天都在努力。18个月前，我开始着手2.x新版的开发，其项目名称为 SwitchyOmega.</p><p>我花了很多时间来设计、编码和测试。我重新实现了项目架构，并且重新设计了选项和弹出菜单的界面。自动切换现在更加灵活，且性能突飞猛进。许多新特性也从之前的梦想变成了现实。<a href='https://github.com/FelisCatus/SwitchyOmega/wiki/SwitchyOmega-%E6%96%B0%E5%8A%9F%E8%83%BD'>不妨看看有什么新功能。</a></p><p>对于这次更新，我们已经等待了太久太久。现在，新版终于已经完成了。新版完全免费，我不求任何回报，只希望大家能够继续支持。</p><p>P.S. 别担心，更新后可自动升级设置，无须再次手动配置。</p>"
+    },
+    "options_upgradeLink":{
+        "message":"https://github.com/FelisCatus/SwitchyOmega/wiki/SwitchyOmega-%E6%96%B0%E5%8A%9F%E8%83%BD"
+    },
+    "options_upgrade":{
+        "message": "升级"
+    },
     "popup_aboutSwitchy":{
         "message":"关于 SwitchySharp"
     },

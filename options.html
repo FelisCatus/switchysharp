@@ -44,6 +44,10 @@ This work is based on:
                     <td style="width:100%">
                         <img src="assets/images/icon-128.png" width="50" class="title" alt="SwitchySharp"/>
                         <span class="title" data-i18n-content="options_headerTitle">SwitchySharp Options</span>
+                        <a id="showUpgradePopup" href="#upgradePopupBackdrop" style="float: right;">
+                          <span data-i18n-content="options_upgrade">Upgrade</span>
+                          <img src="assets/images/omega-64.png" title="Upgrade to SwitchyOmega" data-i18n-values="title:options_upgrade" />
+                        </a>
                     </td>
                     <td>
                         <!--img src="assets/images/close.png" class="close" title="Close" onclick="closeWindow();" /-->
@@ -647,6 +651,24 @@ This work is based on:
     <div class="help" id="help_startupProfile">
         <p data-i18n-content="options_startupProfile_help">The profile to be applied on extension startup.</p>
     </div>
+</div>
+<div id="upgradePopupBackdrop" style="display: none;">
+  <div id="upgradePopup" style="display: block; height: auto">
+      <h2 class="header title">
+          <img src="assets/images/info.png" style="height: 1em; vertical-align: middle; margin-right: 5px;"/>
+          <span data-i18n-content="options_upgradeTitle"></span>
+      </h2>
+      <div class="header light" style="margin-bottom: 0">
+          <div style="float:left; margin-right: 10px; cursor: pointer; height: 100%;">
+              <img src="assets/images/omega-64.png" title="SwitchyOmega" />
+          </div>
+          <div style="white-space: normal; overflow: hidden;" data-i18n-content="options_upgradeContent"></div>
+          <div class="control" style="padding-top: 10px; text-align: right;">
+            <a class="button bold" href="https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif" id="btnUpgrade" data-i18n-content="options_upgrade" data-i18n-values="href:options_upgradeLink">Upgrade</a>
+            <button class="button" id="btnCancel" data-i18n-content="popup_cancel">Cancel</button>
+          </div>
+      </div>
+  </div>
 </div>
 </body>
 </html>

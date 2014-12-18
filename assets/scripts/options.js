@@ -42,7 +42,18 @@ function init() {
     I18n = extension.I18n;
     ProxyPlugin = extension.ProxyPlugin;
 
-    if (extension.extDisabled) initDisabled();
+    if (extension.extDisabled) {
+      initDisabled();
+    } else {
+      if (Settings.getValue("upgradeShow", 0) < 1) {
+        if (Math.random() < 0.3) {
+          initUpgradeNotice();
+        }
+        Settings.setValue("upgradeShow", 1);
+      }
+    }
+
+    $('#showUpgradePopup').click(initUpgradeNotice);
 
     I18n.process(document);
     document.body.style.visibility = "visible";
@@ -74,6 +85,13 @@ function initDisabled() {
   iframe[0].contentWindow.close = function () {
     window.close();
   };
+}
+
+function initUpgradeNotice() {
+  $('#upgradePopupBackdrop').show();
+  $('#btnCancel').click(function () {
+    $('#upgradePopupBackdrop').hide();
+  });
 }
 
 function initUI() {

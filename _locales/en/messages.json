@@ -368,6 +368,18 @@
     "options_vpnDialupProxy":{
         "message":"Proxy for VPN/Dial-up"
     },
+    "options_upgradeTitle":{
+        "message": "Meet SwitchyOmega, the next generation of SwitchySharp."
+    },
+    "options_upgradeContent":{
+        "message":"<p>I know that you love SwitchySharp, so I work hard to make it better. 18 months ago, I started working on the 2.x version with the project name, SwitchyOmega.</p><p>I spent countless hours designing, coding and testing. I redesigned the whole project architecture, and painted a new look for both the options page and the popup. The switching logic is made more flexible, and blazing fast. Many features we have dreamt about, now comes true.  <a href='https://github.com/FelisCatus/SwitchyOmega/wiki/What%27s-new-in-SwitchyOmega'>See what's new.</a></p><p>We have waited so long for an upgrade. Now it is the time.</p><p>P.S. Don't worry. Existing options will be upgraded, and you can enjoy the new features without having to redo your configuration. </p>"
+    },
+    "options_upgradeLink":{
+        "message":"https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif"
+    },
+    "options_upgrade":{
+        "message": "Upgrade"
+    },
     "popup_aboutSwitchy":{
         "message":"About SwitchySharp"
     },
